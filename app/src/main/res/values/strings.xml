@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">WeatherPilot</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">home</string>
+    <string name="settings">settings</string>
+    <string name="favourites">favourites</string>
+    <string name="notification">notification</string>
 </resources>

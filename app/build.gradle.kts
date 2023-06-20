@@ -1,6 +1,7 @@
 plugins {
     id ("com.android.application")
     id ("org.jetbrains.kotlin.android")
+    id("androidx.navigation.safeargs")
 }
 
 android {
@@ -31,6 +32,12 @@ android {
     kotlinOptions {
         jvmTarget = libs.versions.javaVersion.get()
     }
+
+
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+    }
 }
 
 dependencies {
@@ -38,6 +45,12 @@ dependencies {
     implementation (libs.androidx.appcompat.appcompat)
     implementation (libs.com.google.android.material.material)
     implementation (libs.androidx.constraintlayout)
+    implementation(libs.bundles.navigation.component)
+    implementation(libs.bundles.retrofit)
+    implementation(libs.bundles.okhttp)
+    implementation(libs.bundles.sdp)
+    implementation(libs.androidx.core.core.splashscreen)
+    implementation(libs.com.airbnb.android.lottie)
     testImplementation (libs.junit)
     androidTestImplementation (libs.androidx.test.ext)
     androidTestImplementation (libs.androidx.test.espresso)
