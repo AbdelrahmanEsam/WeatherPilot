@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="title_font">
+
+        <item name="font"> @font/poppins_600</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/_81ssp</item>
+    </style>
+
+
+    <style name="title_two">
+
+        <item name="font"> @font/poppins_600</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/_55ssp</item>
+    </style>
+
+
+    <style name="p1">
+
+        <item name="font"> @font/poppins_600</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/_20ssp</item>
+    </style>
+
+
+    <style name="p2">
+
+        <item name="font"> @font/poppins_600</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/_18ssp</item>
+    </style>
+
+
+    <style name="p3">
+
+        <item name="font"> @font/poppins_600</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/_16ssp</item>
+    </style>
+
+
+    <style name="p4">
+
+        <item name="font"> @font/poppins_600</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
+
+    <style name="p5">
+
+        <item name="font"> @font/poppins_600</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/_12ssp</item>
+    </style>
+
+
+    <style name="p6">
+
+        <item name="font"> @font/poppins_600</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/_10ssp</item>
+    </style>
+
+
+
+
+
+</resources>

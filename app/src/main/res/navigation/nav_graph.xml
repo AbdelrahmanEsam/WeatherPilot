@@ -28,7 +28,7 @@
         android:id="@+id/homeFragment"
         android:name="com.example.weatherpilot.presentation.main.HomeFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/notificationFragment"
         android:name="com.example.weatherpilot.presentation.notification.NotificationsFragment"

@@ -6,4 +6,11 @@
     <string name="settings">settings</string>
     <string name="favourites">favourites</string>
     <string name="notification">notification</string>
+    <string name="pressure">pressure</string>
+    <string name="hpa">"%1$s hpa"</string>
+    <string name="windTextValue">"%1$skm/h"</string>
+    <string name="timeValue">"%1$s %2$d"</string>
+    <string name="wind">wind</string>
+    <string name="today">Today</string>
+    <string name="week">Week</string>
 </resources>

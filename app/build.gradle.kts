@@ -20,10 +20,24 @@ android {
 
 
     buildTypes {
-        release {
+        val debug by getting {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
         }
+
+
+
+        val release by getting {
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+
+        forEach {
+            it.buildConfigField("String","API_KEY","\"d059d2844b294f1969f350bd265f3026\"")
+            it.buildConfigField("String","API_BASE","\"https://api.openweathermap.org/\"")
+        }
+
     }
     compileOptions {
         sourceCompatibility  = JavaVersion.VERSION_17
@@ -37,6 +51,7 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        buildConfig = true
     }
 }
 
@@ -48,7 +63,9 @@ dependencies {
     implementation(libs.bundles.navigation.component)
     implementation(libs.bundles.retrofit)
     implementation(libs.bundles.okhttp)
+    implementation(libs.com.github.bumtech.glide.glide)
     implementation(libs.bundles.sdp)
+    implementation(libs.bundles.hilt)
     implementation(libs.androidx.core.core.splashscreen)
     implementation(libs.com.airbnb.android.lottie)
     testImplementation (libs.junit)

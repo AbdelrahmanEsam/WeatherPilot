@@ -2,8 +2,8 @@
 <resources>
 
     <style name="Theme.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/purple</item>
-        <item name="windowSplashScreenAnimatedIcon">@color/purple</item>
+        <item name="windowSplashScreenBackground">@color/purple10</item>
+        <item name="windowSplashScreenAnimatedIcon">@color/purple10</item>
         <item name="postSplashScreenTheme">@style/Theme.ًWeatherPilot</item>
         <item name="duration">5000</item>
     </style>

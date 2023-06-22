@@ -2,7 +2,16 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="purple">#272083</color>
-    <color name="purple10">#53459a</color>
+    <color name="semi_white">#DEDDDD</color>
+    <color name="purple">#33143C</color>
+    <color name="purple10">#331972</color>
+    <color name="purple20">#352163</color>
+    <color name="purple30">#523D7F</color>
+    <color name="purple40">#53459a</color>
+    <color name="purple50">#957DCD</color>
     <color name="transparent">#80FFFFFF</color>
+
+
 </resources>
+
+
