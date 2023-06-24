@@ -1,36 +1,51 @@
 package com.example.weatherpilot.data.mappers
 
-import com.example.weatherpilot.data.dto.TimeStampWeather
+import com.example.weatherpilot.data.dto.Daily
+import com.example.weatherpilot.data.dto.Hourly
 import com.example.weatherpilot.data.dto.WeatherResponse
+import com.example.weatherpilot.domain.model.DayWeatherModel
 import com.example.weatherpilot.domain.model.HourWeatherModel
 import com.example.weatherpilot.domain.model.WeatherModel
+import com.example.weatherpilot.util.toDay
+import com.example.weatherpilot.util.toHour
 
 
 fun WeatherResponse.toWeatherModel() : WeatherModel
 {
-    return WeatherModel(city = city.name , code = cod
-        , hoursWeather =  list.map(TimeStampWeather::toHourWeatherModel)
-        , message = message.toString()
-        , pressure = list.sumOf { it.main.pressure } / 24
-    , visibility = list.sumOf { it.visibility } / 24
-    , wind = (list.sumOf { it.wind.speed } / 24).toInt()
-    , humidity = list.sumOf { it.main.humidity } / 24
- , clouds = list.sumOf { it.clouds.all } / 24
-    , description = list.flatMap { it.weather }.groupBy { it.description }.maxByOrNull { it.value.count() }?.key.toString()
-    , temp = (list.sumOf { it.main.temp } / 24)
-    ,icon = list.flatMap { it.weather }.groupBy { it.icon }.maxByOrNull { it.value.count() }?.key
+
+    return WeatherModel(city = timezone.split("/")[1] , code = current.weather[0].icon
+        , hoursWeather =  hourly.slice(0..23).map(Hourly::toHourWeatherModel)
+        , pressure = current.pressure
+    , visibility = current.visibility
+    , wind = current.wind_speed.toInt()
+    , humidity = current.humidity
+ , clouds = current.clouds
+    , description = current.weather[0].description
+    , temp = current.temp
+    ,icon = current.weather[0].icon
+   , daysWeather = daily.map(Daily::toDayWeatherModel)
     )
 }
 
 
-fun TimeStampWeather.toHourWeatherModel() : HourWeatherModel = kotlin.run {
-    HourWeatherModel(date = dt_txt
-        , weatherCode = weather[0].icon,temp = main.temp.toString()
-        , timestamp = dt, pressure = main.pressure
-    , main.humidity
-    , visibility
-    , clouds
-    , wind
-    , weather[0].description
+fun Hourly.toHourWeatherModel() : HourWeatherModel = kotlin.run {
+    HourWeatherModel(
+         weatherCode = weather[0].icon, temp = temp.toString()
+        , timestamp = dt.toHour(), pressure = pressure
+    , humidity = humidity
+    , visibility =visibility
+    , clouds = clouds
+    , wind = wind_speed.toInt()
+    , description =  weather[0].description
+    , icon = weather[0].icon
+
     )
 }
+
+
+fun Daily.toDayWeatherModel() : DayWeatherModel  = kotlin.run {
+ DayWeatherModel(name = dt.toDay(),weather[0].description, icon = weather[0].icon
+     , maxTemp = temp.max.toInt().toString(), minTemp = temp.min.toInt().toString(),
+     )
+}
+

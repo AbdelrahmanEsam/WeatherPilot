@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/navHostFragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:name="com.example.weatherpilot.util.CustomNavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:defaultNavHost="true"

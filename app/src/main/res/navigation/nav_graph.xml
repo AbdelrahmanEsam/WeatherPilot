@@ -5,6 +5,13 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/splashFragment">
 
+    <action
+        android:id="@+id/action_to_mapFragment"
+        app:launchSingleTop="true"
+        app:popUpToInclusive="true"
+        app:popUpTo="@id/nav_graph"
+        app:destination="@id/mapFragment" />
+
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.example.weatherpilot.SplashFragment"
@@ -17,6 +24,9 @@
             app:popUpToInclusive="true"
             app:popUpTo="@id/nav_graph"
             app:destination="@id/homeFragment" />
+
+
+
 
     </fragment>
     <fragment
@@ -39,4 +49,9 @@
         android:name="com.example.weatherpilot.presentation.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.weatherpilot.presentation.map.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" />
 </navigation>

@@ -3,12 +3,15 @@ package com.example.weatherpilot.di
 import android.content.Context
 import com.example.weatherpilot.BuildConfig
 import com.example.weatherpilot.data.remote.WeatherInterface
+import com.example.weatherpilot.data.rempositoryImpl.RepositoryImpl
+import com.example.weatherpilot.domain.repository.Repository
 import com.example.weatherpilot.util.ConnectivityObserver
 import com.example.weatherpilot.util.NetworkConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -31,4 +34,9 @@ object AppModule
     fun providesRetrofitApi(): WeatherInterface = Retrofit.Builder().baseUrl(BuildConfig.API_BASE).addConverterFactory(
         GsonConverterFactory.create()).build()
         .create(WeatherInterface::class.java)
+
+
+    @Singleton
+    @Provides
+    fun providesRepository(remote: WeatherInterface) : Repository = RepositoryImpl(remote)
 }

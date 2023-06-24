@@ -36,8 +36,8 @@ android {
         }
 
         forEach {
-            it.buildConfigField("String","API_KEY","\"a117466978c46167246dc8d6a700cce6\"")
-            it.buildConfigField("String","API_BASE","\"https://pro.openweathermap.org\"")
+            it.buildConfigField("String","API_KEY","\"d059d2844b294f1969f350bd265f3026\"")
+            it.buildConfigField("String","API_BASE","\"https://api.openweathermap.org/\"")
         }
 
     }
@@ -64,6 +64,7 @@ dependencies {
     implementation (libs.com.google.android.material.material)
     implementation (libs.androidx.constraintlayout)
     implementation(libs.bundles.navigation.component)
+    implementation(libs.bundles.location.maps)
     implementation(libs.bundles.retrofit)
     implementation(libs.bundles.okhttp)
     implementation(libs.com.github.bumtech.glide.glide)

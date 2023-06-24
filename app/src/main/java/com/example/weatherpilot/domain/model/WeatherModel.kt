@@ -4,7 +4,7 @@ data class WeatherModel(
     val city: String,
     val code: String,
     val hoursWeather: List<HourWeatherModel>,
-    val message: String,
+    val daysWeather: List<DayWeatherModel>?,
     val pressure: Int,
     val visibility: Int,
     val wind: Int,

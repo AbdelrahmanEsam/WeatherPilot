@@ -10,7 +10,7 @@
 
     </data>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -30,11 +30,11 @@
 
                 <TextView
                     android:id="@+id/cityTextView"
+                    style="@style/p4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_25sdp"
                     android:text="@{viewModel.state.city}"
-                    style="@style/p4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -56,12 +56,13 @@
                     android:layout_width="@dimen/_150sdp"
                     android:layout_height="@dimen/_120sdp"
                     android:layout_marginTop="@dimen/_20sdp"
+                    android:scaleType="fitXY"
                     android:src="@drawable/weather_state"
                     app:imageUrl="@{viewModel.state.iconCode}"
-                    android:scaleType="fitXY"
                     app:lottie_autoPlay="true"
-                    app:lottie_repeatMode="restart"
                     app:lottie_loop="true"
+                    app:lottie_repeatMode="reverse"
+                    app:lottie_renderMode="hardware"
                     app:layout_constraintEnd_toEndOf="@+id/weatherStateTextView"
                     app:layout_constraintStart_toStartOf="@+id/weatherStateTextView"
                     app:layout_constraintTop_toBottomOf="@+id/weatherStateTextView"
@@ -85,8 +86,8 @@
                     android:layout_height="@dimen/_10sdp"
                     android:src="@drawable/temp"
                     app:layout_constraintCircle="@+id/tempTextView"
-                    app:layout_constraintCircleRadius="@dimen/_60sdp"
-                    app:layout_constraintCircleAngle="60" />
+                    app:layout_constraintCircleAngle="60"
+                    app:layout_constraintCircleRadius="@dimen/_60sdp" />
 
                 <TextView
                     android:id="@+id/dateTextView"
@@ -94,8 +95,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:textColor="@color/semi_white"
                     android:text="Friday, 26 August 2022 | 10:00"
+                    android:textColor="@color/semi_white"
                     app:layout_constraintEnd_toEndOf="@+id/tempTextView"
                     app:layout_constraintStart_toStartOf="@+id/tempTextView"
                     app:layout_constraintTop_toBottomOf="@+id/tempTextView" />
@@ -105,7 +106,7 @@
                     android:id="@+id/basicInfoCardImageView"
                     android:layout_width="@dimen/_250sdp"
                     android:layout_height="@dimen/_150sdp"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="@dimen/_30sdp"
                     android:elevation="20dp"
                     android:src="@drawable/purple_rounded_background"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -209,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:elevation="25dp"
-                    android:text="@{@string/windTextValue(viewModel.state.humidity)}"
+                    android:text="@{@string/humidityTextValue(viewModel.state.humidity)}"
                     app:layout_constraintEnd_toEndOf="@+id/humidityImageView"
                     app:layout_constraintStart_toStartOf="@+id/humidityImageView"
                     app:layout_constraintTop_toBottomOf="@+id/humidityImageView" />
@@ -238,7 +239,7 @@
                     android:elevation="25dp"
                     android:src="@drawable/visibility"
                     app:layout_constraintBottom_toTopOf="@+id/visibilityValueTextView"
-                    app:layout_constraintEnd_toStartOf="@+id/cloudImageView"
+                    app:layout_constraintEnd_toStartOf="@+id/weatherImageView"
                     app:layout_constraintStart_toStartOf="@+id/pressureImageView"
                     app:layout_constraintTop_toBottomOf="@+id/pressureNameTextView" />
 
@@ -271,7 +272,7 @@
 
 
                 <ImageView
-                    android:id="@+id/cloudImageView"
+                    android:id="@+id/weatherImageView"
                     android:layout_width="@dimen/_25sdp"
                     android:layout_height="@dimen/_25sdp"
                     android:layout_marginTop="@dimen/_5sdp"
@@ -284,16 +285,16 @@
 
 
                 <TextView
-                    android:id="@+id/cloudValueTextView"
+                    android:id="@+id/hourValueTextView"
                     style="@style/p6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:elevation="25dp"
-
-                    app:layout_constraintEnd_toEndOf="@+id/cloudImageView"
-                    app:layout_constraintStart_toStartOf="@+id/cloudImageView"
-                    app:layout_constraintTop_toBottomOf="@+id/cloudImageView" />
+                    android:text="@{@string/cloudsTextValue(viewModel.state.clouds)}"
+                    app:layout_constraintEnd_toEndOf="@+id/weatherImageView"
+                    app:layout_constraintStart_toStartOf="@+id/weatherImageView"
+                    app:layout_constraintTop_toBottomOf="@+id/weatherImageView" />
 
 
                 <TextView
@@ -305,9 +306,9 @@
                     android:elevation="25dp"
                     android:text="@string/clouds"
                     android:textColor="@color/semi_white"
-                    app:layout_constraintEnd_toEndOf="@+id/cloudImageView"
-                    app:layout_constraintStart_toStartOf="@+id/cloudImageView"
-                    app:layout_constraintTop_toBottomOf="@+id/cloudValueTextView" />
+                    app:layout_constraintEnd_toEndOf="@+id/weatherImageView"
+                    app:layout_constraintStart_toStartOf="@+id/weatherImageView"
+                    app:layout_constraintTop_toBottomOf="@+id/hourValueTextView" />
 
 
                 <TextView
@@ -318,22 +319,23 @@
                     android:layout_marginTop="50dp"
                     android:text="@string/today"
                     android:textColor="@color/semi_white"
-                    app:layout_constraintStart_toStartOf="@+id/basicInfoCardImageView"
+                    app:layout_constraintStart_toStartOf="@+id/hourRecyclerView"
                     app:layout_constraintTop_toBottomOf="@+id/basicInfoCardImageView" />
 
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/timeRecyclerView"
+                    android:id="@+id/hourRecyclerView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/hour_overview_item"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/todayTextView"
                     tools:itemCount="20"
-                    app:layout_constraintEnd_toEndOf="@+id/basicInfoCardImageView"
-                    app:layout_constraintStart_toStartOf="@+id/basicInfoCardImageView"
-                    app:layout_constraintTop_toBottomOf="@+id/todayTextView" />
+                    tools:listitem="@layout/hour_overview_item" />
 
 
                 <TextView
@@ -341,29 +343,31 @@
                     style="@style/p4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_50sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:text="@string/week"
                     android:textColor="@color/semi_white"
-                    app:layout_constraintStart_toStartOf="@+id/timeRecyclerView"
-                    app:layout_constraintTop_toBottomOf="@+id/timeRecyclerView" />
+                    app:layout_constraintStart_toStartOf="@+id/hourRecyclerView"
+                    app:layout_constraintTop_toBottomOf="@+id/hourRecyclerView" />
 
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/daysRecyclerView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_50sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:orientation="vertical"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/basicInfoCardImageView"
-                    app:layout_constraintStart_toStartOf="@+id/basicInfoCardImageView"
+                    app:layout_constraintEnd_toEndOf="@+id/hourRecyclerView"
+                    app:layout_constraintHorizontal_bias="0.653"
+                    app:layout_constraintStart_toStartOf="@+id/hourRecyclerView"
                     app:layout_constraintTop_toBottomOf="@+id/weekTextView"
+                    app:layout_constraintVertical_bias="0.0"
                     tools:listitem="@layout/day_overview_item" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </layout>

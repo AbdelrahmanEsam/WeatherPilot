@@ -1,60 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/_75sdp"
-    android:layout_height="@dimen/_120sdp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginEnd="@dimen/_10sdp"
-    android:background="@drawable/purple_rounded_background"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <ImageView
-        android:id="@+id/cloudImageView"
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
-        android:elevation="25dp"
-        android:src="@drawable/weather_state"
-        app:layout_constraintBottom_toTopOf="@+id/tempTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.52"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cloudValueTextView"
-        tools:ignore="ContentDescription,UnknownIdInLayout" />
 
-    <TextView
-        android:id="@+id/cloudValueTextView"
-        style="@style/p6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="25dp"
-        android:text="@string/timeValue"
-        app:layout_constraintBottom_toTopOf="@+id/cloudImageView"
-        app:layout_constraintEnd_toEndOf="@+id/cloudImageView"
-        app:layout_constraintHorizontal_bias="0.482"
-        app:layout_constraintStart_toStartOf="@+id/cloudImageView"
-        app:layout_constraintTop_toTopOf="parent" />
+        <data>
+            <variable
+                name="hour"
+                type="com.example.weatherpilot.domain.model.HourWeatherModel" />
+
+        </data>
 
 
-    <TextView
-        android:id="@+id/tempTextView"
-        style="@style/p6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="23"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/cloudImageView"
-        app:layout_constraintStart_toStartOf="@+id/cloudImageView"
-        app:layout_constraintTop_toBottomOf="@+id/cloudImageView" />
 
-    <ImageView
-        android:id="@+id/tempImageView"
-        android:layout_width="@dimen/_3sdp"
-        android:layout_height="@dimen/_3sdp"
-        android:src="@drawable/temp"
-        app:layout_constraintCircle="@+id/tempTextView"
-        app:layout_constraintCircleRadius="@dimen/_10sdp"
-        app:layout_constraintCircleAngle="60"
-        />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/_75sdp"
+        android:layout_height="@dimen/_120sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:background="@drawable/purple_rounded_background">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/weatherImageView"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:elevation="25dp"
+            app:loadImage="@{hour.icon.toString()}"
+            app:lottie_autoPlay="true"
+            app:lottie_repeatMode="restart"
+            app:lottie_loop="true"
+            app:layout_constraintBottom_toTopOf="@+id/tempTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.52"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hourValueTextView"
+            tools:ignore="ContentDescription,UnknownIdInLayout" />
+
+        <TextView
+            android:id="@+id/hourValueTextView"
+            style="@style/p6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="25dp"
+            app:setText="@{hour.timestamp}"
+            app:layout_constraintBottom_toTopOf="@+id/weatherImageView"
+            app:layout_constraintEnd_toEndOf="@+id/weatherImageView"
+            app:layout_constraintHorizontal_bias="0.482"
+            app:layout_constraintStart_toStartOf="@+id/weatherImageView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tempTextView"
+            style="@style/p6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{hour.temp.substring(0,2)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/weatherImageView"
+            app:layout_constraintStart_toStartOf="@+id/weatherImageView"
+            app:layout_constraintTop_toBottomOf="@+id/weatherImageView" />
+
+        <ImageView
+            android:id="@+id/tempImageView"
+            android:layout_width="@dimen/_3sdp"
+            android:layout_height="@dimen/_3sdp"
+            android:src="@drawable/temp"
+            app:layout_constraintCircle="@+id/tempTextView"
+            app:layout_constraintCircleRadius="@dimen/_10sdp"
+            app:layout_constraintCircleAngle="60" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

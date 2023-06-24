@@ -29,9 +29,12 @@ class HomeViewModel @Inject constructor(
      val state = _state.asStateFlow()
 
 
-    fun onEvent()
+    fun onEvent(intent: HomeIntent)
     {
-        getWeatherResponse("10.99","44.34")
+        when(intent){
+            is HomeIntent.NewLocation ->getWeatherResponse(intent.longitude,intent.latitude)
+        }
+
     }
 
     private fun getWeatherResponse(longitude : String , latitude : String)
@@ -49,10 +52,11 @@ class HomeViewModel @Inject constructor(
            , temp = temp.roundToInt().toString()
        , visibility = visibility.toString()
        , iconCode = icon
+       , weekState = daysWeather ?: listOf()
        )
        }}
 
-            Log.d("weatherState",state.value.toString())
+         Log.d("weatherState",state.value.toString())
 
         }
     }
@@ -61,7 +65,7 @@ class HomeViewModel @Inject constructor(
 
     init {
 
-        getWeatherResponse("10.99","44.34")
+        getWeatherResponse("10.99","10.34")
     }
 
 

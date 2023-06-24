@@ -8,10 +8,12 @@
     <string name="notification">notification</string>
     <string name="pressure">pressure</string>
     <string name="hpa">"%1$s hpa"</string>
-    <string name="windTextValue">"%1$skm/h"</string>
+    <string name="windTextValue">"%1$s km/h"</string>
     <string name="visibilityTextValue">"%1$s m"</string>
+    <string name="cloudsTextValue">"%1$s %%"</string>
+    <string name="humidityTextValue">"%1$s %%"</string>
     <string name="timeValue">"%1$s %2$d"</string>
-    <string name="tempWithParams">"%1$s / %2$s %3$s %4$s"</string>
+    <string name="tempWithParams">%1$s \u00B0 / %2$s \u00B0</string>
     <string name="temp_circle">\u00B0</string>
     <string name="fahrenheit">\u2103</string>
     <string name="celsius">\u2103</string>
@@ -21,4 +23,6 @@
     <string name="clouds">clouds</string>
     <string name="today">Today</string>
     <string name="week">Week</string>
+    <string name="longitude">longitude</string>
+    <string name="latitude">latitude</string>
 </resources>

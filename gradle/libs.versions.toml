@@ -2,7 +2,7 @@
 
 # application versions section
 javaVersion = "17"
-minSDK = "21"
+minSDK = "24"
 targetSDK = "33"
 compileSDK = "33"
 codeVersion = "1"
@@ -33,12 +33,12 @@ hiltCompiler = "1.0.0"
 androidxTestExt = "1.1.5"
 androidxTestEspresso = "3.5.1"
 desugaring = "2.0.3"
+location = "21.0.1"
+maps = "17.0.0"
 
 
 #plugins sections
 androidGradlePlugin = "8.0.1"
-
-
 
 
 
@@ -67,6 +67,8 @@ com-google-android-flexbox-flexbox = {group = "com.google.android.flexbox" , nam
 com-intuit-sdp-sdp-android = {group = "com.intuit.sdp" , name = "sdp-android", version.ref = "sdp" }
 com-intuit-sdp-ssp-android = {group = "com.intuit.ssp" , name = "ssp-android", version.ref = "sdp" }
 com-airbnb-android-lottie = {group = "com.airbnb.android",name = "lottie",version.ref = "lottie"}
+com-google-android-gms-play-services-location = {group = "com.google.android.gms",name = "play-services-location" ,version.ref = "location" }
+com-google-android-gms-play-services-maps = {group = "com.google.android.gms",name = "play-services-maps" ,version.ref = "maps" }
 com-android-tools-desugar ={ group = "com.android.tools", name = "desugar_jdk_libs",version.ref = "desugaring"}
 androidx-hilt-compiler = {group = "androidx.hilt",name = "hilt-compiler" ,version.ref = "hiltCompiler" }
 hilt-android = {group = "com.google.dagger",name ="hilt-android" ,version.ref = "daggerHiltCompiler" }
@@ -82,6 +84,7 @@ retrofit = ["com-squareu-retrofit2-retrofit","com-squareu-retrofit2-gson-convert
 room = ["androidx-room-ktx", "androidx-room-compiler", "androidx-room-runtime"]
 sdp = ["com-intuit-sdp-sdp-android","com-intuit-sdp-ssp-android"]
 hilt = ["androidx-hilt-compiler","hilt-android"]
+location-maps = ["com-google-android-gms-play-services-location","com-google-android-gms-play-services-maps"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

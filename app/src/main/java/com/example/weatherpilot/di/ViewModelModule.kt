@@ -16,12 +16,6 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @InstallIn(ViewModelComponent::class)
 object ViewModelModule {
 
-
-
-    @Provides
-    @ViewModelScoped
-    fun providesRepository(remote: WeatherInterface) : Repository = RepositoryImpl(remote)
-
     @Provides
     @ViewModelScoped
     fun providesGetWeatherDataUseCase(repository: Repository) : GetWeatherDataUseCase = GetWeatherDataUseCase(repository)
