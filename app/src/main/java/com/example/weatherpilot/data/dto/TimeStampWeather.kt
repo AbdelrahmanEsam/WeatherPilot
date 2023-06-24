@@ -2,7 +2,7 @@ package com.example.weatherpilot.data.dto
 
 data class TimeStampWeather(
     val clouds: Clouds,
-    val dt: Int,
+    val dt: Long,
     val dt_txt: String,
     val main: Main,
     val pop: Double,

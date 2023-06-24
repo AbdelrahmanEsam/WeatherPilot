@@ -2,6 +2,8 @@ plugins {
     id ("com.android.application")
     id ("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs")
+    id("org.jetbrains.kotlin.kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -34,14 +36,15 @@ android {
         }
 
         forEach {
-            it.buildConfigField("String","API_KEY","\"d059d2844b294f1969f350bd265f3026\"")
-            it.buildConfigField("String","API_BASE","\"https://api.openweathermap.org/\"")
+            it.buildConfigField("String","API_KEY","\"a117466978c46167246dc8d6a700cce6\"")
+            it.buildConfigField("String","API_BASE","\"https://pro.openweathermap.org\"")
         }
 
     }
     compileOptions {
         sourceCompatibility  = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = libs.versions.javaVersion.get()
@@ -66,9 +69,12 @@ dependencies {
     implementation(libs.com.github.bumtech.glide.glide)
     implementation(libs.bundles.sdp)
     implementation(libs.bundles.hilt)
+    kapt(libs.hilt.compiler)
+    kapt(libs.androidx.hilt.compiler)
     implementation(libs.androidx.core.core.splashscreen)
     implementation(libs.com.airbnb.android.lottie)
     testImplementation (libs.junit)
     androidTestImplementation (libs.androidx.test.ext)
     androidTestImplementation (libs.androidx.test.espresso)
+    coreLibraryDesugaring(libs.com.android.tools.desugar)
 }

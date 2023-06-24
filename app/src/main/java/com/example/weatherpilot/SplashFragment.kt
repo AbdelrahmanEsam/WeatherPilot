@@ -42,7 +42,11 @@ class SplashFragment : Fragment() {
             override fun onAnimationCancel(animator: Animator) {}
             override fun onAnimationRepeat(animator: Animator) {}
         })
+
+
+
         }
+
 
 
     @SuppressLint("SourceLockedOrientationActivity")

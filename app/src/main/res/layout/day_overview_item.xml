@@ -1,49 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/_75sdp"
-    android:layout_height="@dimen/_120sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_90sdp"
+    android:layout_marginBottom="@dimen/_10sdp"
     android:background="@drawable/purple_rounded_background">
 
 
     <ImageView
         android:id="@+id/cloudImageView"
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:elevation="25dp"
         android:src="@drawable/weather_state"
-        app:layout_constraintBottom_toTopOf="@+id/cloudNameTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.52"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cloudValueTextView"
+        app:layout_constraintBottom_toBottomOf="@+id/dayTextView"
+        app:layout_constraintEnd_toStartOf="@+id/tempTextView"
+        app:layout_constraintStart_toEndOf="@+id/dayTextView"
+        app:layout_constraintTop_toTopOf="@+id/dayTextView"
         tools:ignore="ContentDescription,UnknownIdInLayout" />
 
-    <TextView
-        android:id="@+id/cloudValueTextView"
-        style="@style/p6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="25dp"
-        android:text="@string/timeValue"
-        app:layout_constraintBottom_toTopOf="@+id/cloudImageView"
-        app:layout_constraintEnd_toEndOf="@+id/cloudImageView"
-        app:layout_constraintHorizontal_bias="0.482"
-        app:layout_constraintStart_toStartOf="@+id/cloudImageView"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/cloudNameTextView"
-        style="@style/p6"
+        android:id="@+id/weatherStateTextView"
+        style="@style/p5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="25dp"
-        android:text="@string/wind"
-        android:textColor="@color/semi_white"
+        android:layout_marginStart="@dimen/_5sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/cloudImageView"
+        app:layout_constraintStart_toEndOf="@+id/cloudImageView"
+        app:layout_constraintTop_toTopOf="@+id/cloudImageView" />
+
+    <TextView
+        android:id="@+id/dayTextView"
+        style="@style/p5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:elevation="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/cloudImageView"
-        app:layout_constraintStart_toStartOf="@+id/cloudImageView"
-        app:layout_constraintTop_toBottomOf="@+id/cloudImageView" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tempTextView"
+        style="@style/p5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:text="@string/tempWithParams"
+        app:layout_constraintBottom_toBottomOf="@+id/cloudImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cloudImageView" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
