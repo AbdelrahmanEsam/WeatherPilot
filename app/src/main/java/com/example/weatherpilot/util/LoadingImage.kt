@@ -1,5 +1,6 @@
 package com.example.weatherpilot.util
 
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -40,12 +41,12 @@ fun loadLottieImage(image: LottieAnimationView, url: String?) {
     @JvmStatic
     @BindingAdapter("loadImage")
     fun loadImage(image: ImageView, url: String?) {
+        Log.d("image",url.toString())
             Glide.with(image.context)
                 .load("https://openweathermap.org/img/wn/${url}@2x.png")
                 .downsample(DownsampleStrategy.CENTER_INSIDE)
                 .into(image)
-            url?.let {
-            }
+
     }
 
 

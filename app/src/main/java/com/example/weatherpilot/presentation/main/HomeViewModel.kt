@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -41,20 +42,33 @@ class HomeViewModel @Inject constructor(
     {
 
         viewModelScope.launch(ioDispatcher) {
+
+            try {
+
+
              val weatherResponse = getWeatherDataUseCase.execute(longitude = longitude, latitude =  latitude)
 
-       with(weatherResponse){ _state.update {it.copy(city = city, weatherState =   description
-           , pressure =  pressure.toString()
-           , clouds = clouds.toString()
-           , humidity = humidity.toString()
-           , wind = wind.toString()
-           , dayState = hoursWeather
-           , temp = temp.roundToInt().toString()
-       , visibility = visibility.toString()
-       , iconCode = icon
-       , weekState = daysWeather ?: listOf()
-       )
-       }}
+
+                with(weatherResponse){ _state.update {it.copy(city = city, weatherState =   description
+                    , pressure =  pressure.toString()
+                    , clouds = clouds.toString()
+                    , humidity = humidity.toString()
+                    , wind = wind.toString()
+                    , dayState = hoursWeather
+                    , temp = temp.roundToInt().toString()
+                    , visibility = visibility.toString()
+                    , iconCode = icon
+                    , weekState = daysWeather ?: listOf()
+                )
+                }}
+
+
+
+            }catch (e : Exception)
+            {
+             Log.d("weatherError",e.message.toString())
+            }
+
 
          Log.d("weatherState",state.value.toString())
 

@@ -35,6 +35,7 @@ androidxTestEspresso = "3.5.1"
 desugaring = "2.0.3"
 location = "21.0.1"
 maps = "17.0.0"
+androidxDataStore = "1.0.0"
 
 
 #plugins sections
@@ -57,6 +58,8 @@ androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-co
 androidx-room-ktx = { group = "androidx.room",name="room-ktx", version.ref = "room" }
 androidx-room-runtime = { group = "androidx.room",name = "room-runtime", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room",name="room-compiler", version.ref = "room" }
+androidx-datastore-preferences = {group = "androidx.datastore",name = "datastore-preferences",version.ref = "androidxDataStore"}
+androidx-datastore-preferences-core = {group = "androidx.datastore",name = "datastore-preferences-core",version.ref = "androidxDataStore"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 com-squareu-retrofit2-retrofit = {group = "com.squareup.retrofit2",name = "retrofit",version.ref = "retrofit"}
 com-squareu-retrofit2-gson-converter = {group = "com.squareup.retrofit2",name = "converter-gson",version.ref = "retrofit"}
@@ -85,6 +88,7 @@ room = ["androidx-room-ktx", "androidx-room-compiler", "androidx-room-runtime"]
 sdp = ["com-intuit-sdp-sdp-android","com-intuit-sdp-ssp-android"]
 hilt = ["androidx-hilt-compiler","hilt-android"]
 location-maps = ["com-google-android-gms-play-services-location","com-google-android-gms-play-services-maps"]
+data-store = ["androidx-datastore-preferences","androidx-datastore-preferences-core"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

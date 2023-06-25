@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/map">
 
     <action
         android:id="@+id/action_to_mapFragment"
         app:launchSingleTop="true"
         app:popUpToInclusive="true"
         app:popUpTo="@id/nav_graph"
-        app:destination="@id/mapFragment" />
+        app:destination="@id/map" />
 
     <fragment
         android:id="@+id/splashFragment"
@@ -50,7 +50,7 @@
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
-        android:id="@+id/mapFragment"
+        android:id="@+id/map"
         android:name="com.example.weatherpilot.presentation.map.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />

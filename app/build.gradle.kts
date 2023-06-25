@@ -36,7 +36,7 @@ android {
         }
 
         forEach {
-            it.buildConfigField("String","API_KEY","\"d059d2844b294f1969f350bd265f3026\"")
+            it.buildConfigField("String","API_KEY","\"1a63fd6a655de75849051be17b899886\"")
             it.buildConfigField("String","API_BASE","\"https://api.openweathermap.org/\"")
         }
 
@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.bundles.location.maps)
     implementation(libs.bundles.retrofit)
     implementation(libs.bundles.okhttp)
+    implementation(libs.bundles.data.store)
     implementation(libs.com.github.bumtech.glide.glide)
     implementation(libs.bundles.sdp)
     implementation(libs.bundles.hilt)
