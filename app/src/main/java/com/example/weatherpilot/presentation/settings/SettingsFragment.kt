@@ -57,6 +57,45 @@ class SettingsFragment : Fragment() {
             viewModel.onEvent(SettingsIntent.LocationChange(getString(R.string.map)))
         }
 
+        binding.arabicRadioImageView.setOnClickListener {
+            viewModel.onEvent(SettingsIntent.LanguageChange(getString(R.string.arabic)))
+        }
+
+        binding.englishRadioImageView.setOnClickListener {
+            viewModel.onEvent(SettingsIntent.LanguageChange(getString(R.string.english)))
+        }
+
+
+        binding.meterRadioImageView.setOnClickListener {
+            viewModel.onEvent(SettingsIntent.WindChange(getString(R.string.meter_sec)))
+        }
+
+
+        binding.mileRadioImageView.setOnClickListener {
+            viewModel.onEvent(SettingsIntent.WindChange(getString(R.string.mile_hour)))
+        }
+
+
+        binding.celsiusRadioImageView.setOnClickListener {
+            viewModel.onEvent(SettingsIntent.TemperatureChange(getString(R.string.celsius)))
+        }
+
+        binding.kelvinRadioImageView.setOnClickListener {
+            viewModel.onEvent(SettingsIntent.TemperatureChange(getString(R.string.kelvin)))
+        }
+
+        binding.fahrenheitRadioImageView.setOnClickListener {
+            viewModel.onEvent(SettingsIntent.TemperatureChange(getString(R.string.fahrenheit)))
+        }
+
+        binding.enabledRadioImageView.setOnClickListener {
+            viewModel.onEvent(SettingsIntent.NotificationChange(getString(R.string.enabled)))
+        }
+
+        binding.disabledRadioImageView.setOnClickListener {
+            viewModel.onEvent(SettingsIntent.NotificationChange(getString(R.string.disabled)))
+        }
+
     }
 
 
@@ -110,6 +149,7 @@ class SettingsFragment : Fragment() {
 
                     when(it.temperatureType){
                         getString(R.string.celsius) -> {
+                            Log.d("temp", it.temperatureType.toString())
                         binding.celsiusRadioImageView.setImageResource(R.drawable.radio_checked)
                         binding.kelvinRadioImageView.setImageResource(R.drawable.radio_unchecked)
                         binding.fahrenheitRadioImageView.setImageResource(R.drawable.radio_unchecked)

@@ -53,6 +53,7 @@ class SettingsViewModel @Inject constructor(
 
     private fun saveStringToDataStore(key : String, value : String)
     {
+        Log.d("saving", value)
         viewModelScope.launch(ioDispatcher)
         {
                saveStringToDataStoreUseCase.execute(key,value)
