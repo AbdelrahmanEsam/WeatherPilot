@@ -5,9 +5,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 
@@ -32,17 +36,16 @@ class DataStoreUserPreferencesImpl @Inject constructor(private val context: Cont
         }
     }
 
-    override suspend fun getString(key: String): String? {
+    override suspend fun getString(key: String): Flow<String?> {
 
-        return try {
+
             val preferenceKey = stringPreferencesKey(key)
-            val preference = context.dataStore.data.first()
-            preference[preferenceKey]
+             return context.dataStore.data
+                .catch { emit(emptyPreferences()) }
+                .map { preference ->
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
+                  preference[preferenceKey]
+                }
     }
 
     override suspend fun getBoolean(key: String): Boolean? {

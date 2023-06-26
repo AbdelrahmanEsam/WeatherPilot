@@ -34,7 +34,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_25sdp"
-                    android:text="@{viewModel.state.city}"
+                    android:text="@{viewModel.stateDisplay.city}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_25sdp"
-                    android:text="@{viewModel.state.weatherState}"
+                    android:text="@{viewModel.stateDisplay.weatherState}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cityTextView" />
@@ -58,7 +58,7 @@
                     android:layout_marginTop="@dimen/_20sdp"
                     android:scaleType="fitXY"
                     android:src="@drawable/weather_state"
-                    app:imageUrl="@{viewModel.state.iconCode}"
+                    app:imageUrl="@{viewModel.stateDisplay.iconCode}"
                     app:lottie_autoPlay="true"
                     app:lottie_loop="true"
                     app:lottie_repeatMode="reverse"
@@ -75,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:text="@{viewModel.state.temp}"
+                    android:text="@{viewModel.stateDisplay.temp}"
                     app:layout_constraintEnd_toEndOf="@+id/imageView"
                     app:layout_constraintStart_toStartOf="@+id/imageView"
                     app:layout_constraintTop_toBottomOf="@+id/imageView" />
@@ -133,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:elevation="25dp"
-                    android:text="@{@string/hpa(viewModel.state.pressure)}"
+                    android:text="@{@string/hpa(viewModel.stateDisplay.pressure)}"
                     app:layout_constraintEnd_toEndOf="@+id/pressureImageView"
                     app:layout_constraintStart_toStartOf="@+id/pressureImageView"
                     app:layout_constraintTop_toBottomOf="@+id/pressureImageView" />
@@ -171,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:elevation="25dp"
-                    android:text="@{@string/windTextValue(viewModel.state.wind)}"
+                    android:text="@{@string/windTextValue(viewModel.stateDisplay.wind)}"
                     app:layout_constraintEnd_toEndOf="@+id/windImageView"
                     app:layout_constraintStart_toStartOf="@+id/windImageView"
                     app:layout_constraintTop_toBottomOf="@+id/windImageView" />
@@ -210,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:elevation="25dp"
-                    android:text="@{@string/humidityTextValue(viewModel.state.humidity)}"
+                    android:text="@{@string/humidityTextValue(viewModel.stateDisplay.humidity)}"
                     app:layout_constraintEnd_toEndOf="@+id/humidityImageView"
                     app:layout_constraintStart_toStartOf="@+id/humidityImageView"
                     app:layout_constraintTop_toBottomOf="@+id/humidityImageView" />
@@ -251,7 +251,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:elevation="25dp"
-                    android:text="@{@string/visibilityTextValue(viewModel.state.visibility)}"
+                    android:text="@{@string/visibilityTextValue(viewModel.stateDisplay.visibility)}"
                     app:layout_constraintEnd_toEndOf="@+id/visibilityImageView"
                     app:layout_constraintStart_toStartOf="@+id/visibilityImageView"
                     app:layout_constraintTop_toBottomOf="@+id/visibilityImageView" />
@@ -291,7 +291,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:elevation="25dp"
-                    android:text="@{@string/cloudsTextValue(viewModel.state.clouds)}"
+                    android:text="@{@string/cloudsTextValue(viewModel.stateDisplay.clouds)}"
                     app:layout_constraintEnd_toEndOf="@+id/weatherImageView"
                     app:layout_constraintStart_toStartOf="@+id/weatherImageView"
                     app:layout_constraintTop_toBottomOf="@+id/weatherImageView" />

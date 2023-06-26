@@ -47,6 +47,7 @@ class MapFragment : Fragment() {
         binding.go.setOnClickListener {
 
             viewModel.onEvent(MapIntent.SaveDataToDataStore)
+            navController.popBackStack()
         }
         stateObserver()
     }
@@ -81,12 +82,12 @@ class MapFragment : Fragment() {
                 googleMap.addMarker( MarkerOptions()
                     .position(it))
                 viewModel.onEvent(MapIntent.NewLatLong(it.latitude.toString(),it.longitude.toString()))
-
             }
 
             googleMap.setOnMapLoadedCallback {
                 viewModel.onEvent(MapIntent.MapLoaded)
             }
+
         }
 
 

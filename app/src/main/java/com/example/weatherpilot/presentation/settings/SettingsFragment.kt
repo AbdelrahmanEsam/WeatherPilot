@@ -65,19 +65,24 @@ class SettingsFragment : Fragment() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.state.collect{
-                    when(it.location){
+                    when(it.locationType){
+
                         getString(R.string.gps) -> {
+                            Log.d("locationCollected", it.locationType.toString())
                             binding.GPSRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.mapRadioImageView.setImageResource(R.drawable.radio_unchecked)
 
                         }
                         getString(R.string.map) -> {
+                            Log.d("locationCollected", it.locationType.toString())
                             binding.GPSRadioImageView.setImageResource(R.drawable.radio_unchecked)
                             binding.mapRadioImageView.setImageResource(R.drawable.radio_checked)
                         }
+
+
                     }
 
-                    when(it.language){
+                    when(it.languageType){
                         getString(R.string.arabic) -> {
                             binding.arabicRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.englishRadioImageView.setImageResource(R.drawable.radio_unchecked)
@@ -90,7 +95,7 @@ class SettingsFragment : Fragment() {
                     }
 
 
-                    when(it.wind){
+                    when(it.windType){
                         getString(R.string.meter_sec) -> {
                             binding.meterRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.mileRadioImageView.setImageResource(R.drawable.radio_unchecked)
@@ -103,7 +108,7 @@ class SettingsFragment : Fragment() {
                     }
 
 
-                    when(it.temperature){
+                    when(it.temperatureType){
                         getString(R.string.celsius) -> {
                         binding.celsiusRadioImageView.setImageResource(R.drawable.radio_checked)
                         binding.kelvinRadioImageView.setImageResource(R.drawable.radio_unchecked)
@@ -124,7 +129,7 @@ class SettingsFragment : Fragment() {
 
                     }
 
-                    when(it.notification){
+                    when(it.notificationType){
                         getString(R.string.enabled) -> {
                             binding.enabledRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.disabledRadioImageView.setImageResource(R.drawable.radio_unchecked)

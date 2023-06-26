@@ -2,15 +2,14 @@ package com.example.weatherpilot.domain.usecase
 
 import android.util.Log
 import com.example.weatherpilot.domain.repository.Repository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ReadStringFromDataStoreUseCase @Inject constructor(private val repository : Repository) {
 
-    suspend fun execute(key : String) : String
+    suspend fun execute(key : String) : Flow<String?>
     {
-      val data =  repository.getStringFromDataStore(key)
-        Log.d("data",data.toString())
-        return  data
+            return repository.getStringFromDataStore(key)
     }
 
 }

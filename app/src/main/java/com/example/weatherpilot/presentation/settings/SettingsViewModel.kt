@@ -1,5 +1,6 @@
 package com.example.weatherpilot.presentation.settings
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
@@ -10,6 +11,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,24 +33,19 @@ class SettingsViewModel @Inject constructor(
         when(intent)
         {
             is SettingsIntent.LanguageChange -> {
-                _state.update { it.copy(language = intent.language) }
-                saveStringToDataStore("language",intent.language)
+                saveStringToDataStore("languageType",intent.language)
             }
             is SettingsIntent.LocationChange -> {
-                _state.update { it.copy(location = intent.location) }
-                saveStringToDataStore("location",intent.location)
+                saveStringToDataStore("locationType",intent.location)
             }
             is SettingsIntent.NotificationChange -> {
-                _state.update { it.copy(language = intent.notification) }
-                saveStringToDataStore("notification",intent.notification)
+                saveStringToDataStore("notificationType",intent.notification)
             }
             is SettingsIntent.TemperatureChange ->{
-                _state.update { it.copy(language = intent.temperature) }
-                saveStringToDataStore("temperature",intent.temperature)
+                saveStringToDataStore("temperatureType",intent.temperature)
             }
             is SettingsIntent.WindChange -> {
-                _state.update { it.copy(language = intent.wind) }
-                saveStringToDataStore("wind",intent.wind)
+                saveStringToDataStore("windType",intent.wind)
             }
         }
 
@@ -63,18 +61,23 @@ class SettingsViewModel @Inject constructor(
 
     private fun readAllPreferencesFromDataStore()
     {
-        val prefs = arrayOf("location","language","wind","temperature","notification")
+
+
+        SettingsState::class.java.declaredFields.forEach {field ->
         viewModelScope.launch(ioDispatcher)
         {
-            prefs.forEach {propertyName ->
-                val property =    SettingsState::class.java.getDeclaredField(propertyName)
-                property.isAccessible = true
-                property.set(_state.value.copy(), readStringFromDataStoreUseCase.execute(propertyName))
 
+                val property =  SettingsState::class.java.getDeclaredField(field.name)
+                    property.isAccessible = true
+                readStringFromDataStoreUseCase.execute(property.name).distinctUntilChanged().collect{
+                    val newState = _state.value.copy()
+                    property.set(newState,it)
+                    _state.update { newState }
+                     Log.d("readed", state.value.toString())
+                }
             }
         }
     }
-
 
     init {
         readAllPreferencesFromDataStore()

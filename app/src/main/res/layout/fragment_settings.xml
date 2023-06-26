@@ -68,8 +68,8 @@
 
                     <ImageView
                         android:id="@+id/GPSRadioImageView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/_20sdp"
                         app:layout_constraintStart_toStartOf="@+id/locationRow"
@@ -144,8 +144,8 @@
 
                     <ImageView
                         android:id="@+id/arabicRadioImageView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/_20sdp"
                         app:layout_constraintStart_toStartOf="@+id/languageRow"
@@ -220,8 +220,8 @@
 
                     <ImageView
                         android:id="@+id/meterRadioImageView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/_20sdp"
                         app:layout_constraintStart_toStartOf="@+id/windRow"
@@ -298,8 +298,8 @@
 
                     <ImageView
                         android:id="@+id/celsiusRadioImageView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/_20sdp"
                         app:layout_constraintStart_toStartOf="@+id/temperatureRow"
@@ -398,8 +398,8 @@
 
                     <ImageView
                         android:id="@+id/enabledRadioImageView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/_20sdp"
                         app:layout_constraintStart_toStartOf="@+id/notificationRow"

@@ -45,7 +45,8 @@ class MapViewModel @Inject constructor(
         {
             if (_state.value.latitude.isNotEmpty()){
                 _state.update { it.copy(saveState = false) }
-                with(_state.value){saveStringToDataStoreUseCase.execute(longitude,latitude)}
+                with(_state.value){saveStringToDataStoreUseCase.execute("latitude",latitude)}
+                with(_state.value){saveStringToDataStoreUseCase.execute("longitude",longitude)}
             }
             _state.update { it.copy(saveState = true) }
         }

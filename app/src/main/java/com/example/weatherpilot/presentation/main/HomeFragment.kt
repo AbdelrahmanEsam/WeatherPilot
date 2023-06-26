@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
@@ -21,7 +20,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavBackStackEntry
@@ -29,7 +27,6 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weatherpilot.NavGraphDirections
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentHomeBinding
 import com.example.weatherpilot.domain.model.DayWeatherModel
@@ -39,7 +36,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
@@ -84,7 +81,7 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
                 return@registerForActivityResult
             }
         }
-         getLastLocation()
+         getLastLocationFromGPS()
 
     }
 
@@ -106,38 +103,8 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
         setHoursRecyclerView()
         setDaysRecyclerView()
         callback()
-        locationFromMapObserver()
-        stateObserver()
-    }
-
-    override fun onResume() {
-        super.onResume()
-      //  navController.navigate(NavGraphDirections.actionToMapFragment())
-      getLastLocation()
-    }
-
-
-    private fun locationFromMapObserver() {
-        val backStackEntry: NavBackStackEntry? = navController.currentBackStackEntry
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                backStackEntry?.let {
-
-                    backStackEntry.savedStateHandle.getStateFlow(
-                    requireContext().getString(R.string.longitude),
-                    null
-                ).zip(backStackEntry.savedStateHandle.getStateFlow(
-                        requireContext().getString(R.string.latitude),
-                        null
-                    )){ longitude, latitude ->
-
-                        Log.d("callback",longitude as String)
-                   viewModel.onEvent(HomeIntent.NewLocation(longitude as String,latitude as String))
-
-                    }
-                }
-            }
-        }
+        displayStateObserver()
+        latLongStateObserver()
     }
 
 
@@ -157,10 +124,10 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
     }
 
 
-    private fun stateObserver() {
+    private fun displayStateObserver() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.state.collect { state ->
+                viewModel.stateDisplay.collect { state ->
                     if (state.dayState.isNotEmpty()) {
                         setHourlyDataToRecyclerView(state.dayState)
                     }
@@ -168,6 +135,25 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
                     if (state.dayState.isNotEmpty()) {
                         setDaysDataToRecyclerView(state.weekState)
                     }
+                }
+            }
+        }
+    }
+
+
+    private fun latLongStateObserver()
+    {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.statePreferences.collect {
+
+                    if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps)))
+                    {
+                       getLastLocationFromGPS()
+                    }else if (viewModel.statePreferences.value.locationType.equals(getString(R.string.map))){
+                        viewModel.onEvent(HomeIntent.ReadLatLongFromDataStore)
+                    }
+
                 }
             }
         }
@@ -205,21 +191,22 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
         return false
     }
 
-    private fun getLastLocation() {
-        if (checkPermission()){
-            if (isLocationEnabled()){
-                locationClient.requestLocationUpdates(
-                    locationRequest, locationCallback, Looper.myLooper()
-                )
-            }else{
-                Toast.makeText(requireContext(), "Turn on location", Toast.LENGTH_SHORT).show()
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
-            }
+    private fun getLastLocationFromGPS() {
 
-        }else{
-            requestPermission()
-        }
+        if (!checkPermission())  {requestPermission() ; return}
+        if (!isLocationEnabled()) {
+            startLocationPage();return}
+
+        locationClient.requestLocationUpdates(
+            locationRequest, locationCallback, Looper.myLooper()
+        )
+    }
+
+    private fun startLocationPage()
+    {
+        Toast.makeText(requireContext(), "Turn on location please", Toast.LENGTH_SHORT).show()
+        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        startActivity(intent)
     }
 
 
@@ -229,7 +216,7 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
             override fun onLocationResult(locationResult: LocationResult) {
                 val location: Location? = locationResult.lastLocation
                 Log.d("location callback",location.toString())
-                viewModel.onEvent(HomeIntent.NewLocation(
+                viewModel.onEvent(HomeIntent.NewLocationFromGPS(
                     location?.longitude.toString(),
                     location?.latitude.toString()))
             }
