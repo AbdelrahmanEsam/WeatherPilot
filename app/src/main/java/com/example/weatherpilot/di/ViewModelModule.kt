@@ -1,10 +1,9 @@
 package com.example.weatherpilot.di
 
-import com.example.weatherpilot.data.remote.WeatherInterface
-import com.example.weatherpilot.data.rempositoryImpl.RepositoryImpl
 import com.example.weatherpilot.domain.repository.Repository
 import com.example.weatherpilot.domain.usecase.GetCurrentTimeStampUseCase
 import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
+import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
 import dagger.Module
 import dagger.Provides
@@ -33,6 +32,12 @@ object ViewModelModule {
     @ViewModelScoped
     fun providesSaveStringToDataStoreUseCase(repository: Repository) : SaveStringToDataStoreUseCase
     = SaveStringToDataStoreUseCase(repository)
+
+
+    @Provides
+    @ViewModelScoped
+    fun providesReadStringToDataStoreUseCase(repository: Repository) : ReadStringFromDataStoreUseCase
+            = ReadStringFromDataStoreUseCase(repository)
 
 
 }

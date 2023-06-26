@@ -8,8 +8,8 @@ import javax.inject.Inject
 
 class SaveStringToDataStoreUseCase @Inject constructor(private val repository : Repository) {
 
-    suspend fun execute(longitude : String , latitude : String) : WeatherModel
+    suspend fun execute(key : String , value : String)
     {
-        return  repository.getWeatherResponse(longitude, latitude)
+          repository.saveStringToDataStore(key, value)
     }
 }

@@ -15,8 +15,10 @@
     <string name="timeValue">"%1$s %2$d"</string>
     <string name="tempWithParams">%1$s \u00B0 / %2$s \u00B0</string>
     <string name="temp_circle">\u00B0</string>
-    <string name="fahrenheit">\u2103</string>
-    <string name="celsius">\u2103</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="fahrenheit_symbol">\u2103</string>
+    <string name="celsius">Celsius</string>
+    <string name="celsius_symbol">\u2103</string>
     <string name="wind">wind</string>
     <string name="humidity">humidity</string>
     <string name="visibility">visibility</string>
@@ -26,4 +28,17 @@
     <string name="longitude">longitude</string>
     <string name="latitude">latitude</string>
     <string name="go">Go</string>
+    <string name="location">location</string>
+    <string name="gps">GPS</string>
+    <string name="map">Map</string>
+    <string name="language">language</string>
+    <string name="arabic">arabic</string>
+    <string name="english">english</string>
+    <string name="temperature">temperature</string>
+    <string name="enabled">enabled</string>
+    <string name="disabled">disabled</string>
+    <string name="wind_speed">wind Speed</string>
+    <string name="meter_sec">Meter / Sec</string>
+    <string name="mile_hour">Mile / Hour</string>
+    <string name="kelvin">kelvin</string>
 </resources>

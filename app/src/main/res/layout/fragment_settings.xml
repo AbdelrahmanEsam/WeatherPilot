@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.weatherpilot.presentation.main.HomeViewModel" />
+            type="com.example.weatherpilot.presentation.settings.SettingsViewModel" />
 
     </data>
 
@@ -24,11 +24,426 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 tools:context=".presentation.main.HomeFragment">
 
 
+                <TextView
+                    android:id="@+id/settingsTextView"
+                    style="@style/p1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:text="@string/settings"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+
+                <TextView
+                    android:id="@+id/locationTextView"
+                    style="@style/p2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="@string/location"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/settingsTextView" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/locationRow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:background="@drawable/purple_rounded_background_10sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/locationTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/locationTextView"
+                    app:srcCompat="@drawable/purple_rounded_background_10sdp">
+
+
+                    <ImageView
+                        android:id="@+id/GPSRadioImageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        app:layout_constraintStart_toStartOf="@+id/locationRow"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/radio_checked" />
+
+
+                    <TextView
+                        android:id="@+id/GPSTextView"
+                        style="@style/p2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:text="@string/gps"
+                        android:textColor="@color/semi_white"
+                        app:layout_constraintBottom_toBottomOf="@+id/GPSRadioImageView"
+                        app:layout_constraintStart_toEndOf="@+id/GPSRadioImageView"
+                        app:layout_constraintTop_toTopOf="@+id/GPSRadioImageView" />
+
+                    <ImageView
+                        android:id="@+id/mapRadioImageView"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:elevation="@dimen/_15sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/GPSRadioImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/GPSRadioImageView"
+                        app:srcCompat="@drawable/radio_unchecked" />
+
+                    <TextView
+                        android:id="@+id/mapTextView"
+                        style="@style/p2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/map"
+                        android:textColor="@color/semi_white"
+                        app:layout_constraintBottom_toBottomOf="@+id/mapRadioImageView"
+                        app:layout_constraintStart_toStartOf="@+id/GPSTextView"
+                        app:layout_constraintTop_toTopOf="@+id/mapRadioImageView" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <TextView
+                    android:id="@+id/languagesTextView"
+                    style="@style/p2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/language"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/locationRow" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/languageRow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:background="@drawable/purple_rounded_background_10sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/locationTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/languagesTextView"
+                    app:srcCompat="@drawable/purple_rounded_background_10sdp">
+
+
+                    <ImageView
+                        android:id="@+id/arabicRadioImageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        app:layout_constraintStart_toStartOf="@+id/languageRow"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/radio_checked" />
+
+
+                    <TextView
+                        android:id="@+id/arabicTextView"
+                        style="@style/p2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:text="@string/arabic"
+                        android:textColor="@color/semi_white"
+                        app:layout_constraintBottom_toBottomOf="@+id/arabicRadioImageView"
+                        app:layout_constraintStart_toEndOf="@+id/arabicRadioImageView"
+                        app:layout_constraintTop_toTopOf="@+id/arabicRadioImageView" />
+
+                    <ImageView
+                        android:id="@+id/englishRadioImageView"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:elevation="@dimen/_15sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/arabicRadioImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/arabicRadioImageView"
+                        app:srcCompat="@drawable/radio_unchecked" />
+
+                    <TextView
+                        android:id="@+id/englishTextView"
+                        style="@style/p2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/english"
+                        android:textColor="@color/semi_white"
+                        app:layout_constraintBottom_toBottomOf="@+id/englishRadioImageView"
+                        app:layout_constraintStart_toStartOf="@+id/arabicTextView"
+                        app:layout_constraintTop_toTopOf="@+id/englishRadioImageView" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <TextView
+                    android:id="@+id/windSpeedTextView"
+                    style="@style/p2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:text="@string/wind_speed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/languageRow" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/windRow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:background="@drawable/purple_rounded_background_10sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/windSpeedTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/windSpeedTextView"
+                    app:srcCompat="@drawable/purple_rounded_background_10sdp">
+
+
+                    <ImageView
+                        android:id="@+id/meterRadioImageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        app:layout_constraintStart_toStartOf="@+id/windRow"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/radio_checked" />
+
+
+                    <TextView
+                        android:id="@+id/meterTextView"
+                        style="@style/p2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:text="@string/meter_sec"
+                        android:textColor="@color/semi_white"
+                        app:layout_constraintBottom_toBottomOf="@+id/meterRadioImageView"
+                        app:layout_constraintStart_toEndOf="@+id/meterRadioImageView"
+                        app:layout_constraintTop_toTopOf="@+id/meterRadioImageView" />
+
+                    <ImageView
+                        android:id="@+id/mileRadioImageView"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:elevation="@dimen/_15sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/meterRadioImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/meterRadioImageView"
+                        app:srcCompat="@drawable/radio_unchecked" />
+
+                    <TextView
+                        android:id="@+id/mileTextView"
+                        style="@style/p2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mile_hour"
+                        android:textColor="@color/semi_white"
+                        app:layout_constraintBottom_toBottomOf="@+id/mileRadioImageView"
+                        app:layout_constraintStart_toStartOf="@+id/meterTextView"
+                        app:layout_constraintTop_toTopOf="@+id/mileRadioImageView" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+                <TextView
+                    android:id="@+id/temperatureTextView"
+                    style="@style/p2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:text="@string/temperature"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/windRow" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/temperatureRow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:background="@drawable/purple_rounded_background_10sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/temperatureTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/temperatureTextView"
+                    app:srcCompat="@drawable/purple_rounded_background_10sdp">
+
+
+                    <ImageView
+                        android:id="@+id/celsiusRadioImageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        app:layout_constraintStart_toStartOf="@+id/temperatureRow"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/radio_checked" />
+
+
+                    <TextView
+                        android:id="@+id/celsiusTextView"
+                        style="@style/p2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:text="@string/celsius"
+                        android:textColor="@color/semi_white"
+                        app:layout_constraintBottom_toBottomOf="@+id/celsiusRadioImageView"
+                        app:layout_constraintStart_toEndOf="@+id/celsiusRadioImageView"
+                        app:layout_constraintTop_toTopOf="@+id/celsiusRadioImageView" />
+
+                    <ImageView
+                        android:id="@+id/kelvinRadioImageView"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:elevation="@dimen/_15sdp"
+                        app:layout_constraintStart_toStartOf="@+id/celsiusRadioImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/celsiusRadioImageView"
+                        app:srcCompat="@drawable/radio_unchecked" />
+
+                    <TextView
+                        android:id="@+id/kelvinTextView"
+                        style="@style/p2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kelvin"
+                        android:textColor="@color/semi_white"
+                        app:layout_constraintBottom_toBottomOf="@+id/kelvinRadioImageView"
+                        app:layout_constraintStart_toStartOf="@+id/celsiusTextView"
+                        app:layout_constraintTop_toTopOf="@+id/kelvinRadioImageView" />
+
+
+                    <ImageView
+                        android:id="@+id/fahrenheitRadioImageView"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:elevation="@dimen/_15sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/celsiusRadioImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/kelvinRadioImageView"
+                        app:srcCompat="@drawable/radio_unchecked" />
+
+                    <TextView
+                        android:id="@+id/fahrenheitTextView"
+                        style="@style/p2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fahrenheit"
+                        android:textColor="@color/semi_white"
+                        app:layout_constraintBottom_toBottomOf="@+id/fahrenheitRadioImageView"
+                        app:layout_constraintStart_toStartOf="@+id/celsiusTextView"
+                        app:layout_constraintTop_toTopOf="@+id/fahrenheitRadioImageView" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <TextView
+                    android:id="@+id/notificationTextView"
+                    style="@style/p2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:text="@string/notification"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/temperatureRow" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/notificationRow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:background="@drawable/purple_rounded_background_10sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/notificationTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/notificationTextView"
+                    app:srcCompat="@drawable/purple_rounded_background_10sdp">
+
+
+                    <ImageView
+                        android:id="@+id/enabledRadioImageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        app:layout_constraintStart_toStartOf="@+id/notificationRow"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/radio_checked" />
+
+
+                    <TextView
+                        android:id="@+id/enabledTextView"
+                        style="@style/p2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:text="@string/enabled"
+                        android:textColor="@color/semi_white"
+                        app:layout_constraintBottom_toBottomOf="@+id/enabledRadioImageView"
+                        app:layout_constraintStart_toEndOf="@+id/enabledRadioImageView"
+                        app:layout_constraintTop_toTopOf="@+id/enabledRadioImageView" />
+
+                    <ImageView
+                        android:id="@+id/disabledRadioImageView"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:elevation="@dimen/_15sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/enabledRadioImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/enabledRadioImageView"
+                        app:srcCompat="@drawable/radio_unchecked" />
+
+                    <TextView
+                        android:id="@+id/disabledTextView"
+                        style="@style/p2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/disabled"
+                        android:textColor="@color/semi_white"
+                        app:layout_constraintBottom_toBottomOf="@+id/disabledRadioImageView"
+                        app:layout_constraintStart_toStartOf="@+id/enabledTextView"
+                        app:layout_constraintTop_toTopOf="@+id/disabledRadioImageView" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
