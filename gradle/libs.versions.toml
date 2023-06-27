@@ -36,6 +36,7 @@ desugaring = "2.0.3"
 location = "21.0.1"
 maps = "17.0.0"
 androidxDataStore = "1.0.0"
+refreshLayout = "1.2.0-alpha01"
 
 
 #plugins sections
@@ -60,6 +61,7 @@ androidx-room-runtime = { group = "androidx.room",name = "room-runtime", version
 androidx-room-compiler = { group = "androidx.room",name="room-compiler", version.ref = "room" }
 androidx-datastore-preferences = {group = "androidx.datastore",name = "datastore-preferences",version.ref = "androidxDataStore"}
 androidx-datastore-preferences-core = {group = "androidx.datastore",name = "datastore-preferences-core",version.ref = "androidxDataStore"}
+androidx-swiperefreshlayout-swiperefreshlayout= {group = "androidx.swiperefreshlayout",name = "swiperefreshlayout",version.ref = "refreshLayout"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 com-squareu-retrofit2-retrofit = {group = "com.squareup.retrofit2",name = "retrofit",version.ref = "retrofit"}
 com-squareu-retrofit2-gson-converter = {group = "com.squareup.retrofit2",name = "converter-gson",version.ref = "retrofit"}

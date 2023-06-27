@@ -1,27 +1,22 @@
 package com.example.weatherpilot.presentation.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.usecase.GetCurrentTimeStampUseCase
 import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
-import com.example.weatherpilot.presentation.settings.SettingsState
 import com.example.weatherpilot.util.Dispatcher
 import com.example.weatherpilot.util.Dispatchers
+import com.example.weatherpilot.util.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -55,6 +50,7 @@ class HomeViewModel @Inject constructor(
                     getWeatherResponse()
             }
             HomeIntent.ReadLatLongFromDataStore -> readLocationLatLonFromDataStore()
+            HomeIntent.FetchData -> getWeatherResponse()
         }
 
     }
@@ -66,26 +62,45 @@ class HomeViewModel @Inject constructor(
 
 
             stateLongLat.value.longitude?.let {
+                _stateDisplay.update { it.copy(loading = true) }
                 val weatherResponse =
                     getWeatherDataUseCase.execute(longitude = stateLongLat.value.longitude!!
                         , latitude =  stateLongLat.value.latitude!!
                         ,statePreferences.value.languageType ?: "en"
                     )
 
-              with(weatherResponse){ _stateDisplay.update {
-                  it.copy(city = city, weatherState =   description
-                    , pressure =  pressure.toString()
-                    , clouds = clouds.toString()
-                    , humidity = humidity.toString()
-                    , wind = wind.toString()
-                    , dayState = hoursWeather
-                    , temp = temp.roundToInt().toString()
-                    , visibility = visibility.toString()
-                    , iconCode = icon
-                    , weekState = daysWeather ?: listOf()
-                )
-                }}
+                weatherResponse.collectLatest { response ->
+                    when(response){
+                        is NetworkResponse.Failure -> {
+                            _stateDisplay.update { it.copy(error = response.error) }
+                        }
+                        is NetworkResponse.Loading ->{
+                            _stateDisplay.update { it.copy(loading = true) }
+                        }
+                        is NetworkResponse.Success -> {
+                            with(response.data!!){ _stateDisplay.update {
+                                it.copy(city = city, weatherState =   description
+                                    , pressure =  pressure.toString()
+                                    , clouds = clouds.toString()
+                                    , humidity = humidity.toString()
+                                    , wind = wind.toString()
+                                    , dayState = hoursWeather
+                                    , temp = temp.roundToInt().toString()
+                                    , visibility = visibility.toString()
+                                    , iconCode = icon
+                                    , weekState = daysWeather ?: listOf()
+                                    , loading = false
+                                )
+                            }}
+                        }
+                    }
+                }
 
+
+
+
+            } ?: kotlin.run {
+                _stateDisplay.update { it.copy(loading = false) }
             }
 
 

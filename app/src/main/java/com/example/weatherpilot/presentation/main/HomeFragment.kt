@@ -105,6 +105,10 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
         callback()
         displayStateObserver()
         latLongStateObserver()
+        binding.refreshLayout.setOnRefreshListener {
+
+            viewModel.onEvent(HomeIntent.FetchData)
+        }
     }
 
 
@@ -134,6 +138,10 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
 
                     if (state.dayState.isNotEmpty()) {
                         setDaysDataToRecyclerView(state.weekState)
+                    }
+
+                    if (!state.loading){
+                        binding.refreshLayout.isRefreshing = false
                     }
                 }
             }

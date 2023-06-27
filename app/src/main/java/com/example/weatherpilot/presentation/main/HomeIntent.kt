@@ -5,6 +5,8 @@ sealed interface HomeIntent
     data class NewLocationFromGPS(val longitude : String, val latitude  :  String) : HomeIntent
     object ReadLatLongFromDataStore : HomeIntent
 
+    object FetchData : HomeIntent
+
 
 
 }

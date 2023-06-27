@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.bundles.okhttp)
     implementation(libs.bundles.data.store)
     implementation(libs.com.github.bumtech.glide.glide)
+    implementation(libs.androidx.swiperefreshlayout.swiperefreshlayout)
     implementation(libs.bundles.sdp)
     implementation(libs.bundles.hilt)
     kapt(libs.hilt.compiler)
