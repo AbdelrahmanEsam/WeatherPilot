@@ -8,7 +8,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,8 +34,6 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
 
@@ -102,13 +98,22 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
 
         setHoursRecyclerView()
         setDaysRecyclerView()
-        callback()
+        gpsLocationCallback()
         displayStateObserver()
         latLongStateObserver()
+        binding.refreshLayout.isRefreshing  = true
         binding.refreshLayout.setOnRefreshListener {
-
-            viewModel.onEvent(HomeIntent.FetchData)
+         loadingAndFetchData()
         }
+    }
+
+
+
+    private fun loadingAndFetchData()
+    {
+        binding.refreshLayout.isRefreshing  = true
+        viewModel.onEvent(HomeIntent.FetchData)
+
     }
 
 
@@ -141,6 +146,7 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
                     }
 
                     if (!state.loading){
+                        binding.constraint.visibility = View.VISIBLE
                         binding.refreshLayout.isRefreshing = false
                     }
                 }
@@ -153,11 +159,11 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
     {
         lifecycleScope.launch {
                 viewModel.statePreferences.collect {
-
-                    if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps)))
+                    viewModel.onEvent(HomeIntent.FetchData)
+                    if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type)))
                     {
                        getLastLocationFromGPS()
-                    }else if (viewModel.statePreferences.value.locationType.equals(getString(R.string.map))){
+                    }else if (viewModel.statePreferences.value.locationType.equals(getString(R.string.map_type))){
                         viewModel.onEvent(HomeIntent.ReadLatLongFromDataStore)
                     }
 
@@ -212,16 +218,15 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
     {
         Toast.makeText(requireContext(), "Turn on location please", Toast.LENGTH_SHORT).show()
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-        startActivity(intent)
+        startActivity(intent) //todo make it for result to refresh the location
     }
 
 
-    private fun callback()
+    private fun gpsLocationCallback()
     {
         locationCallback = object : LocationCallback(){
             override fun onLocationResult(locationResult: LocationResult) {
                 val location: Location? = locationResult.lastLocation
-                Log.d("location callback",location.toString())
                 viewModel.onEvent(HomeIntent.NewLocationFromGPS(
                     location?.longitude.toString(),
                     location?.latitude.toString()))

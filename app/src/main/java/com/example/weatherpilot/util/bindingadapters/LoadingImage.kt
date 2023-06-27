@@ -1,11 +1,10 @@
-package com.example.weatherpilot.util
+package com.example.weatherpilot.util.bindingadapters
 
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.RenderMode
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import com.example.weatherpilot.R

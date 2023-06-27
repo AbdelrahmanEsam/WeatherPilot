@@ -51,11 +51,11 @@ class SettingsFragment : Fragment() {
         stateObserver()
 
         binding.GPSRadioImageView.setOnClickListener {
-            viewModel.onEvent(SettingsIntent.LocationChange(getString(R.string.gps)))
+            viewModel.onEvent(SettingsIntent.LocationChange(getString(R.string.gps_type)))
         }
 
         binding.mapRadioImageView.setOnClickListener {
-            viewModel.onEvent(SettingsIntent.LocationChange(getString(R.string.map)))
+            viewModel.onEvent(SettingsIntent.LocationChange(getString(R.string.map_type)))
         }
 
         binding.arabicRadioImageView.setOnClickListener {
@@ -68,33 +68,33 @@ class SettingsFragment : Fragment() {
 
 
         binding.meterRadioImageView.setOnClickListener {
-            viewModel.onEvent(SettingsIntent.WindChange(getString(R.string.meter_sec)))
+            viewModel.onEvent(SettingsIntent.WindChange(getString(R.string.meter_sec_type)))
         }
 
 
         binding.mileRadioImageView.setOnClickListener {
-            viewModel.onEvent(SettingsIntent.WindChange(getString(R.string.mile_hour)))
+            viewModel.onEvent(SettingsIntent.WindChange(getString(R.string.mile_hour_type)))
         }
 
 
         binding.celsiusRadioImageView.setOnClickListener {
-            viewModel.onEvent(SettingsIntent.TemperatureChange(getString(R.string.celsius)))
+            viewModel.onEvent(SettingsIntent.TemperatureChange(getString(R.string.celsius_type)))
         }
 
         binding.kelvinRadioImageView.setOnClickListener {
-            viewModel.onEvent(SettingsIntent.TemperatureChange(getString(R.string.kelvin)))
+            viewModel.onEvent(SettingsIntent.TemperatureChange(getString(R.string.kelvin_type)))
         }
 
         binding.fahrenheitRadioImageView.setOnClickListener {
-            viewModel.onEvent(SettingsIntent.TemperatureChange(getString(R.string.fahrenheit)))
+            viewModel.onEvent(SettingsIntent.TemperatureChange(getString(R.string.fahrenheit_type)))
         }
 
         binding.enabledRadioImageView.setOnClickListener {
-            viewModel.onEvent(SettingsIntent.NotificationChange(getString(R.string.enabled)))
+            viewModel.onEvent(SettingsIntent.NotificationChange(getString(R.string.enabled_type)))
         }
 
         binding.disabledRadioImageView.setOnClickListener {
-            viewModel.onEvent(SettingsIntent.NotificationChange(getString(R.string.disabled)))
+            viewModel.onEvent(SettingsIntent.NotificationChange(getString(R.string.disabled_type)))
         }
 
     }
@@ -107,13 +107,13 @@ class SettingsFragment : Fragment() {
                 viewModel.state.collect{
                     when(it.locationType){
 
-                        getString(R.string.gps) -> {
+                        getString(R.string.gps_type) -> {
                             Log.d("locationCollected", it.locationType.toString())
                             binding.GPSRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.mapRadioImageView.setImageResource(R.drawable.radio_unchecked)
 
                         }
-                        getString(R.string.map) -> {
+                        getString(R.string.map_type) -> {
                             Log.d("locationCollected", it.locationType.toString())
                             binding.GPSRadioImageView.setImageResource(R.drawable.radio_unchecked)
                             binding.mapRadioImageView.setImageResource(R.drawable.radio_checked)
@@ -135,12 +135,12 @@ class SettingsFragment : Fragment() {
 
 
                     when(it.windType){
-                        getString(R.string.meter_sec) -> {
+                        getString(R.string.meter_sec_type) -> {
                             binding.meterRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.mileRadioImageView.setImageResource(R.drawable.radio_unchecked)
 
                         }
-                        getString(R.string.mile_hour) -> {
+                        getString(R.string.mile_hour_type) -> {
                             binding.mileRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.meterRadioImageView.setImageResource(R.drawable.radio_unchecked)
                         }
@@ -148,19 +148,19 @@ class SettingsFragment : Fragment() {
 
 
                     when(it.temperatureType){
-                        getString(R.string.celsius) -> {
+                        getString(R.string.celsius_type) -> {
                         binding.celsiusRadioImageView.setImageResource(R.drawable.radio_checked)
                         binding.kelvinRadioImageView.setImageResource(R.drawable.radio_unchecked)
                         binding.fahrenheitRadioImageView.setImageResource(R.drawable.radio_unchecked)
 
                     }
-                        getString(R.string.kelvin) -> {
+                        getString(R.string.kelvin_type) -> {
                             binding.celsiusRadioImageView.setImageResource(R.drawable.radio_unchecked)
                             binding.kelvinRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.fahrenheitRadioImageView.setImageResource(R.drawable.radio_unchecked)
                     }
 
-                        getString(R.string.fahrenheit) -> {
+                        getString(R.string.fahrenheit_type) -> {
                             binding.celsiusRadioImageView.setImageResource(R.drawable.radio_unchecked)
                             binding.kelvinRadioImageView.setImageResource(R.drawable.radio_unchecked)
                             binding.fahrenheitRadioImageView.setImageResource(R.drawable.radio_checked)
@@ -169,12 +169,12 @@ class SettingsFragment : Fragment() {
                     }
 
                     when(it.notificationType){
-                        getString(R.string.enabled) -> {
+                        getString(R.string.enabled_type) -> {
                             binding.enabledRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.disabledRadioImageView.setImageResource(R.drawable.radio_unchecked)
 
                         }
-                        getString(R.string.disabled) -> {
+                        getString(R.string.disabled_type) -> {
                             binding.disabledRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.enabledRadioImageView.setImageResource(R.drawable.radio_unchecked)
                         }

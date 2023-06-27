@@ -1,10 +1,13 @@
 package com.example.weatherpilot.presentation.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherpilot.domain.usecase.WindSpeedTransformerUseCase
 import com.example.weatherpilot.domain.usecase.GetCurrentTimeStampUseCase
 import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.TempTransformerUseCase
 import com.example.weatherpilot.util.Dispatcher
 import com.example.weatherpilot.util.Dispatchers
 import com.example.weatherpilot.util.NetworkResponse
@@ -26,7 +29,9 @@ class HomeViewModel @Inject constructor(
     @Dispatcher(Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val getWeatherDataUseCase: GetWeatherDataUseCase,
     private val getCurrentTimeStampUseCase: GetCurrentTimeStampUseCase,
-    private val readStringFromDataStoreUseCase: ReadStringFromDataStoreUseCase
+    private val readStringFromDataStoreUseCase: ReadStringFromDataStoreUseCase,
+    private val windSpeedTransformerUseCase: WindSpeedTransformerUseCase,
+    private val tempTransformerUseCase: TempTransformerUseCase
 ) : ViewModel() {
 
 
@@ -61,7 +66,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
 
 
+
             stateLongLat.value.longitude?.let {
+                Log.d("requesting","request")
                 _stateDisplay.update { it.copy(loading = true) }
                 val weatherResponse =
                     getWeatherDataUseCase.execute(longitude = stateLongLat.value.longitude!!
@@ -83,9 +90,12 @@ class HomeViewModel @Inject constructor(
                                     , pressure =  pressure.toString()
                                     , clouds = clouds.toString()
                                     , humidity = humidity.toString()
-                                    , wind = wind.toString()
+                                    , wind = windSpeedTransformerUseCase.execute(wind,
+                                        _statePreferences.value.windType.toString()
+                                    )
                                     , dayState = hoursWeather
-                                    , temp = temp.roundToInt().toString()
+                                    , temp = tempTransformerUseCase.execute(temp.roundToInt()
+                                        ,_statePreferences.value.temperatureType.toString())
                                     , visibility = visibility.toString()
                                     , iconCode = icon
                                     , weekState = daysWeather ?: listOf()
@@ -95,9 +105,6 @@ class HomeViewModel @Inject constructor(
                         }
                     }
                 }
-
-
-
 
             } ?: kotlin.run {
                 _stateDisplay.update { it.copy(loading = false) }
@@ -133,10 +140,12 @@ class HomeViewModel @Inject constructor(
 
                     val property =   HomeState.Preferences::class.java.getDeclaredField(field.name)
                     property.isAccessible = true
-                    readStringFromDataStoreUseCase.execute(field.name).collect{
+                    readStringFromDataStoreUseCase.execute(field.name)
+                        .collect{
                     val newState = _statePreferences.value.copy()
                     property.set(newState,it)
                     _statePreferences.update { newState }
+
                 }
 
             }

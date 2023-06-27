@@ -1,14 +1,13 @@
 <resources>
     <string name="app_name">WeatherPilot</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">home</string>
     <string name="settings">settings</string>
     <string name="favourites">favourites</string>
     <string name="notification">notification</string>
     <string name="pressure">pressure</string>
     <string name="hpa">"%1$s hpa"</string>
-    <string name="windTextValue">"%1$s km/h"</string>
+    <style name="meter_per_second">m/s</style>
+    <string name="windTextValue">"%1$s"</string>
     <string name="visibilityTextValue">"%1$s m"</string>
     <string name="cloudsTextValue">"%1$s %%"</string>
     <string name="humidityTextValue">"%1$s %%"</string>
@@ -16,9 +15,14 @@
     <string name="tempWithParams">%1$s \u00B0 / %2$s \u00B0</string>
     <string name="temp_circle">\u00B0</string>
     <string name="fahrenheit">Fahrenheit</string>
-    <string name="fahrenheit_symbol">\u2103</string>
     <string name="celsius">Celsius</string>
+    <string name="kelvin">kelvin</string>
+    <string name="fahrenheit_type">F</string>
+    <string name="celsius_type">C</string>
+    <string name="kelvin_type">K</string>
+    <string name="fahrenheit_symbol">\u2109</string>
     <string name="celsius_symbol">\u2103</string>
+    <string name="kelvin_symbol">\u212A</string>
     <string name="wind">wind</string>
     <string name="humidity">humidity</string>
     <string name="visibility">visibility</string>
@@ -31,6 +35,8 @@
     <string name="location">location</string>
     <string name="gps">GPS</string>
     <string name="map">Map</string>
+    <string name="gps_type">GPS</string>
+    <string name="map_type">Map</string>
     <string name="language">language</string>
     <string name="arabic">arabic</string>
     <string name="ar">ar</string>
@@ -39,8 +45,12 @@
     <string name="temperature">temperature</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
+    <string name="enabled_type">enabled</string>
+    <string name="disabled_type">disabled</string>
     <string name="wind_speed">wind Speed</string>
-    <string name="meter_sec">Meter / Sec</string>
-    <string name="mile_hour">Mile / Hour</string>
-    <string name="kelvin">kelvin</string>
+    <string name="meter_sec">M/S</string>
+    <string name="mile_hour">M/H</string>
+    <string name="meter_sec_type">M/S</string>
+    <string name="mile_hour_type">M/H</string>
+
 </resources>

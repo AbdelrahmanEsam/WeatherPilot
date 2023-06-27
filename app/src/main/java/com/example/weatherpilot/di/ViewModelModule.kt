@@ -5,6 +5,8 @@ import com.example.weatherpilot.domain.usecase.GetCurrentTimeStampUseCase
 import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.TempTransformerUseCase
+import com.example.weatherpilot.domain.usecase.WindSpeedTransformerUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,6 +40,18 @@ object ViewModelModule {
     @ViewModelScoped
     fun providesReadStringToDataStoreUseCase(repository: Repository) : ReadStringFromDataStoreUseCase
             = ReadStringFromDataStoreUseCase(repository)
+
+
+    @Provides
+    @ViewModelScoped
+    fun providesWindSpeedTransformerUseCase() : WindSpeedTransformerUseCase
+            = WindSpeedTransformerUseCase()
+
+
+    @Provides
+    @ViewModelScoped
+    fun providesTempTransformerUseCase() : TempTransformerUseCase
+            = TempTransformerUseCase()
 
 
 }

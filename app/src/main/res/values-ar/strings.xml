@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">WeatherPilot</string>
     <string name="home">الصفحة الرئيسية</string>
     <string name="settings">الإعدادات</string>
     <string name="favourites">المفضلة</string>
     <string name="notification">الإشعارات</string>
     <string name="pressure">الضغط</string>
     <string name="hpa">"%1$s هـ.ب"</string>
-    <string name="windTextValue">"%1$s كم/ساعة"</string>
+    <style name="meter_per_second">م/ث</style>
+    <string name="windTextValue">"%1$s"</string>
     <string name="visibilityTextValue">"%1$s م"</string>
     <string name="cloudsTextValue">"%1$s %%"</string>
     <string name="humidityTextValue">"%1$s %%"</string>
@@ -14,9 +16,14 @@
     <string name="tempWithParams">%1$s \u00B0 / %2$s \u00B0</string>
     <string name="temp_circle">\u00B0</string>
     <string name="fahrenheit">فهرنهايت</string>
-    <string name="fahrenheit_symbol">\u2103</string>
     <string name="celsius">مئوية</string>
+    <string name="kelvin">كلفن</string>
+    <string name="fahrenheit_type">F</string>
+    <string name="celsius_type">C</string>
+    <string name="kelvin_type">K</string>
+    <string name="fahrenheit_symbol">\u2109</string>
     <string name="celsius_symbol">\u2103</string>
+    <string name="kelvin_symbol">\u212A</string>
     <string name="wind">الرياح</string>
     <string name="humidity">الرطوبة</string>
     <string name="visibility">الرؤية</string>
@@ -29,6 +36,8 @@
     <string name="location">الموقع</string>
     <string name="gps">نظام تحديد المواقع</string>
     <string name="map">الخريطة</string>
+    <string name="gps_type">GPS</string>
+    <string name="map_type">Map</string>
     <string name="language">اللغة</string>
     <string name="arabic">العربية</string>
     <string name="ar">ar</string>
@@ -37,8 +46,12 @@
     <string name="temperature">درجة الحرارة</string>
     <string name="enabled">مفعّل</string>
     <string name="disabled">معطّل</string>
+    <string name="enabled_type">enabled</string>
+    <string name="disabled_type">disabled</string>
     <string name="wind_speed">سرعة الرياح</string>
-    <string name="meter_sec">متر/ثانية</string>
-    <string name="mile_hour">ميل/ساعة</string>
-    <string name="kelvin">كلفن</string>
+    <string name="meter_sec">م/ث</string>
+    <string name="mile_hour">م/س</string>
+    <string name="meter_sec_type">M/S</string>
+    <string name="mile_hour_type">M/H</string>
+
 </resources>
