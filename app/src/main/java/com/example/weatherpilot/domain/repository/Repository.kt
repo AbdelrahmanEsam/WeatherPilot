@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
-    suspend fun getWeatherResponse(longitude : String , latitude : String)  : WeatherModel
+    suspend fun getWeatherResponse(longitude: String, latitude: String, language: String)  : WeatherModel
 
     suspend fun saveStringToDataStore(key : String , value : String)
 

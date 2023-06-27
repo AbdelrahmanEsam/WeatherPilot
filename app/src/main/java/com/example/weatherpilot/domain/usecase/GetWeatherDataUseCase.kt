@@ -6,8 +6,8 @@ import javax.inject.Inject
 
 class GetWeatherDataUseCase @Inject constructor(private val repository : Repository) {
 
-    suspend fun execute(longitude : String , latitude : String,language : String = "") : WeatherModel
+    suspend fun execute(longitude : String , latitude : String,language : String) : WeatherModel
     {
-         return  repository.getWeatherResponse(longitude, latitude)
+         return  repository.getWeatherResponse(longitude, latitude,language)
     }
 }

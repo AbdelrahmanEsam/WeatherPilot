@@ -13,4 +13,7 @@
    <item android:id="@+id/notificationFragment"  android:icon="@drawable/notification"
        android:title="@string/notification" />
 
+   <item android:id="@+id/mapFragment"  android:icon="@drawable/map"
+       android:title="@string/map" />
+
 </menu>

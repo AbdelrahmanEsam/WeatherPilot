@@ -144,7 +144,6 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
     private fun latLongStateObserver()
     {
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.statePreferences.collect {
 
                     if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps)))
@@ -155,7 +154,7 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
                     }
 
                 }
-            }
+
         }
     }
 
@@ -194,8 +193,7 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
     private fun getLastLocationFromGPS() {
 
         if (!checkPermission())  {requestPermission() ; return}
-        if (!isLocationEnabled()) {
-            startLocationPage();return}
+        if (!isLocationEnabled()) { startLocationPage();return}
 
         locationClient.requestLocationUpdates(
             locationRequest, locationCallback, Looper.myLooper()

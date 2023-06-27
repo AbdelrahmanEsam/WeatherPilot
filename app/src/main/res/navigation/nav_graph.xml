@@ -10,7 +10,7 @@
         app:launchSingleTop="true"
         app:popUpToInclusive="true"
         app:popUpTo="@id/nav_graph"
-        app:destination="@id/map" />
+        app:destination="@id/mapFragment" />
 
     <fragment
         android:id="@+id/splashFragment"
@@ -50,7 +50,7 @@
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
-        android:id="@+id/map"
+        android:id="@+id/mapFragment"
         android:name="com.example.weatherpilot.presentation.map.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />

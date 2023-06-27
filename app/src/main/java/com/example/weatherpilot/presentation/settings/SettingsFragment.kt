@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -58,11 +59,11 @@ class SettingsFragment : Fragment() {
         }
 
         binding.arabicRadioImageView.setOnClickListener {
-            viewModel.onEvent(SettingsIntent.LanguageChange(getString(R.string.arabic)))
+            viewModel.onEvent(SettingsIntent.LanguageChange(getString(R.string.ar)))
         }
 
         binding.englishRadioImageView.setOnClickListener {
-            viewModel.onEvent(SettingsIntent.LanguageChange(getString(R.string.english)))
+            viewModel.onEvent(SettingsIntent.LanguageChange(getString(R.string.en)))
         }
 
 
@@ -122,12 +123,11 @@ class SettingsFragment : Fragment() {
                     }
 
                     when(it.languageType){
-                        getString(R.string.arabic) -> {
+                        getString(R.string.ar) -> {
                             binding.arabicRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.englishRadioImageView.setImageResource(R.drawable.radio_unchecked)
-
                         }
-                        getString(R.string.english) -> {
+                        getString(R.string.en) -> {
                             binding.englishRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.arabicRadioImageView.setImageResource(R.drawable.radio_unchecked)
                         }
@@ -149,7 +149,6 @@ class SettingsFragment : Fragment() {
 
                     when(it.temperatureType){
                         getString(R.string.celsius) -> {
-                            Log.d("temp", it.temperatureType.toString())
                         binding.celsiusRadioImageView.setImageResource(R.drawable.radio_checked)
                         binding.kelvinRadioImageView.setImageResource(R.drawable.radio_unchecked)
                         binding.fahrenheitRadioImageView.setImageResource(R.drawable.radio_unchecked)

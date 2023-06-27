@@ -19,7 +19,8 @@ sealed interface HomeState
                            , val visibility : String? = null
                            , val clouds : String? = null
     ,val dayState : List<HourWeatherModel> = listOf(),
-    val weekState : List<DayWeatherModel> = listOf()
+    val weekState : List<DayWeatherModel> = listOf(),
+    val dataState : String? = null
     ) : HomeState
 
     data class Preferences(val locationType : String? = null,

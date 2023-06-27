@@ -15,7 +15,7 @@
 
 
         <fragment
-            android:id="@+id/map"
+            android:id="@+id/mapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -45,9 +45,9 @@
             android:layout_height="wrap_content"
             android:indeterminateTint="@color/purple"
             android:elevation="@dimen/_30sdp"
-            app:layout_constraintBottom_toBottomOf="@+id/map"
+            app:layout_constraintBottom_toBottomOf="@+id/mapFragment"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/map"
+            app:layout_constraintStart_toStartOf="@+id/mapFragment"
             app:layout_constraintTop_toTopOf="parent" />
 
 

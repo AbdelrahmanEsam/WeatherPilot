@@ -53,7 +53,6 @@ class SettingsViewModel @Inject constructor(
 
     private fun saveStringToDataStore(key : String, value : String)
     {
-        Log.d("saving", value)
         viewModelScope.launch(ioDispatcher)
         {
                saveStringToDataStoreUseCase.execute(key,value)
@@ -70,13 +69,13 @@ class SettingsViewModel @Inject constructor(
 
                 val property =  SettingsState::class.java.getDeclaredField(field.name)
                     property.isAccessible = true
-                readStringFromDataStoreUseCase.execute(property.name).distinctUntilChanged().collect{
+                readStringFromDataStoreUseCase.execute(property.name)
+                    .distinctUntilChanged().collect{
                     val newState = _state.value.copy()
                     property.set(newState,it)
                     _state.update { newState }
-                     Log.d("readed", state.value.toString())
                 }
-            }
+        }
         }
     }
 

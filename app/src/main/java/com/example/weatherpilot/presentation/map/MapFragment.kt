@@ -1,7 +1,6 @@
 package com.example.weatherpilot.presentation.map
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentMapBinding
-import com.example.weatherpilot.presentation.main.HomeViewModel
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -76,7 +73,7 @@ class MapFragment : Fragment() {
     private fun googleMapHandler()
     {
         val supportMapFragment: SupportMapFragment =
-            childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+            childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         supportMapFragment.getMapAsync { googleMap ->
             googleMap.setOnMapLongClickListener {
                 googleMap.addMarker( MarkerOptions()

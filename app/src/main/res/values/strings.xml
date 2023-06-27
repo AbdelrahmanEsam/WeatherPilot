@@ -33,7 +33,9 @@
     <string name="map">Map</string>
     <string name="language">language</string>
     <string name="arabic">arabic</string>
+    <string name="ar">ar</string>
     <string name="english">english</string>
+    <string name="en">en</string>
     <string name="temperature">temperature</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>

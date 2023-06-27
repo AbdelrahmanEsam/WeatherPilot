@@ -65,10 +65,13 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
 
 
-             val weatherResponse =
-             getWeatherDataUseCase.execute(longitude = stateLongLat.value.longitude!!
-                 , latitude =  stateLongLat.value.latitude!!
-                 )
+            stateLongLat.value.longitude?.let {
+                val weatherResponse =
+                    getWeatherDataUseCase.execute(longitude = stateLongLat.value.longitude!!
+                        , latitude =  stateLongLat.value.latitude!!
+                        ,statePreferences.value.languageType ?: "en"
+                    )
+
               with(weatherResponse){ _stateDisplay.update {
                   it.copy(city = city, weatherState =   description
                     , pressure =  pressure.toString()
@@ -83,6 +86,7 @@ class HomeViewModel @Inject constructor(
                 )
                 }}
 
+            }
 
 
 
@@ -96,7 +100,6 @@ class HomeViewModel @Inject constructor(
               .combine(readStringFromDataStoreUseCase.execute("longitude")){ lat , long ->
                   _stateLongLat.update { it.copy(latitude = lat, longitude = long) }
               }.distinctUntilChanged().collect{
-                  Log.d("read longlat",_stateLongLat.value.toString())
                   getWeatherResponse()
               }
 
