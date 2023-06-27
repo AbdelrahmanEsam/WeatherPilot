@@ -3,11 +3,14 @@ package com.example.weatherpilot.util
 import android.icu.util.Calendar
 import android.util.Log
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 
 fun Int.toHour() : String
@@ -27,22 +30,14 @@ fun Int.toHour() : String
 }
 
 
-fun Int.toDate() : LocalDate
+
+
+
+fun Long.toDay() : String
 {
-    val instant = Instant.ofEpochMilli(this.toLong())
-    return instant.atZone(ZoneId.systemDefault()).toLocalDate()
-}
-
-
-fun Int.toDay() : String
-{
-    val  calendar = Calendar.getInstance()
-
-    calendar.timeInMillis = this.toLong()
-
-    val  days = arrayOf( "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY")
-
-   return  days[calendar.get(Calendar.DAY_OF_WEEK)];
+    val date = Date(this*1000)
+    val formatter = SimpleDateFormat("EEEE", Locale.getDefault())
+    return formatter.format(date).toString()
 }
 
 

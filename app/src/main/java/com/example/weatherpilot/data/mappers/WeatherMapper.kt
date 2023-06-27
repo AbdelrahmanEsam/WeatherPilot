@@ -1,5 +1,6 @@
 package com.example.weatherpilot.data.mappers
 
+import android.util.Log
 import com.example.weatherpilot.data.dto.Daily
 import com.example.weatherpilot.data.dto.Hourly
 import com.example.weatherpilot.data.dto.WeatherResponse
@@ -44,6 +45,7 @@ fun Hourly.toHourWeatherModel() : HourWeatherModel = kotlin.run {
 
 
 fun Daily.toDayWeatherModel() : DayWeatherModel  = kotlin.run {
+
  DayWeatherModel(name = dt.toDay(),weather[0].description, icon = weather[0].icon
      , maxTemp = temp.max.toInt().toString(), minTemp = temp.min.toInt().toString(),
      )

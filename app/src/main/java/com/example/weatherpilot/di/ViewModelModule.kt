@@ -1,7 +1,7 @@
 package com.example.weatherpilot.di
 
 import com.example.weatherpilot.domain.repository.Repository
-import com.example.weatherpilot.domain.usecase.GetCurrentTimeStampUseCase
+import com.example.weatherpilot.domain.usecase.GetCurrentDateUseCase
 import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
@@ -26,8 +26,8 @@ object ViewModelModule {
 
     @Provides
     @ViewModelScoped
-    fun providesGetCurrentTimeStampUseCase() : GetCurrentTimeStampUseCase
-    = GetCurrentTimeStampUseCase()
+    fun providesGetCurrentTimeStampUseCase() : GetCurrentDateUseCase
+    = GetCurrentDateUseCase()
 
 
     @Provides

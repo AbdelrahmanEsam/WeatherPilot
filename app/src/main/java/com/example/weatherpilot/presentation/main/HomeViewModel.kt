@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.usecase.WindSpeedTransformerUseCase
-import com.example.weatherpilot.domain.usecase.GetCurrentTimeStampUseCase
+import com.example.weatherpilot.domain.usecase.GetCurrentDateUseCase
 import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.TempTransformerUseCase
@@ -28,7 +28,7 @@ import kotlin.math.roundToInt
 class HomeViewModel @Inject constructor(
     @Dispatcher(Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val getWeatherDataUseCase: GetWeatherDataUseCase,
-    private val getCurrentTimeStampUseCase: GetCurrentTimeStampUseCase,
+    private val getCurrentDateUseCase: GetCurrentDateUseCase,
     private val readStringFromDataStoreUseCase: ReadStringFromDataStoreUseCase,
     private val windSpeedTransformerUseCase: WindSpeedTransformerUseCase,
     private val tempTransformerUseCase: TempTransformerUseCase
@@ -99,6 +99,7 @@ class HomeViewModel @Inject constructor(
                                     , visibility = visibility.toString()
                                     , iconCode = icon
                                     , weekState = daysWeather ?: listOf()
+                                    , date = getCurrentDateUseCase.execute()
                                     , loading = false
                                 )
                             }}
