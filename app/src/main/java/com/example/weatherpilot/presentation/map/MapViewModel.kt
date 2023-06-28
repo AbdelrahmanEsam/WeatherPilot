@@ -1,6 +1,5 @@
 package com.example.weatherpilot.presentation.map
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.model.Location
@@ -24,8 +23,14 @@ class MapViewModel @Inject constructor(
     private val insertNewFavouriteToDatabase: InsertNewFavouriteUseCase
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<MapState> = MutableStateFlow(MapState())
+    private val _state: MutableStateFlow<MapState.RegularMapState> =
+        MutableStateFlow(MapState.RegularMapState())
     val state = _state.asStateFlow()
+
+
+    private val _favouriteState: MutableStateFlow<MapState.FavouriteMapState> =
+        MutableStateFlow(MapState.FavouriteMapState())
+    val favouriteState = _favouriteState.asStateFlow()
 
 
     fun onEvent(intent: MapIntent) {
@@ -41,12 +46,22 @@ class MapViewModel @Inject constructor(
             }
 
             MapIntent.MapLoaded -> _state.update { it.copy(mapLoadingState = false) }
-            is MapIntent.SaveLocationToFavourites -> saveLocationToDatabase(
-                intent.arabicName,
-                intent.englishName,
-                intent.latitude,
-                intent.longitude
-            )
+
+
+            is MapIntent.SaveFavourite -> {
+                saveLocationToDatabase()
+            }
+
+            is MapIntent.NewFavouriteLocation -> {
+                _favouriteState.update {
+                    it.copy(
+                        arabicName = intent.arabicName,
+                        englishName = intent.englishName,
+                        latitude = intent.latitude,
+                        longitude = intent.longitude
+                    )
+                }
+            }
         }
 
     }
@@ -63,11 +78,18 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    private fun saveLocationToDatabase(arabicName : String , englishName : String ,latitude: String, longitude: String) {
-        Log.d("viewModel save",arabicName)
+    private fun saveLocationToDatabase() {
         viewModelScope.launch(ioDispatcher) {
-            insertNewFavouriteToDatabase.execute(Location(arabicName = arabicName,englishName = englishName
-                ,longitude = longitude, latitude = latitude))
+            if (_favouriteState.value.arabicName.isNotEmpty()) {
+                insertNewFavouriteToDatabase.execute(
+                    Location(
+                        arabicName = _favouriteState.value.arabicName,
+                        englishName = _favouriteState.value.englishName,
+                        longitude = _favouriteState.value.longitude,
+                        latitude = _favouriteState.value.latitude
+                    )
+                )
+            }
         }
     }
 

@@ -3,6 +3,8 @@ package com.example.weatherpilot.util.bindingadapters
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.example.weatherpilot.R
+import com.example.weatherpilot.domain.model.Location
+import java.util.Locale
 
 
 object TextAdapters{
@@ -38,6 +40,19 @@ fun windWithType(textView: TextView, wind : String?) {
             }
             textView.text = result
             }
+        }
+    }
+
+
+    @JvmStatic
+    @BindingAdapter("setArabicOrEnglish")
+    fun setArabicOrEnglish(textView: TextView, location : Location?) {
+
+      val locale = Locale.getDefault()
+        if (locale.language == "en") {
+            textView.text = location?.englishName
+        } else{
+        textView.text = location?.arabicName
         }
     }
 

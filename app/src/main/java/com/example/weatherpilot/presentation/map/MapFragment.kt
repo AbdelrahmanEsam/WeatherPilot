@@ -1,8 +1,10 @@
 package com.example.weatherpilot.presentation.map
 
+import android.location.Address
 import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +17,19 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentMapBinding
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -49,9 +60,7 @@ class MapFragment : Fragment() {
         binding.go.setOnClickListener {
 
             if (previousDestination == getString(R.string.from_favourite_fragment)) {
-
-
-
+                viewModel.onEvent(MapIntent.SaveFavourite)
             } else {
                 viewModel.onEvent(MapIntent.SaveDataToDataStore)
                 navController.popBackStack()
@@ -88,28 +97,22 @@ class MapFragment : Fragment() {
             childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         supportMapFragment.getMapAsync { googleMap ->
             googleMap.setOnMapLongClickListener { latLong ->
-                googleMap.addMarker(
-                    MarkerOptions()
-                        .position(latLong)
-                )
 
+
+                viewModel.onEvent(MapIntent.NewFavouriteLocation("", "", "", ""))
 
 
                 if (previousDestination == getString(R.string.from_favourite_fragment)) {
-                    val(englishCityName , arabicCityName) = getCityNameByLatLong(latLong.latitude,latLong.longitude)
-                    arabicCityName?.let {
-                        viewModel.onEvent(MapIntent.SaveLocationToFavourites(
-                            arabicName =  arabicCityName , englishName =  englishCityName!!
-                            , longitude = latLong.longitude.toString(), latitude = latLong.latitude.toString() ))
-                    }
-                }else
-                {
-                viewModel.onEvent(
-                    MapIntent.NewLatLong(
-                        latLong.latitude.toString(),
-                        latLong.longitude.toString()
+
+
+                    getCityNameByLatLong(latLong, googleMap)
+                } else {
+                    viewModel.onEvent(
+                        MapIntent.NewLatLong(
+                            latLong.latitude.toString(),
+                            latLong.longitude.toString()
+                        )
                     )
-                )
                 }
             }
 
@@ -122,37 +125,67 @@ class MapFragment : Fragment() {
 
     }
 
-    private fun getCityNameByLatLong(lat: Double, long: Double) : Pair<String? ,String?>{
+    private fun getCityNameByLatLong(
+        latLong: LatLng,
+        googleMap: GoogleMap
+    ) {
         val englishGeoCoder = Geocoder(requireContext(), Locale.US)
         val arabicGeoCoder = Geocoder(requireContext(), Locale("ar"))
-        var englishCityName : String? = null
-        var arabicCityName : String? = null
-         englishGeoCoder.getAddress(lat, long){
-            englishCityName = it?.getAddressLine(0)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+
+            englishGeoCoder.getAddress(latLong.latitude, latLong.longitude)
+                .combine(
+                    arabicGeoCoder.getAddress(
+                        latLong.latitude,
+                        latLong.longitude
+                    )
+                ) { englishAddress, arabicAddress ->
+
+                    if (englishAddress.getAddressLine(0).isEmpty()) return@combine
+                    if (arabicAddress.getAddressLine(0).isEmpty()) return@combine
+
+                    viewModel.onEvent(
+                        MapIntent.NewFavouriteLocation(
+                            arabicAddress.getAddressLine(
+                                0
+                            ), englishAddress.getAddressLine(
+                                0
+                            ), latLong.latitude.toString(),
+                            latLong.longitude.toString()
+                        )
+                    )
+
+                    withContext(Dispatchers.Main) {
+                        googleMap.apply {
+                            clear()
+                            addMarker(
+                                MarkerOptions()
+                                    .position(latLong)
+                            )
+                        }
+                    }
+
+                }.collect()
         }
-        arabicGeoCoder.getAddress(lat, long){
-            arabicCityName = it?.getAddressLine(0)
-        }
-        return Pair(englishCityName,arabicCityName)
+
     }
 
 
     @Suppress("DEPRECATION")
-    fun Geocoder.getAddress(
+    private fun Geocoder.getAddress(
         latitude: Double,
         longitude: Double,
-        address: (android.location.Address?) -> Unit
-    ) {
+    ): Flow<Address> {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getFromLocation(latitude, longitude, 1) { address(it.firstOrNull()) }
-            return
-        }
-
-        try {
-            address(getFromLocation(latitude, longitude, 1)?.firstOrNull())
-        } catch(e: Exception) {
-            address(null)
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Log.d("logging", "yes")
+                getFromLocation(latitude, longitude, 1)?.asFlow() ?:  getAddress(latitude, longitude)
+            }
+            getFromLocation(latitude, longitude, 1)?.asFlow() ?:  getAddress(latitude, longitude)
+        } catch (e: Exception) {
+            getAddress(latitude, longitude)
         }
     }
 
