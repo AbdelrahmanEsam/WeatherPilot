@@ -86,7 +86,7 @@ hilt-compiler = {group = "com.google.dagger",name = "hilt-compiler" ,version.ref
 navigation-component = ["androidx-navigation-navigation-fragment", "androidx-navigation-navigation-ui", "androidx-navigation-navigation-ui-kts"]
 okhttp = ["com-squareu-okhttp3-okhttp","com-squareu-okhttp3-logging-interceptor"]
 retrofit = ["com-squareu-retrofit2-retrofit","com-squareu-retrofit2-gson-converter"]
-room = ["androidx-room-ktx", "androidx-room-compiler", "androidx-room-runtime"]
+room = ["androidx-room-ktx", "androidx-room-runtime"]
 sdp = ["com-intuit-sdp-sdp-android","com-intuit-sdp-ssp-android"]
 hilt = ["androidx-hilt-compiler","hilt-android"]
 location-maps = ["com-google-android-gms-play-services-location","com-google-android-gms-play-services-maps"]

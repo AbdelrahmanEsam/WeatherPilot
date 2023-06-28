@@ -72,6 +72,8 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout.swiperefreshlayout)
     implementation(libs.bundles.sdp)
     implementation(libs.bundles.hilt)
+    implementation(libs.bundles.room)
+    kapt(libs.androidx.room.compiler)
     kapt(libs.hilt.compiler)
     kapt(libs.androidx.hilt.compiler)
     implementation(libs.androidx.core.core.splashscreen)

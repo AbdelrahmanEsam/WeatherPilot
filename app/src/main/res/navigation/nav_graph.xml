@@ -33,7 +33,11 @@
         android:id="@+id/favouritesFragment"
         android:name="com.example.weatherpilot.presentation.favourites.FavouritesFragment"
         android:label="fragment_favourites"
-        tools:layout="@layout/fragment_favourites" />
+        tools:layout="@layout/fragment_favourites" >
+        <action
+            android:id="@+id/action_favouritesFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.weatherpilot.presentation.main.HomeFragment"
@@ -53,5 +57,9 @@
         android:id="@+id/mapFragment"
         android:name="com.example.weatherpilot.presentation.map.MapFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map" >
+        <argument
+            android:name="previousPage"
+            app:argType="string" />
+    </fragment>
 </navigation>

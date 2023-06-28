@@ -52,5 +52,8 @@
     <string name="mile_hour">M/H</string>
     <string name="meter_sec_type">M/S</string>
     <string name="mile_hour_type">M/H</string>
+    <string name="no_favourites">No Favourites</string>
+    <string name="from_favourite_fragment">from favourite Fragment</string>
+    <string name="previous">previous</string>
 
 </resources>

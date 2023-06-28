@@ -1,5 +1,6 @@
 package com.example.weatherpilot.domain.repository
 
+import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.domain.model.WeatherModel
 import com.example.weatherpilot.util.NetworkResponse
 import kotlinx.coroutines.flow.Flow
@@ -13,4 +14,10 @@ interface Repository {
 
 
     suspend fun getStringFromDataStore(key : String) : Flow<String?>
+
+     fun getFavourites() : Flow<List<Location>>
+
+    suspend fun insertFavouriteLocation(location: Location)
+
+    suspend fun deleteFavouriteLocation(location: Location)
 }

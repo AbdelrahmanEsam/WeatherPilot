@@ -71,7 +71,8 @@
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="@dimen/_20sdp"
-                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:layout_constraintBottom_toTopOf="@+id/mapRadioImageView"
                         app:layout_constraintStart_toStartOf="@+id/locationRow"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/radio_checked" />
@@ -147,7 +148,8 @@
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="@dimen/_20sdp"
-                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:layout_constraintBottom_toTopOf="@+id/englishRadioImageView"
                         app:layout_constraintStart_toStartOf="@+id/languageRow"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/radio_checked" />
@@ -222,8 +224,9 @@
                         android:id="@+id/meterRadioImageView"
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
-                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_marginStart="@dimen/_10sdp"
                         android:layout_marginTop="@dimen/_20sdp"
+                        app:layout_constraintBottom_toTopOf="@+id/mileRadioImageView"
                         app:layout_constraintStart_toStartOf="@+id/windRow"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/radio_checked" />
@@ -301,7 +304,8 @@
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="@dimen/_20sdp"
-                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:layout_constraintBottom_toTopOf="@+id/kelvinRadioImageView"
                         app:layout_constraintStart_toStartOf="@+id/temperatureRow"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/radio_checked" />
@@ -325,6 +329,7 @@
                         android:layout_height="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:elevation="@dimen/_15sdp"
+                        app:layout_constraintBottom_toTopOf="@+id/fahrenheitRadioImageView"
                         app:layout_constraintStart_toStartOf="@+id/celsiusRadioImageView"
                         app:layout_constraintTop_toBottomOf="@+id/celsiusRadioImageView"
                         app:srcCompat="@drawable/radio_unchecked" />
@@ -401,7 +406,7 @@
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="@dimen/_20sdp"
-                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
                         app:layout_constraintStart_toStartOf="@+id/notificationRow"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/radio_checked" />

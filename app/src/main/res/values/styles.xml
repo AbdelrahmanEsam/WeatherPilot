@@ -5,7 +5,7 @@
 
         <item name="font"> @font/poppins_600</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/_81ssp</item>
+        <item name="android:textSize">@dimen/_45ssp</item>
     </style>
 
 
@@ -13,7 +13,7 @@
 
         <item name="font"> @font/poppins_600</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/_55ssp</item>
+        <item name="android:textSize">@dimen/_35ssp</item>
     </style>
 
 
@@ -63,7 +63,6 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/_10ssp</item>
     </style>
-
 
 
 

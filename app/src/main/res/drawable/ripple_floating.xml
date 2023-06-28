@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple android:color="?attr/colorControlHighlight"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <gradient
+                        android:type="linear"
+                        android:angle="90"
+                        android:startColor="#CCE5FF"
+                        android:endColor="@color/purple50" />
+                </shape>
+            </item>
+            <item android:drawable="@drawable/add" android:gravity="center"  />
+        </layer-list>
+    </item>
+</ripple>

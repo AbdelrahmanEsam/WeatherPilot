@@ -1,6 +1,7 @@
 package com.example.weatherpilot.di
 
 import android.content.Context
+import androidx.room.Room
 import com.example.weatherpilot.BuildConfig
 import com.example.weatherpilot.data.remote.WeatherInterface
 import com.example.weatherpilot.data.rempositoryImpl.RepositoryImpl
@@ -9,6 +10,8 @@ import com.example.weatherpilot.util.ConnectivityObserver
 import com.example.weatherpilot.util.NetworkConnectivityObserver
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferencesImpl
+import com.example.weatherpilot.data.local.room.FavouritesDao
+import com.example.weatherpilot.data.local.room.WeatherDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,6 +54,22 @@ object AppModule
     @Singleton
     @Provides
     fun providesRepository(remote: WeatherInterface
-       ,dataStore : DataStoreUserPreferences): Repository
-    = RepositoryImpl(remote,dataStore)
+       ,dataStore : DataStoreUserPreferences,favouritesDao: FavouritesDao): Repository
+    = RepositoryImpl(remote,dataStore,favouritesDao)
+
+    @Singleton
+    @Provides
+    fun providesWeatherDatabase(@ApplicationContext applicationContext: Context): WeatherDatabase {
+        return Room.databaseBuilder(
+            applicationContext,
+            WeatherDatabase::class.java, "weather_database"
+        ).build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesFavouriteDao(database: WeatherDatabase) : FavouritesDao
+    {
+        return  database.favouritesDao
+    }
 }

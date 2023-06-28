@@ -1,8 +1,10 @@
 package com.example.weatherpilot.di
 
 import com.example.weatherpilot.domain.repository.Repository
+import com.example.weatherpilot.domain.usecase.GetAllFavouritesUseCase
 import com.example.weatherpilot.domain.usecase.GetCurrentDateUseCase
 import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
+import com.example.weatherpilot.domain.usecase.InsertNewFavouriteUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.TempTransformerUseCase
@@ -52,6 +54,18 @@ object ViewModelModule {
     @ViewModelScoped
     fun providesTempTransformerUseCase() : TempTransformerUseCase
             = TempTransformerUseCase()
+
+
+    @Provides
+    @ViewModelScoped
+    fun providesGetAllFavouritesUseCase(repository: Repository) : GetAllFavouritesUseCase
+            = GetAllFavouritesUseCase(repository)
+
+    @Provides
+    @ViewModelScoped
+    fun providesInsertNewFavouriteToDatabase(repository: Repository) : InsertNewFavouriteUseCase
+            = InsertNewFavouriteUseCase(repository)
+
 
 
 }
