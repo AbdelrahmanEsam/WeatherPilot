@@ -54,8 +54,15 @@ class HomeViewModel @Inject constructor(
                     _stateLongLat.update { it.copy(longitude = intent.longitude, latitude = intent.latitude) }
                     getWeatherResponse()
             }
+
+            is HomeIntent.FetchDataOfFavouriteLocation -> {
+                _stateLongLat.update { it.copy(longitude = intent.longitude, latitude = intent.latitude) }
+                getWeatherResponse()
+            }
+
             HomeIntent.ReadLatLongFromDataStore -> readLocationLatLonFromDataStore()
             HomeIntent.FetchData -> getWeatherResponse()
+            HomeIntent.ReadPrefsFromDataStore -> readAllPreferencesFromDataStore()
         }
 
     }

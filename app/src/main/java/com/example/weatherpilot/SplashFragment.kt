@@ -37,7 +37,7 @@ class SplashFragment : Fragment() {
         binding.lottieSplash.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animator: Animator) {}
             override fun onAnimationEnd(animator: Animator) {
-               navController.navigate(SplashFragmentDirections.actionSplashFragmentToHomeFragment())
+               navController.navigate(SplashFragmentDirections.actionSplashFragmentToHomeFragment(null))
             }
             override fun onAnimationCancel(animator: Animator) {}
             override fun onAnimationRepeat(animator: Animator) {}

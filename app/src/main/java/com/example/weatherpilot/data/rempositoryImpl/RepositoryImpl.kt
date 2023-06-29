@@ -60,7 +60,7 @@ class RepositoryImpl @Inject constructor(
         favouritesDao.insert(location.toFavouriteLocation())
     }
 
-    override suspend fun deleteFavouriteLocation(location: Location) {
-        favouritesDao.delete(location.toFavouriteLocation())
+    override suspend fun deleteFavouriteLocation(longitude: String,latitude : String) {
+        favouritesDao.delete(longitude, latitude)
     }
 }

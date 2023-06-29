@@ -14,8 +14,8 @@ interface FavouritesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend  fun insert(location: FavouriteLocation)
 
-    @Delete
-    suspend  fun delete(location: FavouriteLocation)
+    @Query("DELETE FROM Favourites WHERE longitude = :longitude and latitude = :latitude")
+    suspend  fun delete(longitude: String , latitude : String)
 
     @Query("SELECT * FROM Favourites")
      fun  getAllProducts() : Flow<List<FavouriteLocation>>

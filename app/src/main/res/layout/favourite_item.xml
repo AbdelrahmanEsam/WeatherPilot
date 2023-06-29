@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
+
+        <import type="kotlin.Unit" />
+
+        <import type="kotlin.jvm.functions.Function0" />
+
+        <variable
+            name="favouriteClickListener"
+            type="Function0&lt;Unit>" />
+
+
         <variable
             name="location"
             type="com.example.weatherpilot.domain.model.Location" />
@@ -13,15 +23,18 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_90sdp"
         android:layout_marginBottom="@dimen/_10sdp"
+        android:onClick="@{() ->favouriteClickListener.invoke()}"
         android:background="@drawable/purple_rounded_background">
 
         <TextView
             android:id="@+id/locationNameTextView"
             style="@style/p5"
+            setArabicOrEnglish="@{location}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_20sdp"
+            android:textAlignment="center"
             android:elevation="25dp"
-            setArabicOrEnglish="@{location}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -19,5 +19,5 @@ interface Repository {
 
     suspend fun insertFavouriteLocation(location: Location)
 
-    suspend fun deleteFavouriteLocation(location: Location)
+    suspend fun deleteFavouriteLocation(longitude: String,latitude: String)
 }

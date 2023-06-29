@@ -7,6 +7,10 @@ sealed interface HomeIntent
 
     object FetchData : HomeIntent
 
+    object  ReadPrefsFromDataStore : HomeIntent
+
+    data class FetchDataOfFavouriteLocation(val longitude : String, val latitude  :  String) : HomeIntent
+
 
 
 }

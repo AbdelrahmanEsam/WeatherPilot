@@ -33,6 +33,7 @@ class FavouritesRecyclerAdapter(
         fun bind(location: Location) {
             binding.apply {
                 this.location = location
+                this.favouriteClickListener = {onClickAction(adapterPosition)}
             }
         }
     }

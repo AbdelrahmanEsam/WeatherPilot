@@ -32,8 +32,9 @@
     <string name="week">الأسبوع</string>
     <string name="longitude">خط الطول</string>
     <string name="latitude">خط العرض</string>
-    <string name="go">ذهب</string>
+    <string name="go">إذهب</string>
     <string name="location">الموقع</string>
+    <string name="locationType">location</string>
     <string name="gps">نظام تحديد المواقع</string>
     <string name="map">الخريطة</string>
     <string name="gps_type">GPS</string>
@@ -53,5 +54,8 @@
     <string name="mile_hour">م/س</string>
     <string name="meter_sec_type">M/S</string>
     <string name="mile_hour_type">M/H</string>
+    <string name="no_favourites">لا يوجد اماكن مفضلة لديك</string>
+    <string name="from_favourite_fragment">from favourite Fragment</string>
+    <string name="previous">previous</string>
 
 </resources>

@@ -61,10 +61,12 @@ class MapFragment : Fragment() {
 
             if (previousDestination == getString(R.string.from_favourite_fragment)) {
                 viewModel.onEvent(MapIntent.SaveFavourite)
+
             } else {
                 viewModel.onEvent(MapIntent.SaveDataToDataStore)
-                navController.popBackStack()
+
             }
+            navController.popBackStack()
         }
         stateObserver()
     }
@@ -107,6 +109,7 @@ class MapFragment : Fragment() {
 
                     getCityNameByLatLong(latLong, googleMap)
                 } else {
+                    setMarker(latLong,googleMap)
                     viewModel.onEvent(
                         MapIntent.NewLatLong(
                             latLong.latitude.toString(),
@@ -156,18 +159,25 @@ class MapFragment : Fragment() {
                         )
                     )
 
+
                     withContext(Dispatchers.Main) {
-                        googleMap.apply {
-                            clear()
-                            addMarker(
-                                MarkerOptions()
-                                    .position(latLong)
-                            )
-                        }
+                        setMarker(latLong,googleMap)
                     }
 
                 }.collect()
         }
+
+    }
+
+    private fun setMarker(latLong : LatLng , googleMap: GoogleMap)
+    {
+            googleMap.apply {
+                clear()
+                addMarker(
+                    MarkerOptions()
+                        .position(latLong)
+                )
+            }
 
     }
 
@@ -185,6 +195,7 @@ class MapFragment : Fragment() {
             }
             getFromLocation(latitude, longitude, 1)?.asFlow() ?:  getAddress(latitude, longitude)
         } catch (e: Exception) {
+            Log.d("logging", "yes")
             getAddress(latitude, longitude)
         }
     }

@@ -3,11 +3,12 @@ package com.example.weatherpilot.presentation.main
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentHomeBinding
 import com.example.weatherpilot.domain.model.DayWeatherModel
 import com.example.weatherpilot.domain.model.HourWeatherModel
+import com.example.weatherpilot.domain.model.Location
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -38,7 +40,10 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class HomeFragment(private val locationClient: FusedLocationProviderClient, private val locationRequest: LocationRequest) : Fragment() {
+class HomeFragment(
+    private val locationClient: FusedLocationProviderClient,
+    private val locationRequest: LocationRequest
+) : Fragment() {
 
 
     private lateinit var binding: FragmentHomeBinding
@@ -55,29 +60,26 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
 
         }
     }
- private val daysAdapter by lazy {
+    private val daysAdapter by lazy {
         DaysRecyclerAdapter { itemPosition ->
 
         }
     }
 
-    private lateinit var  locationCallback: LocationCallback
+    private lateinit var locationCallback: LocationCallback
 
 
-
-
-
-
-     private val requestPermissionLauncher = registerForActivityResult(
+    private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         permissions.forEach { permission ->
             if (!permission.value) {
-                Toast.makeText(requireContext(), "${permission.key} is needed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "${permission.key} is needed", Toast.LENGTH_SHORT)
+                    .show()
                 return@registerForActivityResult
             }
         }
-         getLastLocationFromGPS()
+        getLastLocationFromGPS()
 
     }
 
@@ -100,18 +102,35 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
         setDaysRecyclerView()
         gpsLocationCallback()
         displayStateObserver()
-        latLongStateObserver()
-        binding.refreshLayout.isRefreshing  = true
+        latLongStateObserver(getFavouriteLocation())
+
         binding.refreshLayout.setOnRefreshListener {
-         loadingAndFetchData()
+            loadingAndFetchData()
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.refreshLayout.isRefreshing = true
+    }
 
 
-    private fun loadingAndFetchData()
+    private fun getFavouriteLocation() : Location?
     {
-        binding.refreshLayout.isRefreshing  = true
+         val location =   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                arguments?.getParcelable(getString(R.string.locationType),Location::class.java)
+            } else{
+            arguments?.getParcelable(getString(R.string.locationType))
+        }
+
+
+        Log.d("location back",location.toString())
+        return location
+    }
+
+
+    private fun loadingAndFetchData() {
+        binding.refreshLayout.isRefreshing = true
         viewModel.onEvent(HomeIntent.FetchData)
 
     }
@@ -145,7 +164,7 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
                         setDaysDataToRecyclerView(state.weekState)
                     }
 
-                    if (!state.loading){
+                    if (!state.loading) {
                         binding.constraint.visibility = View.VISIBLE
                         binding.refreshLayout.isRefreshing = false
                     }
@@ -155,20 +174,25 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
     }
 
 
-    private fun latLongStateObserver()
-    {
+    private fun latLongStateObserver(location: Location?) {
         lifecycleScope.launch {
                 viewModel.statePreferences.collect {
-                    viewModel.onEvent(HomeIntent.FetchData)
-                    if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type)))
-                    {
-                       getLastLocationFromGPS()
-                    }else if (viewModel.statePreferences.value.locationType.equals(getString(R.string.map_type))){
+        location?.let {
+
+            Log.d("fetch favourite",it.toString())
+            viewModel.onEvent(HomeIntent.FetchDataOfFavouriteLocation(it.longitude.toString(),it.latitude.toString()))
+
+        } ?: kotlin.run {
+            Log.d("fetch favourite","def")
+
+                    if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type))) {
+                        getLastLocationFromGPS()
+                    } else if (viewModel.statePreferences.value.locationType.equals(getString(R.string.map_type))) {
                         viewModel.onEvent(HomeIntent.ReadLatLongFromDataStore)
                     }
-
                 }
 
+            }
         }
     }
 
@@ -182,23 +206,26 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
     }
 
 
-
-    private fun requestPermission(){
-        requestPermissionLauncher.launch(arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ))
+    private fun requestPermission() {
+        requestPermissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
     }
 
-    private fun checkPermission(): Boolean{
+    private fun checkPermission(): Boolean {
         if (
-            (ContextCompat.checkSelfPermission(requireContext(),
+            (ContextCompat.checkSelfPermission(
+                requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED) ||
-            (ContextCompat.checkSelfPermission(requireContext(),
+            (ContextCompat.checkSelfPermission(
+                requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED)
-        ){
+        ) {
             return true
         }
         return false
@@ -206,44 +233,46 @@ class HomeFragment(private val locationClient: FusedLocationProviderClient, priv
 
     private fun getLastLocationFromGPS() {
 
-        if (!checkPermission())  {requestPermission() ; return}
-        if (!isLocationEnabled()) { startLocationPage();return}
+        if (!checkPermission()) {
+            requestPermission(); return
+        }
+        if (!isLocationEnabled()) {
+            startLocationPage();return
+        }
 
         locationClient.requestLocationUpdates(
             locationRequest, locationCallback, Looper.myLooper()
         )
     }
 
-    private fun startLocationPage()
-    {
+    private fun startLocationPage() {
         Toast.makeText(requireContext(), "Turn on location please", Toast.LENGTH_SHORT).show()
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startActivity(intent) //todo make it for result to refresh the location
     }
 
 
-    private fun gpsLocationCallback()
-    {
-        locationCallback = object : LocationCallback(){
+    private fun gpsLocationCallback() {
+        locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                val location: Location? = locationResult.lastLocation
-                viewModel.onEvent(HomeIntent.NewLocationFromGPS(
-                    location?.longitude.toString(),
-                    location?.latitude.toString()))
+                val location = locationResult.lastLocation
+                viewModel.onEvent(
+                    HomeIntent.NewLocationFromGPS(
+                        location?.longitude.toString(),
+                        location?.latitude.toString()
+                    )
+                )
             }
         }
     }
 
 
-
-
     private fun isLocationEnabled(): Boolean {
-        val locationManager = requireContext().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)||
+        val locationManager =
+            requireContext().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
-
-
 
 
 }
