@@ -29,7 +29,7 @@
 
 
                 <TextView
-                    android:id="@+id/settingsTextView"
+                    android:id="@+id/titleTextView"
                     style="@style/p1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                     android:layout_marginTop="@dimen/_20sdp"
                     android:text="@string/location"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/settingsTextView" />
+                    app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/locationRow"

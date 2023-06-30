@@ -4,7 +4,6 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,18 +21,18 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
 @AndroidEntryPoint
-class MapFragment : Fragment() {
+class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
 
 
     private lateinit var binding: FragmentMapBinding
@@ -121,6 +120,10 @@ class MapFragment : Fragment() {
 
             googleMap.setOnMapLoadedCallback {
                 viewModel.onEvent(MapIntent.MapLoaded)
+                with(viewModel.state.value){
+                        setMarker(LatLng(latitude.toDouble(),longitude.toDouble()),googleMap)
+
+              }
             }
 
         }
@@ -133,9 +136,9 @@ class MapFragment : Fragment() {
         googleMap: GoogleMap
     ) {
         val englishGeoCoder = Geocoder(requireContext(), Locale.US)
-        val arabicGeoCoder = Geocoder(requireContext(), Locale("ar"))
+        val arabicGeoCoder = Geocoder(requireContext(), Locale(getString(R.string.ar)))
 
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(ioDispatcher) {
 
             englishGeoCoder.getAddress(latLong.latitude, latLong.longitude)
                 .combine(
@@ -190,12 +193,10 @@ class MapFragment : Fragment() {
 
         return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Log.d("logging", "yes")
                 getFromLocation(latitude, longitude, 1)?.asFlow() ?:  getAddress(latitude, longitude)
             }
             getFromLocation(latitude, longitude, 1)?.asFlow() ?:  getAddress(latitude, longitude)
         } catch (e: Exception) {
-            Log.d("logging", "yes")
             getAddress(latitude, longitude)
         }
     }

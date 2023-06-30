@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.domain.usecase.InsertNewFavouriteUseCase
+import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
 import com.example.weatherpilot.util.Dispatcher
 import com.example.weatherpilot.util.Dispatchers
@@ -11,6 +12,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +23,8 @@ import javax.inject.Inject
 class MapViewModel @Inject constructor(
     @Dispatcher(Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val saveStringToDataStoreUseCase: SaveStringToDataStoreUseCase,
-    private val insertNewFavouriteToDatabase: InsertNewFavouriteUseCase
+    private val insertNewFavouriteToDatabase: InsertNewFavouriteUseCase,
+    private val readStringFromDataStoreUseCase: ReadStringFromDataStoreUseCase,
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<MapState.RegularMapState> =
@@ -31,6 +35,9 @@ class MapViewModel @Inject constructor(
     private val _favouriteState: MutableStateFlow<MapState.FavouriteMapState> =
         MutableStateFlow(MapState.FavouriteMapState())
     val favouriteState = _favouriteState.asStateFlow()
+
+
+
 
 
     fun onEvent(intent: MapIntent) {
@@ -66,6 +73,18 @@ class MapViewModel @Inject constructor(
 
     }
 
+
+    private fun readLocationLatLonFromDataStore()
+    {
+
+        viewModelScope.launch(ioDispatcher) {
+            readStringFromDataStoreUseCase.execute("latitude")
+                .combine(readStringFromDataStoreUseCase.execute("longitude")){ lat , long ->
+                    _state.update { it.copy(longitude = long.toString(), latitude = lat.toString()) }
+                }.collect()
+        }
+    }
+
     private fun saveLatLongToDataStore() {
         viewModelScope.launch(ioDispatcher)
         {
@@ -91,6 +110,11 @@ class MapViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+
+    init {
+        readLocationLatLonFromDataStore()
     }
 
 

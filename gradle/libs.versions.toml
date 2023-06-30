@@ -91,6 +91,7 @@ sdp = ["com-intuit-sdp-sdp-android","com-intuit-sdp-ssp-android"]
 hilt = ["androidx-hilt-compiler","hilt-android"]
 location-maps = ["com-google-android-gms-play-services-location","com-google-android-gms-play-services-maps"]
 data-store = ["androidx-datastore-preferences","androidx-datastore-preferences-core"]
+testing = ["junit","androidx-test-espresso","androidx-test-ext"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

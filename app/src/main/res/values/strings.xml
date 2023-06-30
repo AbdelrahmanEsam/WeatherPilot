@@ -56,5 +56,9 @@
     <string name="no_favourites">No Favourites</string>
     <string name="from_favourite_fragment">from favourite Fragment</string>
     <string name="previous">previous</string>
+    <string name="we_need_location_tracking">we need location tracking</string>
+    <string name="date">date</string>
+    <string name="no_alerts">no Alerts</string>
+    <string name="alerts">Alerts</string>
 
 </resources>

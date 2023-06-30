@@ -1,13 +1,12 @@
 package com.example.weatherpilot.presentation.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherpilot.domain.usecase.WindSpeedTransformerUseCase
 import com.example.weatherpilot.domain.usecase.GetCurrentDateUseCase
 import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.TempTransformerUseCase
+import com.example.weatherpilot.domain.usecase.WindSpeedTransformerUseCase
 import com.example.weatherpilot.util.Dispatcher
 import com.example.weatherpilot.util.Dispatchers
 import com.example.weatherpilot.util.NetworkResponse
@@ -75,7 +74,6 @@ class HomeViewModel @Inject constructor(
 
 
             stateLongLat.value.longitude?.let {
-                Log.d("requesting","request")
                 _stateDisplay.update { it.copy(loading = true) }
                 val weatherResponse =
                     getWeatherDataUseCase.execute(longitude = stateLongLat.value.longitude!!

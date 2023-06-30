@@ -1,6 +1,5 @@
 package com.example.weatherpilot.presentation.main
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpilot.databinding.HourOverviewItemBinding
 import com.example.weatherpilot.domain.model.HourWeatherModel
 
-class HoursRecyclerAdapter(private val onClickAction: (Int) -> Unit) : ListAdapter<HourWeatherModel, HoursRecyclerAdapter.ViewHolder>(
+class HoursRecyclerAdapter: ListAdapter<HourWeatherModel, HoursRecyclerAdapter.ViewHolder>(
     HourDiffCallback()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -18,9 +17,7 @@ class HoursRecyclerAdapter(private val onClickAction: (Int) -> Unit) : ListAdapt
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val hour = getItem(position)
-        Log.d("hours",hour.icon)
         holder.bind(hour)
-
     }
 
     inner class ViewHolder(var binding: HourOverviewItemBinding) : RecyclerView.ViewHolder(binding.root)

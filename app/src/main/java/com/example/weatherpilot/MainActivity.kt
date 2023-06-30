@@ -1,7 +1,5 @@
 package com.example.weatherpilot
 
-import android.app.Activity
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -16,19 +14,29 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.databinding.ActivityMainBinding
+import com.example.weatherpilot.util.ConnectivityObserver
+import com.example.weatherpilot.util.Dispatcher
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Locale
 import javax.inject.Inject
-
+import com.example.weatherpilot.util.Dispatchers.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var binding: ActivityMainBinding
+
+    @Inject
+    lateinit var connectivityObserver: ConnectivityObserver
+
+    @Inject
+    @Dispatcher(IO)lateinit var ioDispatcher: CoroutineDispatcher
+
 
 
     @Inject
@@ -66,8 +74,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun langToRtlObserver() {
-
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(ioDispatcher) {
             dataStore.getString("languageType")
                 .catch { Log.d("error", it.message.toString()) }
                 .collect {
@@ -87,12 +94,21 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    }
 
-
+    private fun connectivityObserver()
+    {
+        lifecycleScope.launch(ioDispatcher) {
+            connectivityObserver.observe().collectLatest{ status ->
+                if (status == ConnectivityObserver.Status.Lost){
+                    //todo
+                }
+            }
+        }
     }
 
 
-    private fun updateResources(language: String){
+    private fun updateResources(language: String) {
         val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(language)
         AppCompatDelegate.setApplicationLocales(appLocale)
     }

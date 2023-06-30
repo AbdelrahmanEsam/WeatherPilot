@@ -1,11 +1,7 @@
 package com.example.weatherpilot.util
 
-import android.icu.util.Calendar
-import android.util.Log
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

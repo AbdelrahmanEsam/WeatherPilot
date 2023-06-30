@@ -21,7 +21,7 @@
         android:background="@drawable/gradient_background">
 
         <TextView
-            android:id="@+id/settingsTextView"
+            android:id="@+id/titleTextView"
             style="@style/p1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/settingsTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/addNewFavouriteButton"
@@ -68,7 +68,7 @@
             android:src="@drawable/favorite"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/settingsTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
 
         <TextView

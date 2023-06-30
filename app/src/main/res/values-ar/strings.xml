@@ -57,5 +57,9 @@
     <string name="no_favourites">لا يوجد اماكن مفضلة لديك</string>
     <string name="from_favourite_fragment">from favourite Fragment</string>
     <string name="previous">previous</string>
+    <string name="we_need_location_tracking">يجب عليك تفعيل تحديد الموقع</string>
+    <string name="date">date</string>
+    <string name="no_alerts">لا يوجد تنبيهات</string>
+    <string name="alerts">التنبيهات</string>
 
 </resources>

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpilot.databinding.DayOverviewItemBinding
 import com.example.weatherpilot.domain.model.DayWeatherModel
 
-class DaysRecyclerAdapter(private val onClickAction: (Int) -> Unit) : ListAdapter<DayWeatherModel, DaysRecyclerAdapter.ViewHolder>(
+class DaysRecyclerAdapter : ListAdapter<DayWeatherModel, DaysRecyclerAdapter.ViewHolder>(
     DayDiffCallback()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

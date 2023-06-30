@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.bundles.sdp)
     implementation(libs.bundles.hilt)
     implementation(libs.bundles.room)
+    implementation(libs.bundles.testing)
     kapt(libs.androidx.room.compiler)
     kapt(libs.hilt.compiler)
     kapt(libs.androidx.hilt.compiler)

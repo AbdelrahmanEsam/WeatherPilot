@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,21 +55,17 @@ class HomeFragment(
 
 
     private val hoursAdapter by lazy {
-        HoursRecyclerAdapter { itemPosition ->
-
-        }
+        HoursRecyclerAdapter()
     }
     private val daysAdapter by lazy {
-        DaysRecyclerAdapter { itemPosition ->
-
-        }
+        DaysRecyclerAdapter()
     }
 
     private lateinit var locationCallback: LocationCallback
 
 
     private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
+        ActivityResultContracts.RequestMultiplePermissions(),
     ) { permissions ->
         permissions.forEach { permission ->
             if (!permission.value) {
@@ -84,10 +79,20 @@ class HomeFragment(
     }
 
 
+    private val startLocationActivityForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+    {
+        if (isLocationEnabled()) {
+           getLastLocationFromGPS()
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.we_need_location_tracking), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -122,9 +127,6 @@ class HomeFragment(
             } else{
             arguments?.getParcelable(getString(R.string.locationType))
         }
-
-
-        Log.d("location back",location.toString())
         return location
     }
 
@@ -132,7 +134,6 @@ class HomeFragment(
     private fun loadingAndFetchData() {
         binding.refreshLayout.isRefreshing = true
         viewModel.onEvent(HomeIntent.FetchData)
-
     }
 
 
@@ -178,14 +179,11 @@ class HomeFragment(
         lifecycleScope.launch {
                 viewModel.statePreferences.collect {
         location?.let {
-
-            Log.d("fetch favourite",it.toString())
-            viewModel.onEvent(HomeIntent.FetchDataOfFavouriteLocation(it.longitude.toString(),it.latitude.toString()))
+            viewModel.onEvent(HomeIntent.FetchDataOfFavouriteLocation(it.longitude, it.latitude))
 
         } ?: kotlin.run {
-            Log.d("fetch favourite","def")
-
                     if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type))) {
+
                         getLastLocationFromGPS()
                     } else if (viewModel.statePreferences.value.locationType.equals(getString(R.string.map_type))) {
                         viewModel.onEvent(HomeIntent.ReadLatLongFromDataStore)
@@ -248,7 +246,8 @@ class HomeFragment(
     private fun startLocationPage() {
         Toast.makeText(requireContext(), "Turn on location please", Toast.LENGTH_SHORT).show()
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-        startActivity(intent) //todo make it for result to refresh the location
+        startLocationActivityForResult.launch(intent)
+
     }
 
 
