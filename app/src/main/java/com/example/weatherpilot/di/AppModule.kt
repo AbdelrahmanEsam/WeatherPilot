@@ -1,6 +1,8 @@
 package com.example.weatherpilot.di
 
 import android.content.Context
+import android.location.LocationManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import com.example.weatherpilot.BuildConfig
 import com.example.weatherpilot.data.remote.WeatherInterface
@@ -30,6 +32,13 @@ object AppModule
     @Provides
     fun providesConnectivityObserver(@ApplicationContext context: Context) : ConnectivityObserver
     = NetworkConnectivityObserver(context = context)
+
+    @Singleton
+    @Provides
+    fun providesLocationManager(@ApplicationContext context: Context) : LocationManager
+    {
+        return context.getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
+    }
 
 
 

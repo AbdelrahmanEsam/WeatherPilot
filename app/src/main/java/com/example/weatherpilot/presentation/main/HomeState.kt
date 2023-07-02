@@ -20,7 +20,7 @@ sealed interface HomeState
                            , val clouds : String? = null
     ,val dayState : List<HourWeatherModel> = listOf(),
     val weekState : List<DayWeatherModel> = listOf(),
-    val loading :Boolean = true,
+    val loading :Boolean? = null,
     val error : String? = null
     ) : HomeState
 

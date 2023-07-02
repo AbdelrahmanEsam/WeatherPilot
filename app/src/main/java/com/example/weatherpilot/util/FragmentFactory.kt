@@ -1,5 +1,6 @@
 package com.example.weatherpilot.util
 
+import android.location.LocationManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 class FragmentFactory  @Inject constructor(
 private val locationClient : FusedLocationProviderClient,
+private val locationManager: LocationManager,
 private val locationRequest: LocationRequest,
 private val dataStoreUserPreferences: DataStoreUserPreferences,
 @Dispatcher(Dispatchers.IO)private val ioDispatcher: CoroutineDispatcher,
@@ -22,7 +24,7 @@ private val dataStoreUserPreferences: DataStoreUserPreferences,
         return when(className){
 
              HomeFragment::class.java.name ->{
-                 HomeFragment(locationClient,locationRequest)
+                 HomeFragment(locationClient,locationRequest,locationManager)
             }
 
             MapFragment::class.java.name ->

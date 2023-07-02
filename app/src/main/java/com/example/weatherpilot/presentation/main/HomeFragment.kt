@@ -36,13 +36,15 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
 class HomeFragment(
     private val locationClient: FusedLocationProviderClient,
-    private val locationRequest: LocationRequest
+    private val locationRequest: LocationRequest,
+   private val locationManager: LocationManager
 ) : Fragment() {
 
 
@@ -71,13 +73,11 @@ class HomeFragment(
         permissions.forEach { permission ->
             if (!permission.value) {
                 binding.grantLocationPermissionDialog.visibility = View.VISIBLE
-                binding.refreshLayout.isRefreshing = false
                 binding.descriptionTextView.text = getString(R.string.give_location_permission)
                 binding.grantButton.text = getString(R.string.grant)
                 return@registerForActivityResult
             }
         }
-        binding.refreshLayout.isRefreshing = true
         getLastLocationFromGPS()
 
     }
@@ -88,12 +88,10 @@ class HomeFragment(
         {
             if (!isLocationEnabled()) {
                 binding.grantLocationPermissionDialog.visibility = View.VISIBLE
-                binding.refreshLayout.isRefreshing = false
                 binding.descriptionTextView.text = getString(R.string.please_enable_location)
                 binding.grantButton.text = getString(R.string.enable)
                 return@registerForActivityResult
             }
-            binding.refreshLayout.isRefreshing = true
             getLastLocationFromGPS()
         }
 
@@ -146,11 +144,6 @@ class HomeFragment(
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        // binding.refreshLayout.isRefreshing = true
-    }
-
     private fun openPermissionsPage()
     {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -172,7 +165,12 @@ class HomeFragment(
 
     private fun loadingAndFetchData() {
         binding.refreshLayout.isRefreshing = true
+        if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type)))
+        {
+            getLastLocationFromGPS()
+        }
         viewModel.onEvent(HomeIntent.FetchData)
+
     }
 
 
@@ -195,7 +193,7 @@ class HomeFragment(
     private fun displayStateObserver() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.stateDisplay.collect { state ->
+                viewModel.stateDisplay.collectLatest { state ->
                     if (state.dayState.isNotEmpty()) {
                         setHourlyDataToRecyclerView(state.dayState)
                     }
@@ -204,9 +202,14 @@ class HomeFragment(
                         setDaysDataToRecyclerView(state.weekState)
                     }
 
-                    if (!state.loading) {
+                    state.loading?.let { loading->
+
+                    if (!loading) {
                         binding.contentLayout.visibility = View.VISIBLE
                         binding.refreshLayout.isRefreshing = false
+                    }else{
+                        binding.refreshLayout.isRefreshing = true
+                    }
                     }
                 }
             }
@@ -216,7 +219,7 @@ class HomeFragment(
 
     private fun latLongStateObserver(location: Location?) {
         lifecycleScope.launch {
-            viewModel.statePreferences.collect {
+            viewModel.statePreferences.collectLatest {
                 location?.let {
                     viewModel.onEvent(
                         HomeIntent.FetchDataOfFavouriteLocation(
@@ -316,8 +319,6 @@ class HomeFragment(
 
 
     private fun isLocationEnabled(): Boolean {
-        val locationManager =
-            requireContext().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
