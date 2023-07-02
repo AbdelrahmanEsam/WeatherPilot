@@ -71,5 +71,8 @@
     <string name="please_enable_location">please enable GPS \n do you want that ?</string>
     <string name="enable">enable</string>
     <string name="grant">grant</string>
+    <string name="connection_lost">connection lost</string>
+    <string name="search">search</string>
+    <bool name="is_english">true</bool>
 
 </resources>

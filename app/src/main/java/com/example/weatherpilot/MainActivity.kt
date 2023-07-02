@@ -3,6 +3,7 @@ package com.example.weatherpilot
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
@@ -96,16 +97,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun connectivityObserver()
-    {
-        lifecycleScope.launch(ioDispatcher) {
-            connectivityObserver.observe().collectLatest{ status ->
-                if (status == ConnectivityObserver.Status.Lost){
-                    //todo
-                }
-            }
-        }
-    }
+
 
 
     private fun updateResources(language: String) {

@@ -85,7 +85,6 @@ class FavouritesFragment : Fragment() {
 
     private fun favouritesStateObserver() {
         lifecycleScope.launch {
-
             viewModel.favouriteState.collect {
 
                 if (it.favourites?.isNotEmpty() == true) {

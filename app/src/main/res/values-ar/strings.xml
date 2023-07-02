@@ -70,4 +70,7 @@
     <string name="please_enable_location">قم بتفعيل تتبع المكان \n هل تريد ذلك ؟</string>
     <string name="enable">تفعيل</string>
     <string name="grant">إمنح</string>
+    <string name="connection_lost">يرجى الإتصال بالانترنت</string>
+    <string name="search">إبحث</string>
+    <bool name="is_english">false</bool>
 </resources>

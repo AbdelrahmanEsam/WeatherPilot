@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
+    android:background="@color/baby_blue"
     tools:context=".presentation.map.MapFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,16 +14,58 @@
         android:layout_height="wrap_content">
 
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/searchInputLayout"
+            style="@style/OutlinedRoundedBox"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            app:hintEnabled="false"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/search"
+                android:textColor="@color/black"
+                android:inputType="text"
+                android:imeOptions="actionGo"
+                android:paddingHorizontal="@dimen/_20sdp"
+                android:background="@drawable/search_background" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <fragment
             android:id="@+id/mapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:maxLines="1"
+            android:imeOptions="actionGo"
+            android:imeActionLabel="@string/go"
+            android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@+id/searchInputLayout" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/gradient_background"
+            android:paddingHorizontal="@dimen/_20sdp"
+            android:elevation="@dimen/_40sdp"
+            android:paddingTop="@dimen/_10sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/mapFragment"
+            app:layout_constraintStart_toStartOf="@+id/mapFragment"
+            app:layout_constraintTop_toTopOf="@+id/mapFragment" />
 
         <Button
             android:id="@+id/go"
@@ -32,6 +75,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="30dp"
+            android:elevation="@dimen/_20sdp"
             android:background="@drawable/purple_rounded_background"
             android:text="@string/go"
             android:textAllCaps="false"
@@ -44,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminateTint="@color/purple"
-            android:elevation="@dimen/_30sdp"
+            android:elevation="@dimen/_50sdp"
             app:layout_constraintBottom_toBottomOf="@+id/mapFragment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/mapFragment"

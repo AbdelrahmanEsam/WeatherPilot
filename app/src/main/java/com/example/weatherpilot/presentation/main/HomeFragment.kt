@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -31,20 +30,26 @@ import com.example.weatherpilot.databinding.FragmentHomeBinding
 import com.example.weatherpilot.domain.model.DayWeatherModel
 import com.example.weatherpilot.domain.model.HourWeatherModel
 import com.example.weatherpilot.domain.model.Location
+import com.example.weatherpilot.util.ConnectivityObserver
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
 class HomeFragment(
     private val locationClient: FusedLocationProviderClient,
     private val locationRequest: LocationRequest,
-   private val locationManager: LocationManager
+    private val locationManager: LocationManager,
+    private val connectivityObserver: ConnectivityObserver,
+    private val ioDispatcher: CoroutineDispatcher,
+    private val mainDispatcher: CoroutineDispatcher
 ) : Fragment() {
 
 
@@ -96,7 +101,6 @@ class HomeFragment(
         }
 
 
-
     private val startPermissionActivityForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult())
         {
@@ -129,6 +133,7 @@ class HomeFragment(
         gpsLocationCallback()
         displayStateObserver()
         latLongStateObserver(getFavouriteLocation())
+        connectivityObserver()
 
         binding.refreshLayout.setOnRefreshListener {
             loadingAndFetchData()
@@ -136,7 +141,7 @@ class HomeFragment(
 
         binding.grantButton.setOnClickListener {
             if (binding.grantButton.text == getString(R.string.grant)) {
-              openPermissionsPage()
+                openPermissionsPage()
             } else {
                 startLocationPage()
             }
@@ -144,8 +149,7 @@ class HomeFragment(
         }
     }
 
-    private fun openPermissionsPage()
-    {
+    private fun openPermissionsPage() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri = Uri.fromParts("package", requireContext().packageName, null)
         intent.data = uri
@@ -165,8 +169,7 @@ class HomeFragment(
 
     private fun loadingAndFetchData() {
         binding.refreshLayout.isRefreshing = true
-        if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type)))
-        {
+        if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type))) {
             getLastLocationFromGPS()
         }
         viewModel.onEvent(HomeIntent.FetchData)
@@ -202,14 +205,12 @@ class HomeFragment(
                         setDaysDataToRecyclerView(state.weekState)
                     }
 
-                    state.loading?.let { loading->
+                    state.loading?.let { loading ->
 
-                    if (!loading) {
-                        binding.contentLayout.visibility = View.VISIBLE
-                        binding.refreshLayout.isRefreshing = false
-                    }else{
-                        binding.refreshLayout.isRefreshing = true
-                    }
+                        binding.refreshLayout.isRefreshing = loading
+                        if (state.dayState.isNotEmpty()) {
+                            binding.contentLayout.visibility = View.VISIBLE
+                        }
                     }
                 }
             }
@@ -322,6 +323,30 @@ class HomeFragment(
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
+
+
+    private fun connectivityObserver() {
+        lifecycleScope.launch(ioDispatcher) {
+            connectivityObserver.observe().collect { status ->
+                withContext(mainDispatcher) {
+                    if (status == ConnectivityObserver.Status.Lost || status == ConnectivityObserver.Status.Unavailable) {
+
+                        binding.connectionLostDialog.visibility = View.VISIBLE
+                        binding.contentLayout.visibility = View.GONE
+                    }
+
+
+                    if (status == ConnectivityObserver.Status.Available) {
+                        binding.connectionLostDialog.visibility = View.GONE
+                        loadingAndFetchData()
+                    }
+                }
+            }
+        }
+    }
+
+
+
 
 
 }

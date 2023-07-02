@@ -81,7 +81,7 @@ class HomeViewModel @Inject constructor(
                 weatherResponse.collectLatest { response ->
                     when(response){
                         is Response.Failure -> {
-                            _stateDisplay.update { it.copy(error = response.error) }
+                            _stateDisplay.update { it.copy(error = response.error, loading = false) }
                         }
                         is Response.Loading ->{
                             _stateDisplay.update { it.copy(loading = true) }

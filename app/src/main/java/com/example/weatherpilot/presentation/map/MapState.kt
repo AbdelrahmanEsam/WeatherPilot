@@ -18,7 +18,8 @@ sealed interface MapState {
         val latitude: String = "",
         val saveState: Boolean? = null,
         val insertFavouriteResult : Boolean? = null,
-        val mapLoadingState: Boolean = true
+        val mapLoadingState: Boolean = true,
+
     ) : MapState
 }
 
