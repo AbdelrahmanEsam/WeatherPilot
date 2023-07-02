@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".presentation.firsttimedialog.FirstTimeFragmentDialog"
+    android:background="@color/purple20"
+    >
+
+
+    <ImageView
+        android:id="@+id/settingsImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:src="@drawable/settings"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/titleTextView"
+        style="@style/p3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/initial_setup"
+        app:layout_constraintBottom_toBottomOf="@+id/settingsImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/settingsImageView" />
+
+
+    <ImageView
+        android:id="@+id/GPSRadioImageView"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_30sdp"
+        app:layout_constraintStart_toStartOf="@+id/settingsImageView"
+        app:layout_constraintTop_toBottomOf="@+id/settingsImageView"
+        app:srcCompat="@drawable/radio_unchecked"
+        app:tint="@color/baby_blue"
+        />
+
+
+    <TextView
+        android:id="@+id/GPSTextView"
+        style="@style/p2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:text="@string/gps"
+        android:textColor="@color/semi_white"
+        app:layout_constraintBottom_toBottomOf="@+id/GPSRadioImageView"
+        app:layout_constraintStart_toEndOf="@+id/GPSRadioImageView"
+        app:layout_constraintTop_toTopOf="@+id/GPSRadioImageView" />
+
+    <ImageView
+        android:id="@+id/mapRadioImageView"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:elevation="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        app:tint="@color/baby_blue"
+        app:layout_constraintBottom_toBottomOf="@+id/GPSRadioImageView"
+        app:layout_constraintEnd_toStartOf="@+id/mapTextView"
+        app:layout_constraintTop_toTopOf="@+id/GPSRadioImageView"
+        app:srcCompat="@drawable/radio_unchecked" />
+
+    <TextView
+        android:id="@+id/mapTextView"
+        style="@style/p2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/map"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:textColor="@color/semi_white"
+        app:layout_constraintBottom_toBottomOf="@+id/mapRadioImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mapRadioImageView" />
+
+
+    <TextView
+        android:id="@+id/notificationTextView"
+        style="@style/p3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:text="@string/notification"
+        app:layout_constraintStart_toStartOf="@+id/GPSRadioImageView"
+        app:layout_constraintTop_toBottomOf="@+id/GPSRadioImageView" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/notificationSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:showText="false"
+        app:layout_constraintBottom_toBottomOf="@+id/notificationTextView"
+        app:layout_constraintEnd_toEndOf="@+id/mapTextView"
+        app:layout_constraintTop_toTopOf="@+id/notificationTextView" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/goButton"
+        style="@style/p3"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:layout_marginBottom="@dimen/_30sdp"
+        android:background="@drawable/horizontal_gradient_background"
+        android:gravity="center"
+        android:text="@string/go"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notificationSwitch" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

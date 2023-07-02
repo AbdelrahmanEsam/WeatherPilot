@@ -69,6 +69,7 @@ class SettingsViewModel @Inject constructor(
 
                 val property =  SettingsState::class.java.getDeclaredField(field.name)
                     property.isAccessible = true
+
                 readStringFromDataStoreUseCase.execute(property.name)
                     .distinctUntilChanged().collect{
                     val newState = _state.value.copy()

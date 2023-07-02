@@ -9,7 +9,7 @@ import com.example.weatherpilot.domain.usecase.TempTransformerUseCase
 import com.example.weatherpilot.domain.usecase.WindSpeedTransformerUseCase
 import com.example.weatherpilot.util.Dispatcher
 import com.example.weatherpilot.util.Dispatchers
-import com.example.weatherpilot.util.NetworkResponse
+import com.example.weatherpilot.util.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,9 +70,6 @@ class HomeViewModel @Inject constructor(
     {
 
         viewModelScope.launch(ioDispatcher) {
-
-
-
             stateLongLat.value.longitude?.let {
                 _stateDisplay.update { it.copy(loading = true) }
                 val weatherResponse =
@@ -83,13 +80,13 @@ class HomeViewModel @Inject constructor(
 
                 weatherResponse.collectLatest { response ->
                     when(response){
-                        is NetworkResponse.Failure -> {
+                        is Response.Failure -> {
                             _stateDisplay.update { it.copy(error = response.error) }
                         }
-                        is NetworkResponse.Loading ->{
+                        is Response.Loading ->{
                             _stateDisplay.update { it.copy(loading = true) }
                         }
-                        is NetworkResponse.Success -> {
+                        is Response.Success -> {
                             with(response.data!!){ _stateDisplay.update {
                                 it.copy(city = city, weatherState =   description
                                     , pressure =  pressure.toString()
@@ -115,9 +112,6 @@ class HomeViewModel @Inject constructor(
             } ?: kotlin.run {
                 _stateDisplay.update { it.copy(loading = false) }
             }
-
-
-
         }
     }
 

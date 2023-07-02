@@ -74,6 +74,20 @@
     </style>
 
 
+    <style name="switchStyle" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">@color/purple</item>
 
+        <item name="colorSwitchThumbNormal">@color/semi_white
+        </item>
+
+
+        <item name="android:colorForeground">@color/semi_white
+        </item>
+    </style>
+
+    <style name="RoundedCornersDialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="dialogCornerRadius">@dimen/_20sdp</item>
+    </style>
 
 </resources>

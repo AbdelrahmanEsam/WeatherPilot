@@ -30,7 +30,6 @@ class DataStoreUserPreferencesImpl @Inject constructor(private val context: Cont
 
     override suspend fun putBoolean(key: String, value: Boolean) {
         val preferenceKey = booleanPreferencesKey(key)
-
         context.dataStore.edit {
             it[preferenceKey] = value
         }

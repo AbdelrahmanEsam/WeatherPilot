@@ -3,9 +3,10 @@ package com.example.weatherpilot.presentation.map
 
 sealed interface MapState {
     data class RegularMapState(
-        val longitude: String = "",
-        val latitude: String = "",
+        val longitude: String? = null,
+        val latitude: String? = null,
         val saveState: Boolean? = null,
+        val insertDataToDataStore : Boolean? = null,
         val mapLoadingState: Boolean = true
     ) : MapState
 
@@ -16,6 +17,7 @@ sealed interface MapState {
         val longitude: String = "",
         val latitude: String = "",
         val saveState: Boolean? = null,
+        val insertFavouriteResult : Boolean? = null,
         val mapLoadingState: Boolean = true
     ) : MapState
 }

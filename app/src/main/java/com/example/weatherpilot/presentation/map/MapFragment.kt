@@ -4,9 +4,11 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,19 +16,25 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.example.weatherpilot.NavGraphDirections
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentMapBinding
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
@@ -53,27 +61,62 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
         previousDestination = arguments?.getString(getString(R.string.previous))
+        decideStateObserver()
+
         googleMapHandler()
 
 
         binding.go.setOnClickListener {
-
             if (previousDestination == getString(R.string.from_favourite_fragment)) {
                 viewModel.onEvent(MapIntent.SaveFavourite)
-
             } else {
                 viewModel.onEvent(MapIntent.SaveDataToDataStore)
-
             }
-            navController.popBackStack()
         }
-        stateObserver()
     }
 
-    private fun stateObserver() {
+    private fun decideStateObserver() {
+        if (previousDestination.isNullOrBlank()) {
+
+            regularStateObserver()
+        } else {
+            favouriteStateObserver()
+        }
+        snackBarObserver()
+    }
+
+    private fun regularStateObserver() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.state.collect {
+                viewModel.state.collectLatest {
+                        Log.d("observer",it.saveState.toString())
+                    when (it.saveState) {
+                        true -> {
+                            navController.navigate(NavGraphDirections.actionToHomeFragment(null))
+                        }
+
+                        false -> binding.progressBar.visibility = View.VISIBLE
+                        null -> {}
+                    }
+
+                    when (it.mapLoadingState) {
+                        true -> binding.progressBar.visibility = View.VISIBLE
+                        false -> binding.progressBar.visibility = View.GONE
+                    }
+
+                    if (it.insertDataToDataStore == true) {
+                        navController.popBackStack()
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun favouriteStateObserver() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.favouriteState.collect {
                     when (it.saveState) {
                         true -> {
                             navController.popBackStack()
@@ -87,6 +130,27 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
                         true -> binding.progressBar.visibility = View.VISIBLE
                         false -> binding.progressBar.visibility = View.GONE
                     }
+
+                    if (it.insertFavouriteResult == true) navController.popBackStack()
+                }
+            }
+        }
+    }
+
+
+    private fun snackBarObserver() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.snackBarFlow.collectLatest { errorMessage ->
+                    Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG)
+                        .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                        .setBackgroundTint(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.baby_blue
+                            )
+                        )
+                        .show()
                 }
             }
         }
@@ -97,33 +161,43 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
         val supportMapFragment: SupportMapFragment =
             childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         supportMapFragment.getMapAsync { googleMap ->
+
+
             googleMap.setOnMapLongClickListener { latLong ->
-
-
-                viewModel.onEvent(MapIntent.NewFavouriteLocation("", "", "", ""))
 
 
                 if (previousDestination == getString(R.string.from_favourite_fragment)) {
 
-
+                    viewModel.onEvent(MapIntent.NewFavouriteLocation("", "", "", ""))
                     getCityNameByLatLong(latLong, googleMap)
                 } else {
-                    setMarker(latLong,googleMap)
+                    setMarker(latLong, googleMap)
                     viewModel.onEvent(
                         MapIntent.NewLatLong(
                             latLong.latitude.toString(),
                             latLong.longitude.toString()
                         )
                     )
+                    Log.d("markerListener", viewModel.state.value.longitude.toString())
                 }
             }
 
             googleMap.setOnMapLoadedCallback {
-                viewModel.onEvent(MapIntent.MapLoaded)
-                with(viewModel.state.value){
-                        setMarker(LatLng(latitude.toDouble(),longitude.toDouble()),googleMap)
-
-              }
+                viewModel.onEvent(
+                    MapIntent.MapLoaded(
+                        previousDestination ?: getString(R.string.from_regular_fragment)
+                    )
+                )
+                if (previousDestination.isNullOrBlank()) {
+                    with(viewModel.state.value) {
+                        latitude?.let {
+                            setMarker(
+                                LatLng(latitude.toDouble(), longitude!!.toDouble()),
+                                googleMap
+                            )
+                        }
+                    }
+                }
             }
 
         }
@@ -138,66 +212,71 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
         val englishGeoCoder = Geocoder(requireContext(), Locale.US)
         val arabicGeoCoder = Geocoder(requireContext(), Locale(getString(R.string.ar)))
 
-        lifecycleScope.launch(ioDispatcher) {
 
-            englishGeoCoder.getAddress(latLong.latitude, latLong.longitude)
-                .combine(
-                    arabicGeoCoder.getAddress(
-                        latLong.latitude,
-                        latLong.longitude
-                    )
-                ) { englishAddress, arabicAddress ->
 
-                    if (englishAddress.getAddressLine(0).isEmpty()) return@combine
-                    if (arabicAddress.getAddressLine(0).isEmpty()) return@combine
+        englishGeoCoder.getAddress(latLong.latitude, latLong.longitude) { englishFlow ->
+            arabicGeoCoder.getAddress(
+                latLong.latitude,
+                latLong.longitude
+            ) { arabicFlow ->
+                lifecycleScope.launch(ioDispatcher) {
+                    englishFlow.combine(arabicFlow) { englishAddress, arabicAddress ->
 
-                    viewModel.onEvent(
-                        MapIntent.NewFavouriteLocation(
-                            arabicAddress.getAddressLine(
-                                0
-                            ), englishAddress.getAddressLine(
-                                0
-                            ), latLong.latitude.toString(),
-                            latLong.longitude.toString()
+
+                        if (englishAddress == null) return@combine
+                        if (arabicAddress == null) return@combine
+
+                        viewModel.onEvent(
+                            MapIntent.NewFavouriteLocation(
+                                if (!arabicAddress.locality.isNullOrBlank()) arabicAddress.locality else arabicAddress.countryName,
+                                if (!englishAddress.locality.isNullOrBlank()) englishAddress.locality else englishAddress.countryName,
+                                latLong.latitude.toString(),
+                                latLong.longitude.toString()
+                            )
                         )
-                    )
 
 
-                    withContext(Dispatchers.Main) {
-                        setMarker(latLong,googleMap)
-                    }
+                        withContext(Dispatchers.Main) {
+                            setMarker(latLong, googleMap)
+                        }
 
-                }.collect()
+                    }.collect()
+                }
+            }
+
+        }
+
+
+    }
+
+    private fun setMarker(latLong: LatLng, googleMap: GoogleMap) {
+        googleMap.apply {
+            clear()
+            addMarker(
+                MarkerOptions()
+                    .position(latLong)
+            )
         }
 
     }
 
-    private fun setMarker(latLong : LatLng , googleMap: GoogleMap)
-    {
-            googleMap.apply {
-                clear()
-                addMarker(
-                    MarkerOptions()
-                        .position(latLong)
-                )
-            }
 
-    }
-
-
-    @Suppress("DEPRECATION")
     private fun Geocoder.getAddress(
         latitude: Double,
         longitude: Double,
-    ): Flow<Address> {
+        address: (Flow<Address?>) -> Unit
+    ) {
 
-        return try {
+        try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                getFromLocation(latitude, longitude, 1)?.asFlow() ?:  getAddress(latitude, longitude)
+                getFromLocation(latitude, longitude, 1) {
+                    address(flowOf(it[0]))
+                }
+            } else {
+                address(flowOf(getFromLocation(latitude, longitude, 1)?.get(0)))
             }
-            getFromLocation(latitude, longitude, 1)?.asFlow() ?:  getAddress(latitude, longitude)
         } catch (e: Exception) {
-            getAddress(latitude, longitude)
+            address(emptyFlow())
         }
     }
 

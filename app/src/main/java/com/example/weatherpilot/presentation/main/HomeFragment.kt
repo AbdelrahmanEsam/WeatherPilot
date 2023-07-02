@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -69,25 +70,48 @@ class HomeFragment(
     ) { permissions ->
         permissions.forEach { permission ->
             if (!permission.value) {
-                Toast.makeText(requireContext(), "${permission.key} is needed", Toast.LENGTH_SHORT)
-                    .show()
+                binding.grantLocationPermissionDialog.visibility = View.VISIBLE
+                binding.refreshLayout.isRefreshing = false
+                binding.descriptionTextView.text = getString(R.string.give_location_permission)
+                binding.grantButton.text = getString(R.string.grant)
                 return@registerForActivityResult
             }
         }
+        binding.refreshLayout.isRefreshing = true
         getLastLocationFromGPS()
 
     }
 
 
-    private val startLocationActivityForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-    {
-        if (isLocationEnabled()) {
-           getLastLocationFromGPS()
-        } else {
-            Toast.makeText(requireContext(), getString(R.string.we_need_location_tracking), Toast.LENGTH_SHORT).show()
+    private val startLocationActivityForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        {
+            if (!isLocationEnabled()) {
+                binding.grantLocationPermissionDialog.visibility = View.VISIBLE
+                binding.refreshLayout.isRefreshing = false
+                binding.descriptionTextView.text = getString(R.string.please_enable_location)
+                binding.grantButton.text = getString(R.string.enable)
+                return@registerForActivityResult
+            }
+            binding.refreshLayout.isRefreshing = true
+            getLastLocationFromGPS()
         }
-    }
 
+
+
+    private val startPermissionActivityForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        {
+            if (!checkPermission()) {
+                binding.grantLocationPermissionDialog.visibility = View.VISIBLE
+                binding.refreshLayout.isRefreshing = false
+                binding.descriptionTextView.text = getString(R.string.please_enable_location)
+                binding.grantButton.text = getString(R.string.enable)
+                return@registerForActivityResult
+            }
+            binding.refreshLayout.isRefreshing = true
+            getLastLocationFromGPS()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -102,7 +126,6 @@ class HomeFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-
         setHoursRecyclerView()
         setDaysRecyclerView()
         gpsLocationCallback()
@@ -112,19 +135,35 @@ class HomeFragment(
         binding.refreshLayout.setOnRefreshListener {
             loadingAndFetchData()
         }
+
+        binding.grantButton.setOnClickListener {
+            if (binding.grantButton.text == getString(R.string.grant)) {
+              openPermissionsPage()
+            } else {
+                startLocationPage()
+            }
+
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        binding.refreshLayout.isRefreshing = true
+        // binding.refreshLayout.isRefreshing = true
+    }
+
+    private fun openPermissionsPage()
+    {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", requireContext().packageName, null)
+        intent.data = uri
+        startPermissionActivityForResult.launch(intent)
     }
 
 
-    private fun getFavouriteLocation() : Location?
-    {
-         val location =   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getParcelable(getString(R.string.locationType),Location::class.java)
-            } else{
+    private fun getFavouriteLocation(): Location? {
+        val location = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(getString(R.string.locationType), Location::class.java)
+        } else {
             arguments?.getParcelable(getString(R.string.locationType))
         }
         return location
@@ -166,7 +205,7 @@ class HomeFragment(
                     }
 
                     if (!state.loading) {
-                        binding.constraint.visibility = View.VISIBLE
+                        binding.contentLayout.visibility = View.VISIBLE
                         binding.refreshLayout.isRefreshing = false
                     }
                 }
@@ -177,11 +216,16 @@ class HomeFragment(
 
     private fun latLongStateObserver(location: Location?) {
         lifecycleScope.launch {
-                viewModel.statePreferences.collect {
-        location?.let {
-            viewModel.onEvent(HomeIntent.FetchDataOfFavouriteLocation(it.longitude, it.latitude))
+            viewModel.statePreferences.collect {
+                location?.let {
+                    viewModel.onEvent(
+                        HomeIntent.FetchDataOfFavouriteLocation(
+                            it.longitude,
+                            it.latitude
+                        )
+                    )
 
-        } ?: kotlin.run {
+                } ?: kotlin.run {
                     if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type))) {
 
                         getLastLocationFromGPS()
@@ -232,22 +276,27 @@ class HomeFragment(
     private fun getLastLocationFromGPS() {
 
         if (!checkPermission()) {
+
             requestPermission(); return
         }
         if (!isLocationEnabled()) {
+
             startLocationPage();return
         }
-
+        binding.grantLocationPermissionDialog.visibility = View.GONE
         locationClient.requestLocationUpdates(
             locationRequest, locationCallback, Looper.myLooper()
         )
     }
 
     private fun startLocationPage() {
-        Toast.makeText(requireContext(), "Turn on location please", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.turn_on_location_please),
+            Toast.LENGTH_SHORT
+        ).show()
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startLocationActivityForResult.launch(intent)
-
     }
 
 

@@ -6,7 +6,7 @@ sealed interface MapIntent
     object SaveDataToDataStore : MapIntent
 
     object SaveFavourite : MapIntent
-    object MapLoaded : MapIntent
+    data class MapLoaded(val stateType : String) : MapIntent
 
     data class NewLatLong(val latitude : String, val longitude : String) : MapIntent
 

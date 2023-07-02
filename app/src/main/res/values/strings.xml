@@ -6,7 +6,9 @@
     <string name="notification">notification</string>
     <string name="pressure">pressure</string>
     <string name="hpa">"%1$s hpa"</string>
+
     <style name="meter_per_second">m/s</style>
+
     <string name="windTextValue">"%1$s"</string>
     <string name="visibilityTextValue">"%1$s m"</string>
     <string name="cloudsTextValue">"%1$s %%"</string>
@@ -31,9 +33,10 @@
     <string name="week">Week</string>
     <string name="longitude">longitude</string>
     <string name="latitude">latitude</string>
+    <string name="latitudeType">latitude</string>
     <string name="go">Go</string>
     <string name="location">location</string>
-    <string name="locationType">location</string>
+    <string name="locationType">locationType</string>
     <string name="gps">GPS</string>
     <string name="map">Map</string>
     <string name="gps_type">GPS</string>
@@ -60,5 +63,13 @@
     <string name="date">date</string>
     <string name="no_alerts">no Alerts</string>
     <string name="alerts">Alerts</string>
+    <string name="from_regular_fragment">from regular fragment</string>
+    <string name="initial_setup">initial setup</string>
+    <string name="firstTime">first_time</string>
+    <string name="turn_on_location_please">Turn on location please</string>
+    <string name="give_location_permission">please we need the location permission \n you want to grant it ?</string>
+    <string name="please_enable_location">please enable GPS \n do you want that ?</string>
+    <string name="enable">enable</string>
+    <string name="grant">grant</string>
 
 </resources>

@@ -29,7 +29,7 @@ import com.example.weatherpilot.util.Dispatchers.*
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var navHostFragment: NavHostFragment
-    private lateinit var binding: ActivityMainBinding
+     lateinit var binding: ActivityMainBinding
 
     @Inject
     lateinit var connectivityObserver: ConnectivityObserver

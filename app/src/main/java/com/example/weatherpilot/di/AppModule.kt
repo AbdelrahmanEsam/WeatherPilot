@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.weatherpilot.BuildConfig
 import com.example.weatherpilot.data.remote.WeatherInterface
-import com.example.weatherpilot.data.rempositoryImpl.RepositoryImpl
+import com.example.weatherpilot.data.repository.RepositoryImpl
 import com.example.weatherpilot.domain.repository.Repository
 import com.example.weatherpilot.util.ConnectivityObserver
 import com.example.weatherpilot.util.NetworkConnectivityObserver

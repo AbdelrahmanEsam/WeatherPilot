@@ -47,7 +47,6 @@ fun Hourly.toHourWeatherModel(): HourWeatherModel = kotlin.run {
 
 
 fun Daily.toDayWeatherModel(): DayWeatherModel = kotlin.run {
-
     DayWeatherModel(
         name = dt.toDay(), weather[0].description, icon = weather[0].icon,
         maxTemp = temp.max.toInt().toString(), minTemp = temp.min.toInt().toString(),

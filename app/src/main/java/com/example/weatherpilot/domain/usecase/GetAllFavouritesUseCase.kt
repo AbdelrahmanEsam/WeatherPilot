@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class GetAllFavouritesUseCase @Inject constructor(private val repository: Repository) {
 
-    suspend fun execute() : Flow<List<Location>>
+    fun execute() : Flow<List<Location>>
     {
         return repository.getFavourites()
     }

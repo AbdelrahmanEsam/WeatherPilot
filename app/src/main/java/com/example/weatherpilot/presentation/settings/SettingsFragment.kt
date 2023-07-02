@@ -108,13 +108,11 @@ class SettingsFragment : Fragment() {
                     when(it.locationType){
 
                         getString(R.string.gps_type) -> {
-                            Log.d("locationCollected", it.locationType.toString())
                             binding.GPSRadioImageView.setImageResource(R.drawable.radio_checked)
                             binding.mapRadioImageView.setImageResource(R.drawable.radio_unchecked)
 
                         }
                         getString(R.string.map_type) -> {
-                            Log.d("locationCollected", it.locationType.toString())
                             binding.GPSRadioImageView.setImageResource(R.drawable.radio_unchecked)
                             binding.mapRadioImageView.setImageResource(R.drawable.radio_checked)
                         }
