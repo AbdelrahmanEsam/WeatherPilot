@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -88,7 +89,7 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
         searchRecyclerSetup()
         googleMapHandler()
         searchViewActions()
-
+        backPressedHandler()
         binding.go.setOnClickListener {
             if (previousDestination == getString(R.string.from_favourite_fragment)) {
                 viewModel.onEvent(MapIntent.SaveFavourite)
@@ -99,6 +100,24 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
 
 
     }
+
+
+    private fun backPressedHandler() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (binding.searchRecyclerView.visibility == View.VISIBLE) {
+                        binding.searchRecyclerView.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
+                    } else {
+                        isEnabled = false
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                    }
+                }
+            })
+    }
+
 
     private fun searchRecyclerSetup() {
         val linearLayoutManager =
@@ -114,14 +133,14 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
         supportMapFragment.getMapAsync { googleMap ->
             with(address) {
                 val latLng = LatLng(latitude, longitude)
-                newMapLocationIsSelected(latLng,googleMap)
+                newMapLocationIsSelected(latLng, googleMap)
             }
         }
     }
 
-    private fun closeKeyboard()
-    {
-        val inputManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+    private fun closeKeyboard() {
+        val inputManager =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputManager?.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
@@ -281,8 +300,7 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
 
     }
 
-    private fun newMapLocationIsSelected(latLong: LatLng,googleMap: GoogleMap)
-    {
+    private fun newMapLocationIsSelected(latLong: LatLng, googleMap: GoogleMap) {
         if (previousDestination == getString(R.string.from_favourite_fragment)) {
 
             viewModel.onEvent(MapIntent.NewFavouriteLocation("", "", "", ""))
@@ -360,8 +378,6 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
 
 
     }
-
-
 
 
 }
