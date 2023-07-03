@@ -9,7 +9,7 @@ import com.example.weatherpilot.databinding.FavouriteItemBinding
 import com.example.weatherpilot.domain.model.Location
 
 class FavouritesRecyclerAdapter(
-    private val onClickAction: (Int) -> Unit, private val onLongClickAction: (Int) -> Unit
+    private val onClickAction: (Int) -> Unit
 ) : ListAdapter<Location, FavouritesRecyclerAdapter.ViewHolder>(
     DayDiffCallback()
 ) {

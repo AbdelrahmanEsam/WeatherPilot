@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentFavouritesBinding
 import com.example.weatherpilot.presentation.main.DaysRecyclerAdapter
+import com.example.weatherpilot.util.swipeRecyclerItemListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -29,8 +30,9 @@ class FavouritesFragment : Fragment() {
     private lateinit var navController: NavController
 
     private val favouritesAdapter by lazy {
-        FavouritesRecyclerAdapter(onClickAction = { onFavouriteItemClickAction(it) },
-            { onFavouriteItemLongClickAction(it) })
+        FavouritesRecyclerAdapter {
+            onFavouriteItemClickAction(it)
+        }
     }
 
 
@@ -52,20 +54,26 @@ class FavouritesFragment : Fragment() {
         viewModel.onEvent(FavouritesIntent.FetchFavouritesFromDatabase)
 
         binding.addNewFavouriteButton.setOnClickListener {
-            navController.navigate(FavouritesFragmentDirections.actionFavouritesFragmentToMapFragment(getString(R.string.from_favourite_fragment)))
+            navController.navigate(
+                FavouritesFragmentDirections.actionFavouritesFragmentToMapFragment(
+                    getString(R.string.from_favourite_fragment)
+                )
+            )
         }
     }
 
     private fun setFavouritesRecyclerView() {
         val linearLayoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        binding.favouritesRecycler.swipeRecyclerItemListener { viewHolder ->
+            viewModel.onEvent(FavouritesIntent.DeleteItem(viewModel.favouriteState.value.favourites!![viewHolder.adapterPosition]))
+        }
         binding.favouritesRecycler.layoutManager = linearLayoutManager
         binding.favouritesRecycler.adapter = favouritesAdapter
     }
 
 
-    private fun swipeRecyclerItemListener()
-    {
+    private fun swipeRecyclerItemListener() {
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -76,7 +84,7 @@ class FavouritesFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                viewModel.onEvent(FavouritesIntent.DeleteItem(viewModel.favouriteState.value.favourites!![viewHolder.adapterPosition]))
+
             }
 
         }).attachToRecyclerView(binding.favouritesRecycler)
@@ -92,7 +100,7 @@ class FavouritesFragment : Fragment() {
                     binding.noThingToShowImageView.visibility = View.GONE
                     binding.noFavouritesTextView.visibility = View.GONE
                     favouritesAdapter.submitList(it.favourites)
-                }else{
+                } else {
                     binding.favouritesRecycler.visibility = View.GONE
                     binding.noThingToShowImageView.visibility = View.VISIBLE
                     binding.noFavouritesTextView.visibility = View.VISIBLE
@@ -102,9 +110,12 @@ class FavouritesFragment : Fragment() {
     }
 
     private fun onFavouriteItemClickAction(position: Int) {
-       val favouriteItem =  viewModel.favouriteState.value.favourites?.get(position)
-        Log.d("item",favouriteItem.toString())
-           navController.navigate(FavouritesFragmentDirections.actionFavouritesFragmentToHomeFragment(favouriteItem))
+        val favouriteItem = viewModel.favouriteState.value.favourites?.get(position)
+        navController.navigate(
+            FavouritesFragmentDirections.actionFavouritesFragmentToHomeFragment(
+                favouriteItem
+            )
+        )
     }
 
 

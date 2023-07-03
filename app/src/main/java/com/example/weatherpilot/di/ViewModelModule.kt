@@ -1,9 +1,13 @@
 package com.example.weatherpilot.di
 
 import com.example.weatherpilot.domain.repository.Repository
+import com.example.weatherpilot.domain.usecase.DeleteAlertUseCase
+import com.example.weatherpilot.domain.usecase.GetAllAlertsUseCase
 import com.example.weatherpilot.domain.usecase.GetAllFavouritesUseCase
 import com.example.weatherpilot.domain.usecase.GetCurrentDateUseCase
+import com.example.weatherpilot.domain.usecase.GetTimeStampUseCase
 import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
+import com.example.weatherpilot.domain.usecase.InsertAlertUseCase
 import com.example.weatherpilot.domain.usecase.InsertNewFavouriteUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
@@ -66,6 +70,28 @@ object ViewModelModule {
     fun providesInsertNewFavouriteToDatabase(repository: Repository) : InsertNewFavouriteUseCase
             = InsertNewFavouriteUseCase(repository)
 
+    @Provides
+    @ViewModelScoped
+    fun providesInsertAlertToDatabase(repository: Repository) : InsertAlertUseCase
+            = InsertAlertUseCase(repository)
+
+
+    @Provides
+    @ViewModelScoped
+    fun providesDeleteAlertToDatabase(repository: Repository) : DeleteAlertUseCase
+            = DeleteAlertUseCase(repository)
+
+
+    @Provides
+    @ViewModelScoped
+    fun providesGetAllAlerts(repository: Repository) : GetAllAlertsUseCase
+            = GetAllAlertsUseCase(repository)
+
+
+    @Provides
+    @ViewModelScoped
+    fun providesGetTimeStampUseCase() : GetTimeStampUseCase
+            = GetTimeStampUseCase()
 
 
 }

@@ -4,6 +4,9 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,20 +89,76 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
         navController = Navigation.findNavController(view)
         previousDestination = arguments?.getString(getString(R.string.previous))
         decideStateObserver()
+        alertStateObserver()
         searchRecyclerSetup()
         googleMapHandler()
         searchViewActions()
         backPressedHandler()
+
         binding.go.setOnClickListener {
-            if (previousDestination == getString(R.string.from_favourite_fragment)) {
-                viewModel.onEvent(MapIntent.SaveFavourite)
-            } else {
-                viewModel.onEvent(MapIntent.SaveDataToDataStore)
+            when (previousDestination) {
+                getString(R.string.from_favourite_fragment) -> {
+                    viewModel.onEvent(MapIntent.SaveFavourite)
+                }
+
+                getString(R.string.from_alerts_fragment) -> {
+                    if (viewModel.alertState.value.longitude.isBlank()){
+                        viewModel.onEvent(MapIntent.ShowSnackBar(getString(R.string.please_choose_place_on_the_map)))
+                        return@setOnClickListener
+                    }
+                    navController.navigate(NavGraphDirections.actionToDatePicker())
+
+                }
+
+                else -> {
+                    viewModel.onEvent(MapIntent.SaveDataToDataStore)
+                }
             }
         }
 
 
     }
+
+    private fun datePickerFlowObserver() {
+
+        lifecycleScope.launch {
+            navController
+                .currentBackStackEntry?.savedStateHandle?.getStateFlow(
+                    getString(R.string.date),
+                    ""
+                )?.collectLatest { date ->
+                    if (date.isNotEmpty()){
+                           viewModel.onEvent(MapIntent.SetAlarmDateIntent(date))
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            Log.d("datePicker",date)
+                           navController.navigate(NavGraphDirections.actionToTimePicker())
+                        }, 500)
+                    }
+                }
+        }
+
+    }
+
+
+    private fun timePickerFlowObserver() {
+
+        lifecycleScope.launch {
+            navController
+                .currentBackStackEntry?.savedStateHandle?.getStateFlow(
+                    getString(R.string.time),
+                    ""
+                )?.collectLatest { time ->
+                    if (time.isNotEmpty()){
+                        viewModel.onEvent(MapIntent.SetAlarmTimeIntent(time))
+                        viewModel.onEvent(MapIntent.SaveAlert)
+                    }
+                }
+        }
+
+    }
+
+
+
 
 
     private fun backPressedHandler() {
@@ -187,11 +246,23 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
     }
 
     private fun decideStateObserver() {
-        if (previousDestination.isNullOrBlank()) {
 
-            regularStateObserver()
-        } else {
-            favouriteStateObserver()
+
+        when (previousDestination) {
+            getString(R.string.from_favourite_fragment) -> {
+                alertStateObserver()
+
+            }
+
+            getString(R.string.from_alerts_fragment) -> {
+                favouriteStateObserver()
+                datePickerFlowObserver()
+                timePickerFlowObserver()
+            }
+
+            else -> {
+                regularStateObserver()
+            }
         }
         snackBarObserver()
     }
@@ -242,6 +313,31 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
                     }
 
                     if (it.insertFavouriteResult == true) navController.popBackStack()
+                }
+            }
+        }
+    }
+
+
+    private fun alertStateObserver() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.alertState.collect {
+                    when (it.saveState) {
+                        true -> {
+                            navController.popBackStack()
+                        }
+
+                        false -> binding.progressBar.visibility = View.VISIBLE
+                        null -> {}
+                    }
+
+                    when (it.mapLoadingState) {
+                        true -> binding.progressBar.visibility = View.VISIBLE
+                        false -> binding.progressBar.visibility = View.GONE
+                    }
+
+                    if (it.insertNotification == true) navController.popBackStack()
                 }
             }
         }
@@ -302,18 +398,47 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
     }
 
     private fun newMapLocationIsSelected(latLong: LatLng, googleMap: GoogleMap) {
-        if (previousDestination == getString(R.string.from_favourite_fragment)) {
+        when (previousDestination) {
+            getString(R.string.from_favourite_fragment) -> {
 
-            viewModel.onEvent(MapIntent.NewFavouriteLocation("", "", "", ""))
-            getCityNameByLatLong(latLong, googleMap)
-        } else {
-            setMarkerAndAnimateCamera(latLong, googleMap)
-            viewModel.onEvent(
-                MapIntent.NewLatLong(
-                    latLong.latitude.toString(),
-                    latLong.longitude.toString()
+                viewModel.onEvent(MapIntent.NewFavouriteLocation("", "", "", ""))
+                getCityNameByLatLong(latLong, googleMap) { englishAddress, arabicAddress ->
+                    viewModel.onEvent(
+                        MapIntent.NewFavouriteLocation(
+                            if (!arabicAddress.locality.isNullOrBlank()) arabicAddress.locality else arabicAddress.countryName,
+                            if (!englishAddress.locality.isNullOrBlank()) englishAddress.locality else englishAddress.countryName,
+                            latLong.latitude.toString(),
+                            latLong.longitude.toString()
+                        )
+                    )
+                }
+            }
+
+            getString(R.string.from_alerts_fragment) -> {
+
+                viewModel.onEvent(MapIntent.AlertLocationIntent("", "", "", ""))
+                getCityNameByLatLong(latLong, googleMap) { englishAddress, arabicAddress ->
+                    viewModel.onEvent(
+                        MapIntent.AlertLocationIntent(
+                            if (!arabicAddress.locality.isNullOrBlank()) arabicAddress.locality else arabicAddress.countryName,
+                            if (!englishAddress.locality.isNullOrBlank()) englishAddress.locality else englishAddress.countryName,
+                            latLong.latitude.toString(),
+                            latLong.longitude.toString()
+                        )
+                    )
+                }
+
+            }
+
+            else -> {
+                setMarkerAndAnimateCamera(latLong, googleMap)
+                viewModel.onEvent(
+                    MapIntent.NewLatLong(
+                        latLong.latitude.toString(),
+                        latLong.longitude.toString()
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -341,7 +466,8 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
 
     private fun getCityNameByLatLong(
         latLong: LatLng,
-        googleMap: GoogleMap
+        googleMap: GoogleMap,
+        onEvent: (Address, Address) -> Unit
     ) {
 
 
@@ -357,14 +483,9 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
                         if (englishAddress == null) return@combine
                         if (arabicAddress == null) return@combine
 
-                        viewModel.onEvent(
-                            MapIntent.NewFavouriteLocation(
-                                if (!arabicAddress.locality.isNullOrBlank()) arabicAddress.locality else arabicAddress.countryName,
-                                if (!englishAddress.locality.isNullOrBlank()) englishAddress.locality else englishAddress.countryName,
-                                latLong.latitude.toString(),
-                                latLong.longitude.toString()
-                            )
-                        )
+
+                        onEvent.invoke(englishAddress, arabicAddress)
+
 
 
                         withContext(Dispatchers.Main) {

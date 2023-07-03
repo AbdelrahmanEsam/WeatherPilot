@@ -1,11 +1,15 @@
 package com.example.weatherpilot.data.repository
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
+import com.example.weatherpilot.data.dto.SavedAlert
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.data.local.room.FavouritesDao
+import com.example.weatherpilot.data.local.room.LocalDataSource
+import com.example.weatherpilot.data.mappers.toAlertItem
 import com.example.weatherpilot.data.mappers.toLocation
 import com.example.weatherpilot.data.mappers.toWeatherModel
 import com.example.weatherpilot.data.remote.WeatherInterface
+import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.domain.repository.Repository
 import com.example.weatherpilot.util.Response
@@ -19,14 +23,13 @@ import javax.inject.Inject
 class RepositoryImpl @Inject constructor(
     private val remote: WeatherInterface,
     private val dataStore: DataStoreUserPreferences,
-    private val favouritesDao: FavouritesDao
+    private val localDataSource: LocalDataSource,
 ) : Repository {
     override suspend fun <T> getWeatherResponse(
         longitude: String,
         latitude: String,
         language: String
     ): Flow<Response<T>> {
-
         return try {
             flowOf(
                 Response.Success(
@@ -57,20 +60,26 @@ class RepositoryImpl @Inject constructor(
     }
 
     override fun getFavourites(): Flow<List<Location>> {
-        return favouritesDao.getAllProducts().map { it.map(FavouriteLocation::toLocation) }
+        return localDataSource.getFavourites()
     }
 
     override suspend fun <T> insertFavouriteLocation(location: FavouriteLocation): Flow<Response<T>> {
-        return try {
-            favouritesDao.insert(location)
-            flowOf(Response.Success("successful insert" as T))
-
-        } catch (e: Exception) {
-            flowOf(Response.Failure(e.message ?: "Something went wrong"))
-        }
+      return  localDataSource.insertFavouriteLocation(location)
     }
 
     override suspend fun deleteFavouriteLocation(longitude: String, latitude: String) {
-        favouritesDao.delete(longitude, latitude)
+        return localDataSource.deleteFavouriteLocation(longitude, latitude)
+    }
+
+    override suspend fun <T>  insertAlertToDatabase(alert: SavedAlert): Flow<Response<T>>  {
+        return localDataSource.insertAlertToDatabase(alert)
+    }
+
+    override suspend fun deleteAlertFromDatabase(item : SavedAlert) {
+        localDataSource.deleteAlertFromDatabase(item)
+    }
+
+    override fun getAlerts(): Flow<List<AlertItem>> {
+        return  localDataSource.getAlerts().map { it.map { savedAlert -> savedAlert.toAlertItem() } }
     }
 }

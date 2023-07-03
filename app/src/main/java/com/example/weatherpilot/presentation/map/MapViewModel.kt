@@ -3,7 +3,10 @@ package com.example.weatherpilot.presentation.map
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
+import com.example.weatherpilot.domain.usecase.GetTimeStampUseCase
+import com.example.weatherpilot.domain.usecase.InsertAlertUseCase
 import com.example.weatherpilot.domain.usecase.InsertNewFavouriteUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
@@ -31,6 +34,8 @@ class MapViewModel @Inject constructor(
     private val saveStringToDataStoreUseCase: SaveStringToDataStoreUseCase,
     private val insertNewFavouriteToDatabase: InsertNewFavouriteUseCase,
     private val readStringFromDataStoreUseCase: ReadStringFromDataStoreUseCase,
+    private val insertAlertUseCase: InsertAlertUseCase,
+    private val getTimeStampUseCase: GetTimeStampUseCase
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<MapState.RegularMapState> =
@@ -41,6 +46,11 @@ class MapViewModel @Inject constructor(
     private val _favouriteState: MutableStateFlow<MapState.FavouriteMapState> =
         MutableStateFlow(MapState.FavouriteMapState())
     val favouriteState = _favouriteState.asStateFlow()
+
+
+    private val _alertState: MutableStateFlow<MapState.AlertMapState> =
+        MutableStateFlow(MapState.AlertMapState())
+    val alertState = _alertState.asStateFlow()
 
 
     private val _snackBarFlow: MutableSharedFlow<String> = MutableSharedFlow()
@@ -60,13 +70,21 @@ class MapViewModel @Inject constructor(
             }
 
             is MapIntent.MapLoaded -> {
-                if (intent.stateType == "from regular fragment") {
-                    _state.update {
-                        it.copy(mapLoadingState = false)
+                when (intent.stateType) {
+                    "from regular fragment" -> {
+                        _state.update {
+                            it.copy(mapLoadingState = false)
 
+                        }
                     }
-                } else {
-                    _favouriteState.update { it.copy(mapLoadingState = false) }
+
+                    "from favourite fragment" -> {
+                        _favouriteState.update { it.copy(mapLoadingState = false) }
+                    }
+
+                    else -> {
+                        _alertState.update { it.copy(mapLoadingState = false) }
+                    }
                 }
 
 
@@ -87,6 +105,26 @@ class MapViewModel @Inject constructor(
                     )
                 }
             }
+
+            MapIntent.SaveAlert -> {
+                saveAlertToDatabase()
+            }
+
+            is MapIntent.AlertLocationIntent -> {
+                _alertState.update {
+                    it.copy(
+                        arabicName = intent.arabicName,
+                        englishName = intent.englishName,
+                        latitude = intent.latitude,
+                        longitude = intent.longitude
+                    )
+                }
+            }
+
+            is MapIntent.AlertDateIntent -> TODO()
+            is MapIntent.ShowSnackBar -> viewModelScope.launch { _snackBarFlow.emit(intent.message) }
+            is MapIntent.SetAlarmDateIntent -> _alertState.update { it.copy(date = intent.date) }
+            is MapIntent.SetAlarmTimeIntent -> _alertState.update { it.copy(time = intent.time) }
         }
 
     }
@@ -114,7 +152,7 @@ class MapViewModel @Inject constructor(
 
                 _state.update { it.copy(saveState = false) }
                 with(_state.value) {
-                    Log.d("marker viewModel",latitude.toString() +" "+ longitude.toString())
+                    Log.d("marker viewModel", latitude.toString() + " " + longitude.toString())
                     saveStringToDataStoreUseCase.execute("latitude", latitude!!)
                     saveStringToDataStoreUseCase.execute("longitude", longitude!!)
                 }
@@ -149,6 +187,36 @@ class MapViewModel @Inject constructor(
         }
     }
 
+
+    private fun saveAlertToDatabase() {
+        viewModelScope.launch(ioDispatcher) {
+            with(_alertState.value) {
+                val timeStamp = getTimeStampUseCase.execute("$date $time")
+                timeStamp?.let {
+
+                    insertAlertUseCase.execute(
+                        AlertItem(
+                            arabicName = arabicName,
+                            englishName = englishName,
+                            longitude = longitude,
+                            latitude = latitude,
+                            time = timeStamp
+                        )
+
+                    ).collectLatest { response ->
+                        when (response) {
+                            is Response.Success -> _snackBarFlow.emit("data saved successfully")
+                            else -> _snackBarFlow.emit(response.error ?: "something went Wrong")
+                        }
+
+                    }
+                } ?: run {
+                    _snackBarFlow.emit(" something went wrong")
+                }
+            }
+        }
+
+    }
 
     init {
         readLocationLatLonFromDataStore()

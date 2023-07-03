@@ -73,4 +73,7 @@
     <string name="connection_lost">يرجى الإتصال بالانترنت</string>
     <string name="search">إبحث</string>
     <bool name="is_english">false</bool>
+    <string name="from_alerts_fragment">from alerts Fragment</string>
+    <string name="please_choose_place_on_the_map">من فضلك اختر مكانا</string>
+    <string name="time">time</string>
 </resources>

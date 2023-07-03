@@ -12,7 +12,10 @@ import com.example.weatherpilot.util.ConnectivityObserver
 import com.example.weatherpilot.util.NetworkConnectivityObserver
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferencesImpl
+import com.example.weatherpilot.data.local.room.AlertsDao
 import com.example.weatherpilot.data.local.room.FavouritesDao
+import com.example.weatherpilot.data.local.room.LocalDataSource
+import com.example.weatherpilot.data.local.room.LocalDataSourceImpl
 import com.example.weatherpilot.data.local.room.WeatherDatabase
 import dagger.Module
 import dagger.Provides
@@ -60,11 +63,19 @@ object AppModule
     }
 
 
+    @Provides
+    @Singleton
+    fun providesLocalDataSource(alertsDao: AlertsDao,favouritesDao: FavouritesDao) : LocalDataSource
+    {
+        return LocalDataSourceImpl(favouritesDao, alertsDao)
+    }
+
+
     @Singleton
     @Provides
     fun providesRepository(remote: WeatherInterface
-       ,dataStore : DataStoreUserPreferences,favouritesDao: FavouritesDao): Repository
-    = RepositoryImpl(remote,dataStore,favouritesDao)
+       ,dataStore : DataStoreUserPreferences,localDataSource: LocalDataSource): Repository
+    = RepositoryImpl(remote,dataStore,localDataSource)
 
     @Singleton
     @Provides
@@ -80,5 +91,12 @@ object AppModule
     fun providesFavouriteDao(database: WeatherDatabase) : FavouritesDao
     {
         return  database.favouritesDao
+    }
+
+    @Singleton
+    @Provides
+    fun providesAlertsDao(database: WeatherDatabase) : AlertsDao
+    {
+        return  database.alertsDao
     }
 }

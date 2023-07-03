@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+
+        <import type="kotlin.Unit" />
+
+        <import type="kotlin.jvm.functions.Function0" />
+
+        <variable
+            name="alertClickListener"
+            type="Function0&lt;Unit>" />
+
+
+        <variable
+            name="alert"
+            type="com.example.weatherpilot.domain.model.AlertItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_90sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:onClick="@{() ->alertClickListener.invoke()}"
+        android:background="@drawable/purple_rounded_background">
+
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

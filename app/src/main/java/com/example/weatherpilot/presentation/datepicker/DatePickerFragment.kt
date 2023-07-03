@@ -1,4 +1,4 @@
-package com.example.weatherpilot.presentation.datePicker
+package com.example.weatherpilot.presentation.datepicker
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
@@ -28,6 +28,8 @@ class DatePickerFragment : DialogFragment(), OnDateSetListener {
     }
 
     override fun onDateSet(datePicker: DatePicker, year: Int, month: Int, day: Int) {
-        navController.previousBackStackEntry!!.savedStateHandle[getString(R.string.date)] = day
+        navController.previousBackStackEntry!!.savedStateHandle[getString(R.string.date)] = "$year $month $day"
     }
+
+
 }

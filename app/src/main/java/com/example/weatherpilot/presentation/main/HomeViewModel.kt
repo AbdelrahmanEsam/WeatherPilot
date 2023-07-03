@@ -50,7 +50,7 @@ class HomeViewModel @Inject constructor(
     {
         when(intent){
             is HomeIntent.NewLocationFromGPS -> {
-                    _stateLongLat.update { it.copy(longitude = intent.longitude, latitude = intent.latitude) }
+                    _stateLongLat.update { it.copy(longitude = intent.longitude, latitude = intent.latitude,) }
                     getWeatherResponse()
             }
 

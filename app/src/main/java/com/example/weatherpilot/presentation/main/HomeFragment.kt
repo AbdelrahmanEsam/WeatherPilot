@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -83,7 +84,7 @@ class HomeFragment(
                 return@registerForActivityResult
             }
         }
-        getLastLocationFromGPS()
+    getLastLocationFromGPS()
 
     }
 
@@ -97,7 +98,7 @@ class HomeFragment(
                 binding.grantButton.text = getString(R.string.enable)
                 return@registerForActivityResult
             }
-            getLastLocationFromGPS()
+           getLastLocationFromGPS()
         }
 
 
@@ -132,7 +133,6 @@ class HomeFragment(
         setDaysRecyclerView()
         gpsLocationCallback()
         displayStateObserver()
-        latLongStateObserver(getFavouriteLocation())
         connectivityObserver()
 
         binding.refreshLayout.setOnRefreshListener {
@@ -218,26 +218,22 @@ class HomeFragment(
     }
 
 
-    private fun latLongStateObserver(location: Location?) {
-        lifecycleScope.launch {
-            viewModel.statePreferences.collectLatest {
-                location?.let {
-                    viewModel.onEvent(
-                        HomeIntent.FetchDataOfFavouriteLocation(
-                            it.longitude,
-                            it.latitude
-                        )
-                    )
+    private fun connectivityObserver() {
+        lifecycleScope.launch(ioDispatcher) {
+            connectivityObserver.observe().collect { status ->
+                withContext(mainDispatcher) {
+                    if (status == ConnectivityObserver.Status.Lost || status == ConnectivityObserver.Status.Unavailable) {
 
-                } ?: kotlin.run {
-                    if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type))) {
+                        binding.connectionLostDialog.visibility = View.VISIBLE
+                        binding.contentLayout.visibility = View.GONE
+                    }
 
-                        getLastLocationFromGPS()
-                    } else if (viewModel.statePreferences.value.locationType.equals(getString(R.string.map_type))) {
-                        viewModel.onEvent(HomeIntent.ReadLatLongFromDataStore)
+
+                    if (status == ConnectivityObserver.Status.Available) {
+                        binding.connectionLostDialog.visibility = View.GONE
+                        loadingAndFetchData()
                     }
                 }
-
             }
         }
     }
@@ -278,7 +274,6 @@ class HomeFragment(
     }
 
     private fun getLastLocationFromGPS() {
-
         if (!checkPermission()) {
 
             requestPermission(); return
@@ -287,7 +282,6 @@ class HomeFragment(
 
             startLocationPage();return
         }
-        binding.grantLocationPermissionDialog.visibility = View.GONE
         locationClient.requestLocationUpdates(
             locationRequest, locationCallback, Looper.myLooper()
         )
@@ -325,25 +319,7 @@ class HomeFragment(
     }
 
 
-    private fun connectivityObserver() {
-        lifecycleScope.launch(ioDispatcher) {
-            connectivityObserver.observe().collect { status ->
-                withContext(mainDispatcher) {
-                    if (status == ConnectivityObserver.Status.Lost || status == ConnectivityObserver.Status.Unavailable) {
 
-                        binding.connectionLostDialog.visibility = View.VISIBLE
-                        binding.contentLayout.visibility = View.GONE
-                    }
-
-
-                    if (status == ConnectivityObserver.Status.Available) {
-                        binding.connectionLostDialog.visibility = View.GONE
-                        loadingAndFetchData()
-                    }
-                }
-            }
-        }
-    }
 
 
 
