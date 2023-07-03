@@ -110,6 +110,7 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
                     if (binding.searchRecyclerView.visibility == View.VISIBLE) {
                         binding.searchRecyclerView.visibility = View.GONE
                         binding.progressBar.visibility = View.GONE
+                        binding.searchInputLayout.editText?.clearFocus()
                     } else {
                         isEnabled = false
                         requireActivity().onBackPressedDispatcher.onBackPressed()
