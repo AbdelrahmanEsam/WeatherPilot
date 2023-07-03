@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.util.receiver.AlarmReceiver
-import java.time.ZoneId
 
 class AndroidAlarmScheduler(
     private val context: Context
