@@ -10,9 +10,10 @@ import com.example.weatherpilot.domain.usecase.InsertAlertUseCase
 import com.example.weatherpilot.domain.usecase.InsertNewFavouriteUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
-import com.example.weatherpilot.util.Dispatcher
-import com.example.weatherpilot.util.Dispatchers
-import com.example.weatherpilot.util.Response
+import com.example.weatherpilot.domain.usecase.UpdateAlertUseCase
+import com.example.weatherpilot.util.coroutines.Dispatcher
+import com.example.weatherpilot.util.coroutines.Dispatchers
+import com.example.weatherpilot.util.usescases.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 
 @HiltViewModel
@@ -35,7 +37,8 @@ class MapViewModel @Inject constructor(
     private val insertNewFavouriteToDatabase: InsertNewFavouriteUseCase,
     private val readStringFromDataStoreUseCase: ReadStringFromDataStoreUseCase,
     private val insertAlertUseCase: InsertAlertUseCase,
-    private val getTimeStampUseCase: GetTimeStampUseCase
+    private val getTimeStampUseCase: GetTimeStampUseCase,
+    private val updateAlertUseCase: UpdateAlertUseCase
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<MapState.RegularMapState> =
@@ -125,6 +128,10 @@ class MapViewModel @Inject constructor(
             is MapIntent.ShowSnackBar -> viewModelScope.launch { _snackBarFlow.emit(intent.message) }
             is MapIntent.SetAlarmDateIntent -> _alertState.update { it.copy(date = intent.date) }
             is MapIntent.SetAlarmTimeIntent -> _alertState.update { it.copy(time = intent.time) }
+
+            is MapIntent.UpdateAlertStateToScheduled ->{
+                 updateAlertStateToScheduled(intent.alert)
+             }
         }
 
     }
@@ -152,7 +159,6 @@ class MapViewModel @Inject constructor(
 
                 _state.update { it.copy(saveState = false) }
                 with(_state.value) {
-                    Log.d("marker viewModel", latitude.toString() + " " + longitude.toString())
                     saveStringToDataStoreUseCase.execute("latitude", latitude!!)
                     saveStringToDataStoreUseCase.execute("longitude", longitude!!)
                 }
@@ -175,7 +181,7 @@ class MapViewModel @Inject constructor(
 
                     when (insertResponse) {
                         is Response.Success -> {
-                            _favouriteState.update { it.copy(insertFavouriteResult = true) }
+                            _favouriteState.update { it.copy(insertFavouriteResult = true, saveState = true) }
                             _snackBarFlow.emit("data saved successfully")
                         }
 
@@ -191,18 +197,20 @@ class MapViewModel @Inject constructor(
     private fun saveAlertToDatabase() {
         viewModelScope.launch(ioDispatcher) {
             with(_alertState.value) {
+
                 val timeStamp = getTimeStampUseCase.execute("$date $time")
                 timeStamp?.let {
 
                     insertAlertUseCase.execute(
                         AlertItem(
+                            alarmId = Random.nextInt(),
                             arabicName = arabicName,
                             englishName = englishName,
                             longitude = longitude,
                             latitude = latitude,
-                            time = timeStamp
+                            time = timeStamp,
+                            kind = "notification",
                         )
-
                     ).collectLatest { response ->
                         when (response) {
                             is Response.Success -> _snackBarFlow.emit("data saved successfully")
@@ -210,12 +218,21 @@ class MapViewModel @Inject constructor(
                         }
 
                     }
+
+                    _alertState.update { it.copy(saveState = true) }
                 } ?: run {
                     _snackBarFlow.emit(" something went wrong")
                 }
             }
         }
 
+    }
+
+    private fun updateAlertStateToScheduled(alert : AlertItem)
+    {
+        viewModelScope.launch(ioDispatcher) {
+              updateAlertUseCase.execute(alert.copy(scheduled =  true))
+        }
     }
 
     init {

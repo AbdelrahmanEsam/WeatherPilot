@@ -4,8 +4,7 @@ import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.repository.FakeRepository
 import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.domain.repository.Repository
-import com.example.weatherpilot.util.Response
-import kotlinx.coroutines.Dispatchers
+import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -13,12 +12,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.junit.Assert.*
 
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 

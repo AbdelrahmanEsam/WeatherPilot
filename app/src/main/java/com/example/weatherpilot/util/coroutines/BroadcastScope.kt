@@ -1,0 +1,22 @@
+package com.example.weatherpilot.util.coroutines
+
+import android.content.BroadcastReceiver
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+
+fun BroadcastReceiver.broadcastScope(
+    context: CoroutineContext = EmptyCoroutineContext,
+    block: suspend CoroutineScope.() -> Unit
+) {
+    val pendingResult = goAsync()
+    CoroutineScope(SupervisorJob()).launch(context) {
+        try {
+            block()
+        } finally {
+            pendingResult?.finish()
+        }
+    }
+}

@@ -5,11 +5,11 @@ import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.repository.Repository
 import javax.inject.Inject
 
-class DeleteAlertUseCase @Inject constructor(private val repository: Repository)  {
+class UpdateAlertUseCase @Inject constructor(private val repository: Repository){
 
-
-    suspend fun execute(item: AlertItem)
+    suspend fun execute(alert: AlertItem)
     {
-        repository.deleteAlertFromDatabase(item.toSavedAlert())
+        repository.updateAlert(alert.toSavedAlert())
     }
+
 }

@@ -1,5 +1,7 @@
 package com.example.weatherpilot.di
 
+import android.app.AlarmManager
+import android.app.NotificationManager
 import android.content.Context
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
@@ -8,8 +10,8 @@ import com.example.weatherpilot.BuildConfig
 import com.example.weatherpilot.data.remote.WeatherInterface
 import com.example.weatherpilot.data.repository.RepositoryImpl
 import com.example.weatherpilot.domain.repository.Repository
-import com.example.weatherpilot.util.ConnectivityObserver
-import com.example.weatherpilot.util.NetworkConnectivityObserver
+import com.example.weatherpilot.util.connectivity.ConnectivityObserver
+import com.example.weatherpilot.util.connectivity.NetworkConnectivityObserver
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferencesImpl
 import com.example.weatherpilot.data.local.room.AlertsDao
@@ -17,6 +19,8 @@ import com.example.weatherpilot.data.local.room.FavouritesDao
 import com.example.weatherpilot.data.local.room.LocalDataSource
 import com.example.weatherpilot.data.local.room.LocalDataSourceImpl
 import com.example.weatherpilot.data.local.room.WeatherDatabase
+import com.example.weatherpilot.util.alarm.AlarmScheduler
+import com.example.weatherpilot.util.alarm.AlarmSchedulerInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,6 +47,29 @@ object AppModule
         return context.getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
     }
 
+
+    @Singleton
+    @Provides
+    fun providesNotificationManager(@ApplicationContext context: Context) : NotificationManager
+    {
+        return context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
+
+    @Singleton
+    @Provides
+    fun providesAlarmManager(@ApplicationContext context: Context) : AlarmManager
+    {
+        return context.getSystemService(AlarmManager::class.java)
+    }
+
+
+    @Singleton
+    @Provides
+    fun providesAlarmScheduler(@ApplicationContext context: Context) : AlarmSchedulerInterface
+    {
+        return AlarmScheduler(context)
+    }
 
 
      @Singleton

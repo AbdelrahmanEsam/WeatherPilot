@@ -1,4 +1,4 @@
-package com.example.weatherpilot.util
+package com.example.weatherpilot.util.usescases
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView

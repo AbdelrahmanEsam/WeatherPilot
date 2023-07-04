@@ -67,7 +67,11 @@
 
 
 
-    <style name="DatePickerTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+
+
+
+
+    <style name="DatePickerTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
         <item name="android:buttonBarPositiveButtonStyle">@color/purple</item>
         <item name="colorPrimary">@color/purple</item>
         <item name="colorAccent">@color/purple</item>

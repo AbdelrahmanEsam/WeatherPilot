@@ -17,15 +17,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpilot.NavGraphDirections
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentNotificationsBinding
-import com.example.weatherpilot.presentation.favourites.FavouritesIntent
-import com.example.weatherpilot.util.swipeRecyclerItemListener
+import com.example.weatherpilot.domain.model.AlertItem
+import com.example.weatherpilot.util.alarm.AlarmSchedulerInterface
+import com.example.weatherpilot.util.usescases.swipeRecyclerItemListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class NotificationsFragment : Fragment() {
+class NotificationsFragment(private val alarmScheduler: AlarmSchedulerInterface) : Fragment() {
 
     private lateinit var binding: FragmentNotificationsBinding
 
@@ -41,10 +42,7 @@ class NotificationsFragment : Fragment() {
 
     private val viewModel: NotificationsViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,7 +69,10 @@ class NotificationsFragment : Fragment() {
         val linearLayoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         binding.alertsRecycler.swipeRecyclerItemListener { viewHolder ->
-            viewModel.onEvent(NotificationIntent.DeleteAlert(viewModel.alertsAndNotificationsState.value.alertsAndNotificationsList[viewHolder.adapterPosition]))
+
+            val deletedAlert = viewModel.alertsAndNotificationsState.value.alertsAndNotificationsList[viewHolder.adapterPosition]
+            viewModel.onEvent(NotificationIntent.DeleteAlert(deletedAlert))
+            alarmScheduler.cancel(deletedAlert)
         }
         binding.alertsRecycler.layoutManager = linearLayoutManager
         binding.alertsRecycler.adapter = alertAdapter
@@ -85,6 +86,8 @@ class NotificationsFragment : Fragment() {
                     alertsAndNotificationsState.alertsAndNotificationsList.let { alertsList ->
                         if (alertsList.isNotEmpty()){
                             alertAdapter.submitList(alertsList)
+                            scheduleNotificationsAndAlerts(alertsList.filter { !it.scheduled })
+
                             binding.alertsRecycler.visibility = View.VISIBLE
                             binding.noThingToShowImageView.visibility = View.GONE
                             binding.noFavouritesTextView.visibility = View.GONE
@@ -96,6 +99,21 @@ class NotificationsFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun scheduleNotificationsAndAlerts(alerts: List<AlertItem>)
+    {
+        alarmScheduler.schedule(alerts)
+        updateAlertsStates(alerts)
+
+    }
+
+    private fun updateAlertsStates(alerts: List<AlertItem>)
+    {
+        alerts.forEach {
+
+        viewModel.onEvent(NotificationIntent.UpdateAlertState(it))
         }
     }
 

@@ -6,8 +6,8 @@ import com.example.weatherpilot.data.dto.WeatherResponse
 import com.example.weatherpilot.domain.model.DayWeatherModel
 import com.example.weatherpilot.domain.model.HourWeatherModel
 import com.example.weatherpilot.domain.model.WeatherModel
-import com.example.weatherpilot.util.toDay
-import com.example.weatherpilot.util.toHour
+import com.example.weatherpilot.util.usescases.toDay
+import com.example.weatherpilot.util.usescases.toHour
 
 
 fun WeatherResponse.toWeatherModel(): WeatherModel {
@@ -24,7 +24,8 @@ fun WeatherResponse.toWeatherModel(): WeatherModel {
         description = current.weather[0].description,
         temp = current.temp,
         icon = current.weather[0].icon,
-        daysWeather = daily.map(Daily::toDayWeatherModel)
+        daysWeather = daily.map(Daily::toDayWeatherModel),
+        alertMessage = alerts?.first()?.description
     )
 }
 
@@ -41,7 +42,6 @@ fun Hourly.toHourWeatherModel(): HourWeatherModel = kotlin.run {
         wind = wind_speed.toInt(),
         description = weather[0].description,
         icon = weather[0].icon
-
     )
 }
 

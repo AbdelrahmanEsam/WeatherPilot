@@ -14,8 +14,24 @@
 
 
     <action
+        android:id="@+id/action_to_notificationFragment"
+        app:launchSingleTop="true"
+        app:popUpToInclusive="true"
+        app:popUpTo="@id/nav_graph"
+        app:destination="@id/notificationFragment" />
+
+
+    <action
         android:id="@+id/action_to_datePicker"
         app:destination="@id/datePickerFragment" />
+
+
+    <action
+        android:id="@+id/action_to_favourites"
+        app:launchSingleTop="true"
+        app:popUpToInclusive="true"
+        app:popUpTo="@id/nav_graph"
+        app:destination="@id/favouritesFragment" />
 
 
     <action
@@ -70,7 +86,7 @@
         android:label="fragment_main"
         tools:layout="@layout/fragment_home" >
         <argument
-            android:name="location"
+            android:name="locationType"
             app:argType="com.example.weatherpilot.domain.model.Location"
             app:nullable="true" />
     </fragment>

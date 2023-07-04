@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
+    android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
     android:background="@color/baby_blue"
     tools:context=".presentation.map.MapFragment">
 

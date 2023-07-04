@@ -3,7 +3,7 @@ package com.example.weatherpilot.domain.usecase
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.repository.FakeRepository
 import com.example.weatherpilot.domain.repository.Repository
-import com.example.weatherpilot.util.Response
+import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect

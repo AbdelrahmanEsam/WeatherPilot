@@ -1,5 +1,6 @@
 package com.example.weatherpilot.presentation.map
 
+import android.app.NotificationManager
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
@@ -26,8 +27,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpilot.NavGraphDirections
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentMapBinding
-import com.example.weatherpilot.util.getAddress
-import com.example.weatherpilot.util.searchFlow
+import com.example.weatherpilot.util.usescases.getAddress
+import com.example.weatherpilot.util.coroutines.searchFlow
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -47,7 +48,10 @@ import kotlinx.coroutines.withContext
 import java.util.Locale
 
 @AndroidEntryPoint
-class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
+class MapFragment(
+    private val ioDispatcher: CoroutineDispatcher,
+    private val notificationManager: NotificationManager
+) : Fragment() {
 
 
     private lateinit var binding: FragmentMapBinding
@@ -102,7 +106,7 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
                 }
 
                 getString(R.string.from_alerts_fragment) -> {
-                    if (viewModel.alertState.value.longitude.isBlank()){
+                    if (viewModel.alertState.value.longitude.isBlank()) {
                         viewModel.onEvent(MapIntent.ShowSnackBar(getString(R.string.please_choose_place_on_the_map)))
                         return@setOnClickListener
                     }
@@ -127,11 +131,11 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
                     getString(R.string.date),
                     ""
                 )?.collectLatest { date ->
-                    if (date.isNotEmpty()){
-                           viewModel.onEvent(MapIntent.SetAlarmDateIntent(date))
+                    if (date.isNotEmpty()) {
+                        viewModel.onEvent(MapIntent.SetAlarmDateIntent(date))
                         Handler(Looper.getMainLooper()).postDelayed({
-                            Log.d("datePicker",date)
-                           navController.navigate(NavGraphDirections.actionToTimePicker())
+                            Log.d("datePicker", date)
+                            navController.navigate(NavGraphDirections.actionToTimePicker())
                         }, 500)
                     }
                 }
@@ -148,17 +152,15 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
                     getString(R.string.time),
                     ""
                 )?.collectLatest { time ->
-                    if (time.isNotEmpty()){
+                    if (time.isNotEmpty()) {
                         viewModel.onEvent(MapIntent.SetAlarmTimeIntent(time))
                         viewModel.onEvent(MapIntent.SaveAlert)
+
                     }
                 }
         }
 
     }
-
-
-
 
 
     private fun backPressedHandler() {
@@ -300,7 +302,7 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
                 viewModel.favouriteState.collect {
                     when (it.saveState) {
                         true -> {
-                            navController.popBackStack()
+                            navController.navigate(NavGraphDirections.actionToFavourites())
                         }
 
                         false -> binding.progressBar.visibility = View.VISIBLE
@@ -325,7 +327,7 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
                 viewModel.alertState.collect {
                     when (it.saveState) {
                         true -> {
-                            navController.popBackStack()
+                           navController.navigate(NavGraphDirections.actionToNotificationFragment())
                         }
 
                         false -> binding.progressBar.visibility = View.VISIBLE
@@ -500,6 +502,12 @@ class MapFragment(private val ioDispatcher: CoroutineDispatcher) : Fragment() {
 
 
     }
+
+
+
+
+
+
 
 
 }

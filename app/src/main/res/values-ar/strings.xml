@@ -76,4 +76,12 @@
     <string name="from_alerts_fragment">from alerts Fragment</string>
     <string name="please_choose_place_on_the_map">من فضلك اختر مكانا</string>
     <string name="time">time</string>
+    <string name="broadcast_item">broadcastItem</string>
+    <string name="weather_state">حالة الطقس</string>
+    <string name="weather_is_fine_no_alerts_for_the_scheduled_period">الجو لطيف ولا يوجد اي تحذيرات للفترة المحددة </string>
+    <string name="weather_alert">تذكير</string>
+    <string name="alarm">alarm</string>
+    <string name="item_object">item object</string>
+
+
 </resources>

@@ -1,5 +1,8 @@
 package com.example.weatherpilot.presentation.map
 
+import com.example.weatherpilot.data.dto.Alert
+import com.example.weatherpilot.domain.model.AlertItem
+
 sealed interface MapIntent {
 
     object SaveDataToDataStore : MapIntent
@@ -35,6 +38,9 @@ sealed interface MapIntent {
 
 
     data class SetAlarmTimeIntent(val time : String) : MapIntent
+
+
+    data class UpdateAlertStateToScheduled(val alert : AlertItem) : MapIntent
 
 
 }

@@ -1,4 +1,4 @@
-package com.example.weatherpilot.util
+package com.example.weatherpilot.util.usescases
 
 sealed class Response<T>(
     val data : T? = null,

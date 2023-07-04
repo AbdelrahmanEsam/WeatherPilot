@@ -4,7 +4,7 @@ import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
-import com.example.weatherpilot.util.Response
+import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.flow.Flow
 
 
@@ -28,4 +28,7 @@ interface Repository {
     suspend fun deleteAlertFromDatabase(item: SavedAlert )
 
     fun getAlerts() : Flow<List<AlertItem>>
+
+
+    suspend fun updateAlert(alert: SavedAlert)
 }

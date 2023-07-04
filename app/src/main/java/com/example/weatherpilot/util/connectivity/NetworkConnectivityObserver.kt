@@ -1,8 +1,7 @@
-package com.example.weatherpilot.util
+package com.example.weatherpilot.util.connectivity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
-import com.example.weatherpilot.util.ConnectivityObserver
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

@@ -5,8 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.usecase.DeleteAlertUseCase
 import com.example.weatherpilot.domain.usecase.GetAllAlertsUseCase
-import com.example.weatherpilot.util.Dispatcher
-import com.example.weatherpilot.util.Dispatchers
+import com.example.weatherpilot.domain.usecase.UpdateAlertUseCase
+import com.example.weatherpilot.util.coroutines.Dispatcher
+import com.example.weatherpilot.util.coroutines.Dispatchers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +21,8 @@ import javax.inject.Inject
 class NotificationsViewModel @Inject constructor(
     @Dispatcher(Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val getAllAlertsUseCase: GetAllAlertsUseCase,
-    private val deleteAlertUseCase: DeleteAlertUseCase
+    private val deleteAlertUseCase: DeleteAlertUseCase,
+    private val updateAlertUseCase: UpdateAlertUseCase
 ) : ViewModel() {
 
 
@@ -44,6 +46,11 @@ class NotificationsViewModel @Inject constructor(
             }
 
 
+            is  NotificationIntent.UpdateAlertState ->{
+                updateAlertStateToScheduled(intent.alert)
+            }
+
+
         }
     }
 
@@ -58,6 +65,14 @@ class NotificationsViewModel @Inject constructor(
             getAllAlertsUseCase.execute().collectLatest { alertsList ->
                 _alertsAndNotificationsState.update { it.copy(alertsAndNotificationsList = alertsList) }
             }
+        }
+    }
+
+
+    private fun updateAlertStateToScheduled(alert : AlertItem)
+    {
+        viewModelScope.launch(ioDispatcher) {
+            updateAlertUseCase.execute(alert.copy(scheduled =  true))
         }
     }
 

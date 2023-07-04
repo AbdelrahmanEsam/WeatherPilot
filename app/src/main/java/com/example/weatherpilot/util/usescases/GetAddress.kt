@@ -1,4 +1,4 @@
-package com.example.weatherpilot.util
+package com.example.weatherpilot.util.usescases
 
 import android.location.Address
 import android.location.Geocoder

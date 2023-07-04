@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +30,7 @@ import com.example.weatherpilot.databinding.FragmentHomeBinding
 import com.example.weatherpilot.domain.model.DayWeatherModel
 import com.example.weatherpilot.domain.model.HourWeatherModel
 import com.example.weatherpilot.domain.model.Location
-import com.example.weatherpilot.util.ConnectivityObserver
+import com.example.weatherpilot.util.connectivity.ConnectivityObserver
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -133,6 +132,7 @@ class HomeFragment(
         setDaysRecyclerView()
         gpsLocationCallback()
         displayStateObserver()
+        latLongStateObserver(getFavouriteLocation())
         connectivityObserver()
 
         binding.refreshLayout.setOnRefreshListener {
@@ -191,6 +191,33 @@ class HomeFragment(
         binding.daysRecyclerView.layoutManager = linearLayoutManager
         binding.daysRecyclerView.adapter = daysAdapter
     }
+
+
+        private fun latLongStateObserver(location: Location?) {
+        lifecycleScope.launch {
+            viewModel.statePreferences.collectLatest {
+                location?.let {
+                    viewModel.onEvent(
+                        HomeIntent.FetchDataOfFavouriteLocation(
+                            it.longitude,
+                            it.latitude
+                        )
+                    )
+
+                } ?: kotlin.run {
+                    if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type))) {
+
+                        getLastLocationFromGPS()
+                    } else if (viewModel.statePreferences.value.locationType.equals(getString(R.string.map_type))) {
+                        viewModel.onEvent(HomeIntent.ReadLatLongFromDataStore)
+                    }
+                }
+
+            }
+        }
+    }
+
+
 
 
     private fun displayStateObserver() {
@@ -252,7 +279,7 @@ class HomeFragment(
         requestPermissionLauncher.launch(
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_COARSE_LOCATION,
             )
         )
     }

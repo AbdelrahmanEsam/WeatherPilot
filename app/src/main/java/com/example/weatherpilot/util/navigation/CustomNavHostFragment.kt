@@ -1,4 +1,4 @@
-package com.example.weatherpilot.util
+package com.example.weatherpilot.util.navigation
 
 import android.content.Context
 import androidx.navigation.fragment.NavHostFragment

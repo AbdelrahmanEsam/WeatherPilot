@@ -41,7 +41,7 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
             this,
             calender.get(Calendar.HOUR_OF_DAY),
             calender.get(Calendar.MINUTE),
-            false
+            true
         )
     }
 

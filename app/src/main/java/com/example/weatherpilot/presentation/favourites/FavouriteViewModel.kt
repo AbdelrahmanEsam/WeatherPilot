@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.usecase.DeleteFavouriteFavouriteUseCase
 import com.example.weatherpilot.domain.usecase.GetAllFavouritesUseCase
-import com.example.weatherpilot.util.Dispatcher
-import com.example.weatherpilot.util.Dispatchers
+import com.example.weatherpilot.util.coroutines.Dispatcher
+import com.example.weatherpilot.util.coroutines.Dispatchers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ class FavouriteViewModel
     private val getAllFavouritesUseCase: GetAllFavouritesUseCase,
     private val deleteFavouriteFavouriteUseCase: DeleteFavouriteFavouriteUseCase,
 
-): ViewModel() {
+    ): ViewModel() {
 
 
     private val _favouriteState : MutableStateFlow<FavouritesState> = MutableStateFlow(FavouritesState())

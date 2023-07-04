@@ -1,7 +1,6 @@
 package com.example.weatherpilot.presentation.favourites
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentFavouritesBinding
-import com.example.weatherpilot.presentation.main.DaysRecyclerAdapter
-import com.example.weatherpilot.util.swipeRecyclerItemListener
+import com.example.weatherpilot.util.usescases.swipeRecyclerItemListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

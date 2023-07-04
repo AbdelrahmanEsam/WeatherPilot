@@ -3,16 +3,14 @@ package com.example.weatherpilot.data.repository
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
-import com.example.weatherpilot.data.local.room.FavouritesDao
 import com.example.weatherpilot.data.local.room.LocalDataSource
 import com.example.weatherpilot.data.mappers.toAlertItem
-import com.example.weatherpilot.data.mappers.toLocation
 import com.example.weatherpilot.data.mappers.toWeatherModel
 import com.example.weatherpilot.data.remote.WeatherInterface
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.domain.repository.Repository
-import com.example.weatherpilot.util.Response
+import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -81,5 +79,9 @@ class RepositoryImpl @Inject constructor(
 
     override fun getAlerts(): Flow<List<AlertItem>> {
         return  localDataSource.getAlerts().map { it.map { savedAlert -> savedAlert.toAlertItem() } }
+    }
+
+    override suspend fun updateAlert(alert: SavedAlert) {
+       localDataSource.updateAlert(alert)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.weatherpilot.util
+package com.example.weatherpilot.util.connectivity
 
 import kotlinx.coroutines.flow.Flow
 

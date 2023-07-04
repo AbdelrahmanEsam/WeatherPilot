@@ -3,7 +3,7 @@ package com.example.weatherpilot.data.local.room
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
 import com.example.weatherpilot.domain.model.Location
-import com.example.weatherpilot.util.Response
+import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
@@ -20,4 +20,6 @@ interface LocalDataSource {
     suspend fun deleteAlertFromDatabase(item : SavedAlert )
 
     fun getAlerts() : Flow<List<SavedAlert>>
+
+    suspend fun updateAlert(alert: SavedAlert)
 }

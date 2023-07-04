@@ -1,10 +1,12 @@
 package com.example.weatherpilot.data.repository
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
+import com.example.weatherpilot.data.dto.SavedAlert
 import com.example.weatherpilot.data.mappers.toLocation
+import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.domain.repository.Repository
-import com.example.weatherpilot.util.Response
+import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -42,6 +44,22 @@ class FakeRepository : Repository  {
 
     override suspend fun deleteFavouriteLocation(longitude: String, latitude: String) {
        favourites.removeIf { it.longitude == longitude && it.latitude == latitude }
+    }
+
+    override suspend fun <T> insertAlertToDatabase(alert: SavedAlert): Flow<Response<T>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteAlertFromDatabase(item: SavedAlert) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAlerts(): Flow<List<AlertItem>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateAlert(alert: SavedAlert) {
+        TODO("Not yet implemented")
     }
 
 

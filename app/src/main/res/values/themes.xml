@@ -1,13 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.ًWeatherPilot" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.ًWeatherPilot" parent="Theme.Material3.Dark.NoActionBar">
         <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple</item>
         <item name="colorControlActivated">@color/baby_blue</item>
         <item name="android:colorForeground">@color/semi_white</item>
-        <item name="colorPrimary">@color/purple</item>
-        <item name="colorSecondary">@color/semi_white</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSecondary">@color/black</item>
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
     </style>
 </resources>

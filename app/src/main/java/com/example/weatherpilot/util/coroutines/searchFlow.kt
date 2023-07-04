@@ -1,4 +1,4 @@
-package com.example.weatherpilot.util
+package com.example.weatherpilot.util.coroutines
 
 import android.text.Editable
 import android.text.TextWatcher

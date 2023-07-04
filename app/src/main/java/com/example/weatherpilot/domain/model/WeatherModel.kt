@@ -12,5 +12,6 @@ data class WeatherModel(
     val clouds: Int,
     val description: String,
     val temp: Double,
-    val icon: String?
+    val icon: String?,
+    val alertMessage : String?
 )

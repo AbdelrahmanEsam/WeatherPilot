@@ -1,4 +1,4 @@
-package com.example.weatherpilot.util
+package com.example.weatherpilot.util.usescases
 
 import java.text.SimpleDateFormat
 import java.time.Instant

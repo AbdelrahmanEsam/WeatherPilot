@@ -4,7 +4,7 @@ import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
 import com.example.weatherpilot.data.mappers.toLocation
 import com.example.weatherpilot.domain.model.Location
-import com.example.weatherpilot.util.Response
+import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -46,11 +46,15 @@ class LocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteAlertFromDatabase(item : SavedAlert) {
-        alertsDao.delete(item.arabicName,item.englishName,item.longitude,item.latitude)
+        alertsDao.delete(item.id)
     }
 
     override fun getAlerts(): Flow<List<SavedAlert>> {
         return alertsDao.getAllAlerts()
+    }
+
+    override suspend fun updateAlert(alert: SavedAlert) {
+        alertsDao.update(alert)
     }
 
 

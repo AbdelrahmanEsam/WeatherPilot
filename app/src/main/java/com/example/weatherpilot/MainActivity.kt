@@ -1,9 +1,12 @@
 package com.example.weatherpilot
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
@@ -15,17 +18,16 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.databinding.ActivityMainBinding
-import com.example.weatherpilot.util.ConnectivityObserver
-import com.example.weatherpilot.util.Dispatcher
+import com.example.weatherpilot.util.connectivity.ConnectivityObserver
+import com.example.weatherpilot.util.coroutines.Dispatcher
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.example.weatherpilot.util.Dispatchers.*
+import com.example.weatherpilot.util.coroutines.Dispatchers.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -38,10 +40,14 @@ class MainActivity : AppCompatActivity() {
     @Inject
     @Dispatcher(IO)lateinit var ioDispatcher: CoroutineDispatcher
 
+    @Inject
+    lateinit var  notificationManager: NotificationManager
+
 
 
     @Inject
     lateinit var dataStore: DataStoreUserPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
@@ -50,6 +56,9 @@ class MainActivity : AppCompatActivity() {
         setupNavigation()
         currentFragmentObserver()
         langToRtlObserver()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel()
+        }
 
     }
 
@@ -62,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun currentFragmentObserver() {
-        navHostFragment.navController.addOnDestinationChangedListener { navController: NavController?, navDestination: NavDestination?, bundle: Bundle? ->
+        navHostFragment.navController.addOnDestinationChangedListener { _: NavController?, _: NavDestination?, _: Bundle? ->
             val currentDestination =
                 navHostFragment.navController.currentDestination!!.id
             if (currentDestination == R.id.splashFragment) {
@@ -95,6 +104,16 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel() {
+        Log.d("channel","channel is created")
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel( getString(R.string.weather_alert), getString(R.string.weather_alert), importance)
+        channel.description = getString(R.string.weather_alert)
+        notificationManager.createNotificationChannel(channel)
     }
 
 

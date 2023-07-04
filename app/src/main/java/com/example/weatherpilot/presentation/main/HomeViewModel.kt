@@ -7,9 +7,9 @@ import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.TempTransformerUseCase
 import com.example.weatherpilot.domain.usecase.WindSpeedTransformerUseCase
-import com.example.weatherpilot.util.Dispatcher
-import com.example.weatherpilot.util.Dispatchers
-import com.example.weatherpilot.util.Response
+import com.example.weatherpilot.util.coroutines.Dispatcher
+import com.example.weatherpilot.util.coroutines.Dispatchers
+import com.example.weatherpilot.util.usescases.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
