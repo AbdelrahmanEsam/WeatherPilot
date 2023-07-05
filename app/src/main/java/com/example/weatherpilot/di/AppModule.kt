@@ -7,6 +7,7 @@ import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import com.example.weatherpilot.BuildConfig
+import com.example.weatherpilot.R
 import com.example.weatherpilot.data.remote.WeatherInterface
 import com.example.weatherpilot.data.repository.RepositoryImpl
 import com.example.weatherpilot.domain.repository.Repository
@@ -54,6 +55,7 @@ object AppModule
     {
         return context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
     }
+
 
 
     @Singleton
@@ -109,7 +111,7 @@ object AppModule
     fun providesWeatherDatabase(@ApplicationContext applicationContext: Context): WeatherDatabase {
         return Room.databaseBuilder(
             applicationContext,
-            WeatherDatabase::class.java, "weather_database"
+            WeatherDatabase::class.java, applicationContext.getString(R.string.weather_database)
         ).build()
     }
 

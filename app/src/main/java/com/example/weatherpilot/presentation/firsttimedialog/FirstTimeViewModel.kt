@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
-import com.example.weatherpilot.util.coroutines.Dispatcher
-import com.example.weatherpilot.util.coroutines.Dispatchers
+import com.example.weatherpilot.util.hiltanotations.Dispatcher
+import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow

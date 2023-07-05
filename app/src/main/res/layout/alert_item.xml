@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -27,8 +28,31 @@
         android:background="@drawable/purple_rounded_background">
 
 
+        <TextView
+            android:id="@+id/alertNameTextView"
+            style="@style/p4"
+            setArabicOrEnglishAlert="@{alert}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:elevation="25dp"
+            android:textColor="@color/semi_white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
+        <TextView
+            android:id="@+id/weatherStateTextView"
+            style="@style/p4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            setTimer="@{alert}"
+            android:elevation="25dp"
+            android:textColor="@color/semi_white"
+            app:layout_constraintStart_toStartOf="@+id/alertNameTextView"
+            app:layout_constraintTop_toBottomOf="@+id/alertNameTextView" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

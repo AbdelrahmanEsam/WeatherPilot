@@ -21,9 +21,6 @@
         app:destination="@id/notificationFragment" />
 
 
-    <action
-        android:id="@+id/action_to_datePicker"
-        app:destination="@id/datePickerFragment" />
 
 
     <action
@@ -34,9 +31,7 @@
         app:destination="@id/favouritesFragment" />
 
 
-    <action
-        android:id="@+id/action_to_timePicker"
-        app:destination="@id/timePickerFragment" />
+
 
 
     <action
@@ -115,14 +110,5 @@
         android:name="com.example.weatherpilot.presentation.firsttimedialog.FirstTimeFragmentDialog"
         android:label="fragment_first_time_dialog"
         tools:layout="@layout/fragment_first_time_dialog" />
-    <dialog
-        android:id="@+id/datePickerFragment"
-        android:name="com.example.weatherpilot.presentation.datepicker.DatePickerFragment"
-        android:label="DatePickerFragment"
-        tools:layout="date"
-        />
-    <dialog
-        android:id="@+id/timePickerFragment"
-        android:name="com.example.weatherpilot.presentation.timepicker.TimePickerFragment"
-        android:label="TimePickerFragment" />
+
 </navigation>

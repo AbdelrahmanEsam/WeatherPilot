@@ -72,7 +72,6 @@
     <string name="grant">إمنح</string>
     <string name="connection_lost">يرجى الإتصال بالانترنت</string>
     <string name="search">إبحث</string>
-    <bool name="is_english">false</bool>
     <string name="from_alerts_fragment">from alerts Fragment</string>
     <string name="please_choose_place_on_the_map">من فضلك اختر مكانا</string>
     <string name="time">time</string>
@@ -82,6 +81,20 @@
     <string name="weather_alert">تذكير</string>
     <string name="alarm">alarm</string>
     <string name="item_object">item object</string>
+    <string name="ok">حسنا</string>
+    <string name="weather_database">weather_database</string>
 
 
+
+
+
+
+
+
+
+
+
+
+
+    <bool name="is_english">false</bool>
 </resources>

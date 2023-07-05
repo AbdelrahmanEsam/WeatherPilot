@@ -1,7 +1,7 @@
 package com.example.weatherpilot.di
 
-import com.example.weatherpilot.util.coroutines.Dispatcher
-import com.example.weatherpilot.util.coroutines.Dispatchers.*
+import com.example.weatherpilot.util.hiltanotations.Dispatcher
+import com.example.weatherpilot.util.hiltanotations.Dispatchers.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

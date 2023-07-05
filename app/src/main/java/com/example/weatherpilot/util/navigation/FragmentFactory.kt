@@ -1,6 +1,6 @@
 package com.example.weatherpilot.util.navigation
 
-import android.app.NotificationManager
+import android.location.Geocoder
 import android.location.LocationManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -11,8 +11,10 @@ import com.example.weatherpilot.presentation.notification.NotificationsFragment
 import com.example.weatherpilot.presentation.splash.SplashFragment
 import com.example.weatherpilot.util.alarm.AlarmSchedulerInterface
 import com.example.weatherpilot.util.connectivity.ConnectivityObserver
-import com.example.weatherpilot.util.coroutines.Dispatcher
-import com.example.weatherpilot.util.coroutines.Dispatchers
+import com.example.weatherpilot.util.hiltanotations.Dispatcher
+import com.example.weatherpilot.util.hiltanotations.Dispatchers
+import com.example.weatherpilot.util.hiltanotations.GeoCoder
+import com.example.weatherpilot.util.hiltanotations.GeoCoders
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,8 +28,9 @@ class FragmentFactory  @Inject constructor(
     private val dataStoreUserPreferences: DataStoreUserPreferences,
     @Dispatcher(Dispatchers.IO)private val ioDispatcher: CoroutineDispatcher,
     @Dispatcher(Dispatchers.Main)private val mainDispatcher: CoroutineDispatcher,
+    @GeoCoder (GeoCoders.EnglishGeoCoder) private val englishGeoCoder: Geocoder,
+    @GeoCoder (GeoCoders.ArabicGeoCoder) private val arabicGeoCoder: Geocoder,
     private val connectivityObserver: ConnectivityObserver,
-    private val notificationManager: NotificationManager,
 
     ): FragmentFactory() {
 
@@ -40,7 +43,7 @@ class FragmentFactory  @Inject constructor(
 
             MapFragment::class.java.name ->
             {
-                MapFragment(ioDispatcher,notificationManager)
+                MapFragment(ioDispatcher,englishGeoCoder,arabicGeoCoder)
             }
 
             SplashFragment::class.java.name ->

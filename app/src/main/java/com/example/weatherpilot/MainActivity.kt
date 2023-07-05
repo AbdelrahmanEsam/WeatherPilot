@@ -19,7 +19,7 @@ import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.databinding.ActivityMainBinding
 import com.example.weatherpilot.util.connectivity.ConnectivityObserver
-import com.example.weatherpilot.util.coroutines.Dispatcher
+import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.example.weatherpilot.util.coroutines.Dispatchers.*
+import com.example.weatherpilot.util.hiltanotations.Dispatchers.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

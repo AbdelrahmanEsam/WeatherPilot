@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.example.weatherpilot.domain.usecase.GetAllAlertsUseCase
-import com.example.weatherpilot.util.coroutines.Dispatcher
-import com.example.weatherpilot.util.coroutines.Dispatchers
+import com.example.weatherpilot.util.hiltanotations.Dispatcher
+import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import com.example.weatherpilot.util.alarm.AlarmSchedulerInterface
 import com.example.weatherpilot.util.coroutines.broadcastScope
 import dagger.hilt.android.AndroidEntryPoint

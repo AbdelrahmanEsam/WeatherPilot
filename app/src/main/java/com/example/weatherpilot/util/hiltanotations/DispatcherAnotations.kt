@@ -1,4 +1,4 @@
-package com.example.weatherpilot.util.coroutines
+package com.example.weatherpilot.util.hiltanotations
 
 import javax.inject.Qualifier
 

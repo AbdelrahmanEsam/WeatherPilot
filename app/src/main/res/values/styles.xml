@@ -71,11 +71,54 @@
 
 
 
-    <style name="DatePickerTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
-        <item name="android:buttonBarPositiveButtonStyle">@color/purple</item>
-        <item name="colorPrimary">@color/purple</item>
-        <item name="colorAccent">@color/purple</item>
+    <style name="DatePickerTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="android:buttonBarPositiveButtonStyle">@style/positiveButtonStyle</item>
+        <item name="colorPrimary">@color/baby_blue</item>
+        <item name="colorSecondary">@color/baby_blue</item>
+        <item name="android:colorAccent">@color/baby_blue</item>
+        <item name="cardCornerRadius">@dimen/_15sdp</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+        <item name="android:headerBackground">@color/baby_blue</item>
+        <item name="materialCalendarHeaderTitle">@style/date_text_appearance</item>
     </style>
+
+
+    <style name="date_text_appearance" parent="@style/TextAppearance.AppCompat">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+
+    <style name="positiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/baby_blue</item>
+        <item name="cornerRadius">@dimen/_5sdp</item>
+
+    </style>
+
+
+    <style name="headerDatePickerStyle" parent="@android:style/Widget.Material.Light.DatePicker">
+        <item name="android:headerBackground">@color/baby_blue</item>
+    </style>
+
+
+    <style name="timePickerTheme" parent="ThemeOverlay.Material3.MaterialTimePicker">
+        <item name="android:buttonBarPositiveButtonStyle">@color/baby_blue</item>
+        <item name="colorPrimary">@color/baby_blue</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorTertiary">@color/baby_blue</item>
+    </style>
+
+
+
+    <style name="TextAppearance.TimePickerDialogStyle.TimeLabel" parent="@android:style/TextAppearance.Material">
+        <item name="android:textColor">@color/white</item>
+
+    </style>
+
+
 
 
     <style name="switchStyle" parent="Theme.AppCompat.Light">

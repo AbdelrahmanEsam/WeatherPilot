@@ -6,6 +6,3 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class WeatherPilotApplication : Application()
-{
-
-}

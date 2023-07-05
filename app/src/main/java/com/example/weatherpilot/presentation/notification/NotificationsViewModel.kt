@@ -6,8 +6,8 @@ import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.usecase.DeleteAlertUseCase
 import com.example.weatherpilot.domain.usecase.GetAllAlertsUseCase
 import com.example.weatherpilot.domain.usecase.UpdateAlertUseCase
-import com.example.weatherpilot.util.coroutines.Dispatcher
-import com.example.weatherpilot.util.coroutines.Dispatchers
+import com.example.weatherpilot.util.hiltanotations.Dispatcher
+import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow

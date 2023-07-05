@@ -75,7 +75,6 @@
     <string name="search">search</string>
     <string name="from_alerts_fragment">from alerts Fragment</string>
     <string name="please_choose_place_on_the_map">please choose place on the map</string>
-    <bool name="is_english">true</bool>
     <string name="time">time</string>
     <string name="broadcast_item">broadcastItem</string>
     <string name="weather_state">weather state</string>
@@ -83,5 +82,10 @@
     <string name="weather_alert">weather alert</string>
     <string name="alarm">alarm</string>
     <string name="item_object">item object</string>
+    <string name="ok">OK</string>
+    <string name="weather_database">weather_database</string>
 
+
+    <bool name="is_english">true</bool>
+   
 </resources>

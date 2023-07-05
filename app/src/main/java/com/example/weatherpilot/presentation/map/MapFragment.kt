@@ -35,7 +35,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.timepicker.MaterialTimePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -45,12 +48,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Calendar
 import java.util.Locale
 
 @AndroidEntryPoint
 class MapFragment(
     private val ioDispatcher: CoroutineDispatcher,
-    private val notificationManager: NotificationManager
+    private val englishGeoCoder: Geocoder ,
+    private val  arabicGeoCoder: Geocoder
 ) : Fragment() {
 
 
@@ -58,15 +63,12 @@ class MapFragment(
     private lateinit var navController: NavController
     private var previousDestination: String? = null
 
-    private val englishGeoCoder by lazy { Geocoder(requireContext(), Locale.US) }
-    private val arabicGeoCoder by lazy {
-        Geocoder(
-            requireContext(),
-            Locale(getString(R.string.ar))
-        )
-    }
+
 
     private val viewModel: MapViewModel by viewModels()
+
+
+    private val calender by lazy { Calendar.getInstance() }
 
 
     private val searchAdapter by lazy {
@@ -77,6 +79,18 @@ class MapFragment(
 
     private val supportMapFragment: SupportMapFragment by lazy {
         childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
+    }
+
+
+    private val datePicker : MaterialDatePicker<Long> by lazy {
+        MaterialDatePicker.Builder.datePicker().setCalendarConstraints(
+            CalendarConstraints.Builder().setStart(MaterialDatePicker.todayInUtcMilliseconds()).build()).build()
+    }
+
+    private val timePicker : MaterialTimePicker by lazy {
+        MaterialTimePicker.Builder().setHour( calender.get(Calendar.HOUR_OF_DAY),
+        ).setMinute(calender.get(Calendar.MINUTE)).setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
+            .setTheme(R.style.timePickerTheme).build()
     }
 
     override fun onCreateView(
@@ -110,13 +124,34 @@ class MapFragment(
                         viewModel.onEvent(MapIntent.ShowSnackBar(getString(R.string.please_choose_place_on_the_map)))
                         return@setOnClickListener
                     }
-                    navController.navigate(NavGraphDirections.actionToDatePicker())
+                    datePicker.show(parentFragmentManager,"")
 
                 }
 
                 else -> {
                     viewModel.onEvent(MapIntent.SaveDataToDataStore)
                 }
+            }
+        }
+
+
+
+        datePicker.addOnPositiveButtonClickListener {
+            calender.timeInMillis = it
+            val year = calender.get(Calendar.YEAR)
+            val month = calender.get(Calendar.MONTH)
+            val day = calender.get(Calendar.DAY_OF_MONTH)
+            viewModel.onEvent(MapIntent.SetAlarmDateIntent("$year $month $day"))
+            timePicker.show(parentFragmentManager,"")
+        }
+
+
+
+        timePicker.addOnPositiveButtonClickListener {
+
+            with(timePicker) {
+                viewModel.onEvent(MapIntent.SetAlarmTimeIntent("$hour $minute"))
+                viewModel.onEvent(MapIntent.SaveAlert)
             }
         }
 
@@ -455,7 +490,7 @@ class MapFragment(
 
             val cameraPosition = CameraPosition.Builder()
                 .target(latLong)
-                .zoom(15f)
+                .zoom(5f)
                 .build()
             googleMap.animateCamera(
                 CameraUpdateFactory.newCameraPosition(cameraPosition),
@@ -502,6 +537,10 @@ class MapFragment(
 
 
     }
+
+
+
+
 
 
 

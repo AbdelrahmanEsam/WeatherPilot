@@ -37,4 +37,13 @@ fun Long.toDay() : String
 }
 
 
+fun Long.toDate() : String
+{
+
+    val date = Date(this)
+    val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+    return formatter.format(date).toString()
+}
+
+
 

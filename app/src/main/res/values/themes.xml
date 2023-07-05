@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.ًWeatherPilot" parent="Theme.Material3.Dark.NoActionBar">
+    <style name="Theme.ًWeatherPilot" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple</item>
         <item name="colorControlActivated">@color/baby_blue</item>

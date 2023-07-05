@@ -66,7 +66,7 @@ class SplashFragment(
                             )
                         }
                         getString(R.string.map_type) -> {
-                            readPrefFromDataStore(getString(R.string.latitude),dataStore){  latitude ->
+                            readPrefFromDataStore(getString(R.string.latitudeType),dataStore){  latitude ->
                                 latitude?.let {
                                     navController.navigate( SplashFragmentDirections.actionSplashFragmentToHomeFragment(
                                         null

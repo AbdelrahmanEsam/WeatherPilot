@@ -50,6 +50,7 @@ class HomeFragment(
     private val connectivityObserver: ConnectivityObserver,
     private val ioDispatcher: CoroutineDispatcher,
     private val mainDispatcher: CoroutineDispatcher
+
 ) : Fragment() {
 
 
@@ -128,11 +129,12 @@ class HomeFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+        getFavouriteLocation()
         setHoursRecyclerView()
         setDaysRecyclerView()
         gpsLocationCallback()
         displayStateObserver()
-        latLongStateObserver(getFavouriteLocation())
+        latLongStateObserver()
         connectivityObserver()
 
         binding.refreshLayout.setOnRefreshListener {
@@ -157,13 +159,23 @@ class HomeFragment(
     }
 
 
-    private fun getFavouriteLocation(): Location? {
+    private fun getFavouriteLocation(){
         val location = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(getString(R.string.locationType), Location::class.java)
         } else {
             arguments?.getParcelable(getString(R.string.locationType))
         }
-        return location
+
+
+        location?.let {
+            viewModel.onEvent(
+                HomeIntent.FetchDataOfFavouriteLocation(
+                    it.longitude,
+                    it.latitude
+                )
+            )
+
+        }
     }
 
 
@@ -193,26 +205,15 @@ class HomeFragment(
     }
 
 
-        private fun latLongStateObserver(location: Location?) {
+        private fun latLongStateObserver() {
         lifecycleScope.launch {
             viewModel.statePreferences.collectLatest {
-                location?.let {
-                    viewModel.onEvent(
-                        HomeIntent.FetchDataOfFavouriteLocation(
-                            it.longitude,
-                            it.latitude
-                        )
-                    )
-
-                } ?: kotlin.run {
                     if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type))) {
 
                         getLastLocationFromGPS()
                     } else if (viewModel.statePreferences.value.locationType.equals(getString(R.string.map_type))) {
                         viewModel.onEvent(HomeIntent.ReadLatLongFromDataStore)
                     }
-                }
-
             }
         }
     }
@@ -247,17 +248,15 @@ class HomeFragment(
 
     private fun connectivityObserver() {
         lifecycleScope.launch(ioDispatcher) {
-            connectivityObserver.observe().collect { status ->
+            connectivityObserver.observe().collectLatest { status ->
                 withContext(mainDispatcher) {
                     if (status == ConnectivityObserver.Status.Lost || status == ConnectivityObserver.Status.Unavailable) {
-
                         binding.connectionLostDialog.visibility = View.VISIBLE
                         binding.contentLayout.visibility = View.GONE
                     }
 
 
-                    if (status == ConnectivityObserver.Status.Available) {
-                        binding.connectionLostDialog.visibility = View.GONE
+                    if (status == ConnectivityObserver.Status.Available && checkPermission()) {
                         loadingAndFetchData()
                     }
                 }
