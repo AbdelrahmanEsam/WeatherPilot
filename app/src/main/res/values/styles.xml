@@ -106,4 +106,10 @@
         <item name="dialogCornerRadius">@dimen/_20sdp</item>
     </style>
 
+    <style name="myDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="dialogCornerRadius">@dimen/_20sdp</item>
+        ...
+    </style>
+
 </resources>

@@ -2,6 +2,7 @@ package com.example.weatherpilot.data.repository
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
+import com.example.weatherpilot.data.mappers.toAlertItem
 import com.example.weatherpilot.data.mappers.toLocation
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.flowOf
 class FakeRepository : Repository  {
 
     private val favourites : MutableList<FavouriteLocation> = mutableListOf()
+    private val alerts : MutableList<SavedAlert> = mutableListOf()
 
 
     override suspend fun <T> getWeatherResponse(
@@ -47,19 +49,21 @@ class FakeRepository : Repository  {
     }
 
     override suspend fun <T> insertAlertToDatabase(alert: SavedAlert): Flow<Response<T>> {
-        TODO("Not yet implemented")
+        alerts.add(alert)
+        return  flowOf(Response.Success("success" as T))
     }
 
     override suspend fun deleteAlertFromDatabase(item: SavedAlert) {
-        TODO("Not yet implemented")
+        alerts.remove(item)
     }
 
     override fun getAlerts(): Flow<List<AlertItem>> {
-        TODO("Not yet implemented")
+    return  flowOf(alerts.map(SavedAlert::toAlertItem))
     }
 
     override suspend fun updateAlert(alert: SavedAlert) {
-        TODO("Not yet implemented")
+       alerts.removeIf { it.time == alert.time }
+        alerts.add(alert)
     }
 
 

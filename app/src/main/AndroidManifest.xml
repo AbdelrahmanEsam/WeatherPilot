@@ -26,6 +26,7 @@
         tools:targetApi="33" >
         <activity
             android:name=".MainActivity"
+
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,6 +39,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBv5Jr1w1ZVJ6TqYsfx8mD1plZ4lmX5WZs"/>
 
+
+        <receiver android:name=".util.receiver.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
+        </receiver>
 
         <receiver android:name=".util.receiver.NotificationReceiver"
             android:enabled="true"

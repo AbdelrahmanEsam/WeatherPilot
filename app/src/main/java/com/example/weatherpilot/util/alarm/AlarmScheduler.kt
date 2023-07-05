@@ -18,15 +18,16 @@ class AlarmScheduler(
 
 
 
-   private  val alarmManager  = context.getSystemService(AlarmManager::class.java)
+    private val alarmManager  = context.getSystemService(AlarmManager::class.java)
 
     @SuppressLint("MissingPermission")
     override fun schedule(items: List<AlertItem>) {
+        Log.d("alarm scheduler","alarm scheduler")
         items.forEach { item ->
             val intent = Intent(
                 context,
                 if (item.kind == context.getString(R.string.alarm))
-                    AlarmReceiver::class.java else NotificationReceiver::class.java
+                    AlarmReceiver::class.java else AlarmReceiver::class.java
             ).apply {
                 putExtra(context.getString(R.string.broadcast_item), item)
             }
