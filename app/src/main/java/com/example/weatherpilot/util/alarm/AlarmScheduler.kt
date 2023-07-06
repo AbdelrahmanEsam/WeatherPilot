@@ -13,12 +13,13 @@ import com.example.weatherpilot.util.receiver.NotificationReceiver
 import javax.inject.Inject
 
 class AlarmScheduler(
-    private val context: Context
+    private val context: Context,
+    private val alarmManager: AlarmManager
 ) : AlarmSchedulerInterface {
 
 
 
-    private val alarmManager  = context.getSystemService(AlarmManager::class.java)
+
 
     @SuppressLint("MissingPermission")
     override fun schedule(items: List<AlertItem>) {

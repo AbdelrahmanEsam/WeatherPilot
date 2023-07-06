@@ -3,6 +3,7 @@ package com.example.weatherpilot.presentation.main
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
@@ -49,8 +50,7 @@ class HomeFragment(
     private val locationManager: LocationManager,
     private val connectivityObserver: ConnectivityObserver,
     private val ioDispatcher: CoroutineDispatcher,
-    private val mainDispatcher: CoroutineDispatcher
-
+    private val mainDispatcher: CoroutineDispatcher,
 ) : Fragment() {
 
 
@@ -221,6 +221,8 @@ class HomeFragment(
 
 
 
+
+
     private fun displayStateObserver() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -232,6 +234,8 @@ class HomeFragment(
                     if (state.dayState.isNotEmpty()) {
                         setDaysDataToRecyclerView(state.weekState)
                     }
+
+
 
                     state.loading?.let { loading ->
 

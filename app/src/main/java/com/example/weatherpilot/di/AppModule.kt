@@ -49,6 +49,10 @@ object AppModule
     }
 
 
+
+
+
+
     @Singleton
     @Provides
     fun providesNotificationManager(@ApplicationContext context: Context) : NotificationManager
@@ -68,9 +72,9 @@ object AppModule
 
     @Singleton
     @Provides
-    fun providesAlarmScheduler(@ApplicationContext context: Context) : AlarmSchedulerInterface
+    fun providesAlarmScheduler(@ApplicationContext context: Context,alarmManager: AlarmManager) : AlarmSchedulerInterface
     {
-        return AlarmScheduler(context)
+        return AlarmScheduler(context,alarmManager)
     }
 
 

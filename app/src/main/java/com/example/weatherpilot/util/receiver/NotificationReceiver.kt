@@ -19,6 +19,7 @@ import com.example.weatherpilot.util.coroutines.broadcastScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -42,55 +43,71 @@ class NotificationReceiver : BroadcastReceiver() {
 
 
     @Inject
-    @Dispatcher(Dispatchers.IO)lateinit var ioDispatcher: CoroutineDispatcher
-
-    override fun onReceive(context: Context, intent: Intent) {
-
+    @Dispatcher(Dispatchers.IO)
+    lateinit var ioDispatcher: CoroutineDispatcher
 
 
-        val alertItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(
-                context.getString(R.string.broadcast_item),
-                AlertItem::class.java
-            )
-        } else {
-            intent.getParcelableExtra(context.getString(R.string.broadcast_item))
-        }
-        Log.d("scheduler", "out")
-        alertItem?.let {
-            deleteAlert(alertItem)
-            getWeatherAlert(context,alertItem){
-                notificationBuilder(context, it)
+    @Inject
+    @Dispatcher(Dispatchers.Main)
+    lateinit var mainDispatcher: CoroutineDispatcher
+    override fun onReceive(context: Context, intent: Intent) = broadcastScope(mainDispatcher) {
+        withContext(ioDispatcher) {
+            val notificationEnabled =
+                readStringFromDataStoreUseCase.execute(context.getString(R.string.notificationtype))
+                    .first()
+           if (notificationEnabled == context.getString(R.string.enabled_type)  || notificationEnabled.isNullOrEmpty()) {
+                withContext(mainDispatcher) {
+                    val alertItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        intent.getParcelableExtra(
+                            context.getString(R.string.broadcast_item),
+                            AlertItem::class.java
+                        )
+                    } else {
+                        intent.getParcelableExtra(context.getString(R.string.broadcast_item))
+                    }
+                    alertItem?.let {
+                        deleteAlert(alertItem)
+                        getWeatherAlert(context, alertItem) {
+                            notificationBuilder(context, it)
+                        }
+
+
+                    }
+
+
+                }
+
             }
-
-
         }
-
     }
 
 
-    private suspend fun getDataStorePrefLanguage( language :  suspend (String?) ->Unit )
-    {
-            language(readStringFromDataStoreUseCase.execute("languageType").first())
+    private suspend fun getDataStorePrefLanguage(language: suspend (String?) -> Unit) {
+        language(readStringFromDataStoreUseCase.execute("languageType").first())
     }
 
-    private fun getWeatherAlert(context: Context,alertItem: AlertItem,alertMessageCallback: (AlertItem) -> Unit )
-    {
+    private fun getWeatherAlert(
+        context: Context,
+        alertItem: AlertItem,
+        alertMessageCallback: (AlertItem) -> Unit
+    ) {
         broadcastScope(ioDispatcher) {
             getDataStorePrefLanguage {
 
-           val response =  getWeatherDataUseCase.execute(alertItem.longitude,alertItem.latitude,it ?: context.getString(R.string.en))
+                val response = getWeatherDataUseCase.execute(
+                    alertItem.longitude,
+                    alertItem.latitude,
+                    it ?: context.getString(R.string.en)
+                )
 
-                val updatedAlert = response.first().data?.description?.let {desc ->
-                    alertItem.copy(message = desc) }
+                val updatedAlert = response.first().data?.description?.let { desc ->
+                    alertItem.copy(message = desc)
+                }
                 alertMessageCallback(updatedAlert ?: alertItem)
             }
 
         }
     }
-
-
-
 
 
     private fun notificationBuilder(context: Context, alertItem: AlertItem) {
@@ -113,8 +130,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
 
-    private fun deleteAlert(alertItem: AlertItem)
-    {
+    private fun deleteAlert(alertItem: AlertItem) {
         broadcastScope(ioDispatcher) {
             deleteAlertUseCase.execute(alertItem)
         }

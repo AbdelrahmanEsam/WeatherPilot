@@ -1,13 +1,9 @@
 package com.example.weatherpilot.presentation.map
 
-import android.app.NotificationManager
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +45,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
-import java.util.Locale
 
 @AndroidEntryPoint
 class MapFragment(
@@ -83,7 +78,7 @@ class MapFragment(
 
 
     private val datePicker : MaterialDatePicker<Long> by lazy {
-        MaterialDatePicker.Builder.datePicker().setCalendarConstraints(
+        MaterialDatePicker.Builder.datePicker().setTheme(R.style.datePickerTheme).setCalendarConstraints(
             CalendarConstraints.Builder().setStart(MaterialDatePicker.todayInUtcMilliseconds()).build()).build()
     }
 
@@ -158,44 +153,7 @@ class MapFragment(
 
     }
 
-    private fun datePickerFlowObserver() {
 
-        lifecycleScope.launch {
-            navController
-                .currentBackStackEntry?.savedStateHandle?.getStateFlow(
-                    getString(R.string.date),
-                    ""
-                )?.collectLatest { date ->
-                    if (date.isNotEmpty()) {
-                        viewModel.onEvent(MapIntent.SetAlarmDateIntent(date))
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            Log.d("datePicker", date)
-                            navController.navigate(NavGraphDirections.actionToTimePicker())
-                        }, 500)
-                    }
-                }
-        }
-
-    }
-
-
-    private fun timePickerFlowObserver() {
-
-        lifecycleScope.launch {
-            navController
-                .currentBackStackEntry?.savedStateHandle?.getStateFlow(
-                    getString(R.string.time),
-                    ""
-                )?.collectLatest { time ->
-                    if (time.isNotEmpty()) {
-                        viewModel.onEvent(MapIntent.SetAlarmTimeIntent(time))
-                        viewModel.onEvent(MapIntent.SaveAlert)
-
-                    }
-                }
-        }
-
-    }
 
 
     private fun backPressedHandler() {
@@ -293,8 +251,6 @@ class MapFragment(
 
             getString(R.string.from_alerts_fragment) -> {
                 favouriteStateObserver()
-                datePickerFlowObserver()
-                timePickerFlowObserver()
             }
 
             else -> {

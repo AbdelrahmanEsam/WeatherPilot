@@ -71,18 +71,10 @@
 
 
 
-    <style name="DatePickerTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+    <style name="datePickerTheme" parent="ThemeOverlay.Material3.MaterialCalendar">
         <item name="android:buttonBarPositiveButtonStyle">@style/positiveButtonStyle</item>
         <item name="colorPrimary">@color/baby_blue</item>
-        <item name="colorSecondary">@color/baby_blue</item>
-        <item name="android:colorAccent">@color/baby_blue</item>
-        <item name="cardCornerRadius">@dimen/_15sdp</item>
-        <item name="android:background">@color/white</item>
-        <item name="android:textColorPrimary">@color/black</item>
-        <item name="android:textColorSecondary">@color/black</item>
-        <item name="android:textColorPrimaryInverse">@color/white</item>
-        <item name="android:headerBackground">@color/baby_blue</item>
-        <item name="materialCalendarHeaderTitle">@style/date_text_appearance</item>
+        <item name="colorOnPrimary">@color/white</item>
     </style>
 
 
