@@ -5,8 +5,8 @@ import androidx.databinding.BindingAdapter
 import com.example.weatherpilot.R
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
+import com.example.weatherpilot.domain.model.SearchItem
 import com.example.weatherpilot.util.usescases.toDate
-import java.util.Locale
 
 
 object TextAdapters {
@@ -85,5 +85,28 @@ object TextAdapters {
         }
 
 
+    }
+
+
+    @JvmStatic
+    @BindingAdapter("setSearchResultNameWithLang")
+    fun setSearchResultNameWithLang(textView: TextView, item: SearchItem?)
+    {
+
+        item?.let {
+                textView.text =   if (textView.context.resources.getBoolean(R.bool.is_english)) item.name else  item.LocalNames?.ar
+        }
+    }
+
+
+    @JvmStatic
+    @BindingAdapter("setSearchResultStateWithLang")
+    fun setSearchResultStateWithLang(textView: TextView, item: SearchItem?)
+    {
+
+        item?.let {
+           val address = item.state+" "+ item.country
+            textView.text =    address
+        }
     }
 }

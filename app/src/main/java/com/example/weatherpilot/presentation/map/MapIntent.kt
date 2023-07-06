@@ -43,4 +43,10 @@ sealed interface MapIntent {
     data class UpdateAlertStateToScheduled(val alert : AlertItem) : MapIntent
 
 
+    data class SearchCityName(val cityName : String) : MapIntent
+
+
+    object ClearSearchList : MapIntent
+
+
 }

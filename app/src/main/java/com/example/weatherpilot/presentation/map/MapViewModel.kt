@@ -1,5 +1,6 @@
 package com.example.weatherpilot.presentation.map
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.model.AlertItem
@@ -9,6 +10,7 @@ import com.example.weatherpilot.domain.usecase.InsertAlertUseCase
 import com.example.weatherpilot.domain.usecase.InsertNewFavouriteUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.SearchCityByNameUseCase
 import com.example.weatherpilot.domain.usecase.UpdateAlertUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
@@ -37,7 +39,8 @@ class MapViewModel @Inject constructor(
     private val readStringFromDataStoreUseCase: ReadStringFromDataStoreUseCase,
     private val insertAlertUseCase: InsertAlertUseCase,
     private val getTimeStampUseCase: GetTimeStampUseCase,
-    private val updateAlertUseCase: UpdateAlertUseCase
+    private val updateAlertUseCase: UpdateAlertUseCase,
+    private val searchCityByNameUseCase: SearchCityByNameUseCase
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<MapState.RegularMapState> =
@@ -53,6 +56,12 @@ class MapViewModel @Inject constructor(
     private val _alertState: MutableStateFlow<MapState.AlertMapState> =
         MutableStateFlow(MapState.AlertMapState())
     val alertState = _alertState.asStateFlow()
+
+
+
+    private val _searchResultState: MutableStateFlow<MapState.SearchResultState> =
+        MutableStateFlow(MapState.SearchResultState())
+    val searchResultState = _searchResultState.asStateFlow()
 
 
     private val _snackBarFlow: MutableSharedFlow<String> = MutableSharedFlow()
@@ -80,7 +89,7 @@ class MapViewModel @Inject constructor(
                         }
                     }
 
-                    "from favourite fragment" -> {
+                    "from favourite Fragment" -> {
                         _favouriteState.update { it.copy(mapLoadingState = false) }
                     }
 
@@ -131,6 +140,14 @@ class MapViewModel @Inject constructor(
             is MapIntent.UpdateAlertStateToScheduled ->{
                  updateAlertStateToScheduled(intent.alert)
              }
+
+            is MapIntent.SearchCityName -> {
+                searchCityByName(intent.cityName)
+            }
+
+            MapIntent.ClearSearchList -> {
+                _searchResultState.update { it.copy(searchResult  = null,) }
+            }
         }
 
     }
@@ -232,6 +249,27 @@ class MapViewModel @Inject constructor(
     {
         viewModelScope.launch(ioDispatcher) {
               updateAlertUseCase.execute(alert.copy(scheduled =  true))
+        }
+    }
+
+
+    private fun searchCityByName(cityName : String)
+    {
+        viewModelScope.launch(ioDispatcher) {
+            searchCityByNameUseCase.execute(cityName).collect { searchResponse ->
+
+                when(searchResponse){
+                    is Response.Failure -> {
+                        _searchResultState.update { it.copy(loading = false) }
+                    }
+                    is Response.Loading ->{
+                        _searchResultState.update { it.copy(loading = true) }
+                    }
+                    is Response.Success -> {
+                        _searchResultState.update { it.copy(searchResult = searchResponse.data, loading = false) }
+                    }
+                }
+            }
         }
     }
 

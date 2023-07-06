@@ -12,6 +12,9 @@ interface Repository {
 
     suspend fun <T> getWeatherResponse(longitude: String, latitude: String, language: String)  : Flow<Response<T>>
 
+
+    suspend fun <T> getSearchResponse(search : String) : Flow<Response<T>>
+
     suspend fun saveStringToDataStore(key : String , value : String)
 
 

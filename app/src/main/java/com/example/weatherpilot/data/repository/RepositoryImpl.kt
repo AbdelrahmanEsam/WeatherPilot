@@ -2,9 +2,12 @@ package com.example.weatherpilot.data.repository
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
+import com.example.weatherpilot.data.dto.SearchResponseItem
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.data.local.room.LocalDataSource
 import com.example.weatherpilot.data.mappers.toAlertItem
+import com.example.weatherpilot.data.mappers.toSearchItem
+import com.example.weatherpilot.data.mappers.toSearchResponse
 import com.example.weatherpilot.data.mappers.toWeatherModel
 import com.example.weatherpilot.data.remote.WeatherInterface
 import com.example.weatherpilot.domain.model.AlertItem
@@ -36,6 +39,26 @@ class RepositoryImpl @Inject constructor(
                         latitude = latitude,
                         lang = language
                     ).toWeatherModel() as T
+                )
+            )
+        } catch (e: Exception) {
+            flowOf(Response.Failure(e.message ?: "error"))
+        } catch (e: HttpException) {
+            flowOf(Response.Failure(e.message ?: "Something went wrong"))
+        } catch (e: IOException) {
+            flowOf(Response.Failure("Please check your network connection"))
+        } catch (e: Exception) {
+            flowOf(Response.Failure("Something went wrong"))
+        }
+    }
+
+    override suspend fun <T> getSearchResponse(search: String): Flow<Response<T>> {
+        return try {
+            flowOf(
+                Response.Success(
+                    remote.searchCityByName(
+                     search
+                    ).toSearchResponse() as T
                 )
             )
         } catch (e: Exception) {

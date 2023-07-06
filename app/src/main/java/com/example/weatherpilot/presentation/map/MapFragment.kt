@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +24,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpilot.NavGraphDirections
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentMapBinding
-import com.example.weatherpilot.util.usescases.getAddress
+import com.example.weatherpilot.domain.model.SearchItem
 import com.example.weatherpilot.util.coroutines.searchFlow
+import com.example.weatherpilot.util.usescases.getAddress
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -49,15 +51,13 @@ import java.util.Calendar
 @AndroidEntryPoint
 class MapFragment(
     private val ioDispatcher: CoroutineDispatcher,
-    private val englishGeoCoder: Geocoder ,
-    private val  arabicGeoCoder: Geocoder
+    private val englishGeoCoder: Geocoder,
+    private val arabicGeoCoder: Geocoder
 ) : Fragment() {
-
 
     private lateinit var binding: FragmentMapBinding
     private lateinit var navController: NavController
     private var previousDestination: String? = null
-
 
 
     private val viewModel: MapViewModel by viewModels()
@@ -77,13 +77,17 @@ class MapFragment(
     }
 
 
-    private val datePicker : MaterialDatePicker<Long> by lazy {
-        MaterialDatePicker.Builder.datePicker().setTheme(R.style.datePickerTheme).setCalendarConstraints(
-            CalendarConstraints.Builder().setStart(MaterialDatePicker.todayInUtcMilliseconds()).build()).build()
+    private val datePicker: MaterialDatePicker<Long> by lazy {
+        MaterialDatePicker.Builder.datePicker().setTheme(R.style.datePickerTheme)
+            .setCalendarConstraints(
+                CalendarConstraints.Builder().setStart(MaterialDatePicker.todayInUtcMilliseconds())
+                    .build()
+            ).build()
     }
 
-    private val timePicker : MaterialTimePicker by lazy {
-        MaterialTimePicker.Builder().setHour( calender.get(Calendar.HOUR_OF_DAY),
+    private val timePicker: MaterialTimePicker by lazy {
+        MaterialTimePicker.Builder().setHour(
+            calender.get(Calendar.HOUR_OF_DAY),
         ).setMinute(calender.get(Calendar.MINUTE)).setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
             .setTheme(R.style.timePickerTheme).build()
     }
@@ -102,31 +106,24 @@ class MapFragment(
         navController = Navigation.findNavController(view)
         previousDestination = arguments?.getString(getString(R.string.previous))
         decideStateObserver()
-        alertStateObserver()
         searchRecyclerSetup()
+        searchResultStateObserver()
         googleMapHandler()
         searchViewActions()
         backPressedHandler()
 
         binding.go.setOnClickListener {
-            when (previousDestination) {
-                getString(R.string.from_favourite_fragment) -> {
-                    viewModel.onEvent(MapIntent.SaveFavourite)
+            decider(favouriteImpl = {
+                viewModel.onEvent(MapIntent.SaveFavourite)
+            }, {
+                if (viewModel.alertState.value.longitude.isBlank()) {
+                    viewModel.onEvent(MapIntent.ShowSnackBar(getString(R.string.please_choose_place_on_the_map)))
+                    return@decider
                 }
-
-                getString(R.string.from_alerts_fragment) -> {
-                    if (viewModel.alertState.value.longitude.isBlank()) {
-                        viewModel.onEvent(MapIntent.ShowSnackBar(getString(R.string.please_choose_place_on_the_map)))
-                        return@setOnClickListener
-                    }
-                    datePicker.show(parentFragmentManager,"")
-
-                }
-
-                else -> {
-                    viewModel.onEvent(MapIntent.SaveDataToDataStore)
-                }
-            }
+                datePicker.show(parentFragmentManager, "")
+            }, regularImpl = {
+                viewModel.onEvent(MapIntent.SaveDataToDataStore)
+            },{})
         }
 
 
@@ -137,7 +134,7 @@ class MapFragment(
             val month = calender.get(Calendar.MONTH)
             val day = calender.get(Calendar.DAY_OF_MONTH)
             viewModel.onEvent(MapIntent.SetAlarmDateIntent("$year $month $day"))
-            timePicker.show(parentFragmentManager,"")
+            timePicker.show(parentFragmentManager, "")
         }
 
 
@@ -154,6 +151,25 @@ class MapFragment(
     }
 
 
+    private fun decider(favouriteImpl: () -> Unit, alertImpl: () -> Unit, regularImpl: () -> Unit,optionalImpl : () ->Unit) {
+        when (previousDestination) {
+            getString(R.string.from_favourite_fragment) -> {
+                favouriteImpl.invoke()
+            }
+
+            getString(R.string.from_alerts_fragment) -> {
+                alertImpl.invoke()
+            }
+
+            else -> {
+                regularImpl.invoke()
+            }
+        }
+
+
+        optionalImpl.invoke()
+
+    }
 
 
     private fun backPressedHandler() {
@@ -181,13 +197,13 @@ class MapFragment(
         binding.searchRecyclerView.adapter = searchAdapter
     }
 
-    private fun onSearchItemClickListener(address: Address) {
+    private fun onSearchItemClickListener(searchItem: SearchItem) {
         binding.searchRecyclerView.visibility = View.GONE
         binding.searchInputLayout.editText?.clearFocus()
         closeKeyboard()
         supportMapFragment.getMapAsync { googleMap ->
-            with(address) {
-                val latLng = LatLng(latitude, longitude)
+            with(searchItem) {
+                val latLng = LatLng(lat, lon)
                 newMapLocationIsSelected(latLng, googleMap)
             }
         }
@@ -214,50 +230,46 @@ class MapFragment(
         lifecycleScope.launch {
             binding.searchInputLayout.searchFlow().collectLatest {
 
-                binding.progressBar.visibility = View.VISIBLE
-                if (resources.getBoolean(R.bool.is_english)) {
-                    englishGeoCoder.getAddress(it) { searchResultFlow ->
-                        collectSearchResultFlow(searchResultFlow)
+                if (it.isNotEmpty()){
 
-                    }
-                } else {
-                    arabicGeoCoder.getAddress(it) { searchResultFlow ->
-                        collectSearchResultFlow(searchResultFlow)
-                    }
+                    viewModel.onEvent(MapIntent.SearchCityName(it))
+                     binding.progressBar.visibility = View.VISIBLE
+                }else{
+                    viewModel.onEvent(MapIntent.ClearSearchList)
                 }
+//                if (resources.getBoolean(R.bool.is_english)) {
+//                    englishGeoCoder.getAddress(it) { searchResultFlow ->
+//                        collectSearchResultFlow(searchResultFlow)
+//
+//                    }
+//                } else {
+//                    arabicGeoCoder.getAddress(it) { searchResultFlow ->
+//                        collectSearchResultFlow(searchResultFlow)
+//                    }
+//                }
 
             }
         }
     }
 
 
-    private fun collectSearchResultFlow(searchFlow: Flow<List<Address?>>) {
-        lifecycleScope.launch {
-            searchFlow.collectLatest {
-                binding.progressBar.visibility = View.GONE
-                searchAdapter.submitList(it)
-            }
-        }
-    }
+//    private fun collectSearchResultFlow(searchFlow: Flow<List<Address?>>) {
+//        lifecycleScope.launch {
+//            searchFlow.collectLatest {
+//                binding.progressBar.visibility = View.GONE
+//                searchAdapter.submitList(it)
+//            }
+//        }
+//    }
 
     private fun decideStateObserver() {
-
-
-        when (previousDestination) {
-            getString(R.string.from_favourite_fragment) -> {
-                alertStateObserver()
-
-            }
-
-            getString(R.string.from_alerts_fragment) -> {
-                favouriteStateObserver()
-            }
-
-            else -> {
-                regularStateObserver()
-            }
+        decider(favouriteImpl = {
+            favouriteStateObserver()
+        }, alertImpl = {
+            alertStateObserver()
+        }, regularImpl = {  regularStateObserver()}){
+            snackBarObserver()
         }
-        snackBarObserver()
     }
 
     private fun regularStateObserver() {
@@ -318,7 +330,7 @@ class MapFragment(
                 viewModel.alertState.collect {
                     when (it.saveState) {
                         true -> {
-                           navController.navigate(NavGraphDirections.actionToNotificationFragment())
+                            navController.navigate(NavGraphDirections.actionToNotificationFragment())
                         }
 
                         false -> binding.progressBar.visibility = View.VISIBLE
@@ -331,6 +343,21 @@ class MapFragment(
                     }
 
                     if (it.insertNotification == true) navController.popBackStack()
+                }
+            }
+        }
+    }
+
+
+    private fun searchResultStateObserver() {
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.searchResultState.collect {
+
+                    binding.progressBar.visibility = View.GONE
+                     searchAdapter.submitList(it.searchResult?.searchResults)
+
                 }
             }
         }
@@ -391,48 +418,48 @@ class MapFragment(
     }
 
     private fun newMapLocationIsSelected(latLong: LatLng, googleMap: GoogleMap) {
-        when (previousDestination) {
-            getString(R.string.from_favourite_fragment) -> {
 
-                viewModel.onEvent(MapIntent.NewFavouriteLocation("", "", "", ""))
-                getCityNameByLatLong(latLong, googleMap) { englishAddress, arabicAddress ->
-                    viewModel.onEvent(
-                        MapIntent.NewFavouriteLocation(
-                            if (!arabicAddress.locality.isNullOrBlank()) arabicAddress.locality else arabicAddress.countryName,
-                            if (!englishAddress.locality.isNullOrBlank()) englishAddress.locality else englishAddress.countryName,
-                            latLong.latitude.toString(),
-                            latLong.longitude.toString()
-                        )
-                    )
-                }
-            }
 
-            getString(R.string.from_alerts_fragment) -> {
 
-                viewModel.onEvent(MapIntent.AlertLocationIntent("", "", "", ""))
-                getCityNameByLatLong(latLong, googleMap) { englishAddress, arabicAddress ->
-                    viewModel.onEvent(
-                        MapIntent.AlertLocationIntent(
-                            if (!arabicAddress.locality.isNullOrBlank()) arabicAddress.locality else arabicAddress.countryName,
-                            if (!englishAddress.locality.isNullOrBlank()) englishAddress.locality else englishAddress.countryName,
-                            latLong.latitude.toString(),
-                            latLong.longitude.toString()
-                        )
-                    )
-                }
-
-            }
-
-            else -> {
-                setMarkerAndAnimateCamera(latLong, googleMap)
+        decider(favouriteImpl = {
+            viewModel.onEvent(MapIntent.NewFavouriteLocation("", "", "", ""))
+            getCityNameByLatLong(latLong, googleMap) { englishAddress, arabicAddress ->
                 viewModel.onEvent(
-                    MapIntent.NewLatLong(
+                    MapIntent.NewFavouriteLocation(
+                        if (!arabicAddress.locality.isNullOrBlank()) arabicAddress.locality else arabicAddress.countryName,
+                        if (!englishAddress.locality.isNullOrBlank()) englishAddress.locality else englishAddress.countryName,
                         latLong.latitude.toString(),
                         latLong.longitude.toString()
                     )
                 )
             }
-        }
+        }, alertImpl = {
+
+            viewModel.onEvent(MapIntent.AlertLocationIntent("", "", "", ""))
+            getCityNameByLatLong(latLong, googleMap) { englishAddress, arabicAddress ->
+                viewModel.onEvent(
+                    MapIntent.AlertLocationIntent(
+                        if (!arabicAddress.locality.isNullOrBlank()) arabicAddress.locality else arabicAddress.countryName,
+                        if (!englishAddress.locality.isNullOrBlank()) englishAddress.locality else englishAddress.countryName,
+                        latLong.latitude.toString(),
+                        latLong.longitude.toString()
+                    )
+                )
+            }
+
+
+        }, regularImpl = {
+
+            setMarkerAndAnimateCamera(latLong, googleMap)
+            viewModel.onEvent(
+                MapIntent.NewLatLong(
+                    latLong.latitude.toString(),
+                    latLong.longitude.toString()
+                )
+            )
+
+        },{})
+
     }
 
 
@@ -493,16 +520,6 @@ class MapFragment(
 
 
     }
-
-
-
-
-
-
-
-
-
-
 
 
 }

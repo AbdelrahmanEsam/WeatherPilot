@@ -1,5 +1,6 @@
 package com.example.weatherpilot.presentation.map
 
+import com.example.weatherpilot.domain.model.SearchResponse
 import java.time.LocalDateTime
 
 
@@ -33,6 +34,10 @@ sealed interface MapState {
         val saveState: Boolean? = null,
         val insertNotification: Boolean? = null,
         val mapLoadingState: Boolean = true,
+
     ) : MapState
+
+
+    data class SearchResultState(val searchResult : SearchResponse? = null,val loading :Boolean? = null)
 }
 

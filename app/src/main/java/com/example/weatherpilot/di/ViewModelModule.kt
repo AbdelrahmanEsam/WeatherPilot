@@ -11,6 +11,7 @@ import com.example.weatherpilot.domain.usecase.InsertAlertUseCase
 import com.example.weatherpilot.domain.usecase.InsertNewFavouriteUseCase
 import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.SearchCityByNameUseCase
 import com.example.weatherpilot.domain.usecase.TempTransformerUseCase
 import com.example.weatherpilot.domain.usecase.UpdateAlertUseCase
 import com.example.weatherpilot.domain.usecase.WindSpeedTransformerUseCase
@@ -100,5 +101,10 @@ object ViewModelModule {
     fun providesGetTimeStampUseCase() : GetTimeStampUseCase
             = GetTimeStampUseCase()
 
+
+    @Provides
+    @ViewModelScoped
+    fun providesSearchCityByNameUseCase(repository: Repository) : SearchCityByNameUseCase
+            = SearchCityByNameUseCase(repository)
 
 }

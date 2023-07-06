@@ -13,6 +13,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weatherpilot.NavGraphDirections
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentFavouritesBinding
 import com.example.weatherpilot.util.usescases.swipeRecyclerItemListener
@@ -53,7 +54,7 @@ class FavouritesFragment : Fragment() {
 
         binding.addNewFavouriteButton.setOnClickListener {
             navController.navigate(
-                FavouritesFragmentDirections.actionFavouritesFragmentToMapFragment(
+                NavGraphDirections.actionToMapFragment(
                     getString(R.string.from_favourite_fragment)
                 )
             )

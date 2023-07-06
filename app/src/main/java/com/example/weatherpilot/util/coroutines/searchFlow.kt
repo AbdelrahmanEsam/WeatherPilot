@@ -9,6 +9,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
@@ -17,7 +18,7 @@ fun TextInputLayout.searchFlow(): Flow<String> {
             val queryChanged = callbackFlow {
                 val watcher = object : TextWatcher {
                     override fun afterTextChanged(editable: Editable?) {
-                        editable?.let { launch {  send(editable.toString()) } }
+                        editable?.let {  launch {  send(editable.toString()) } }
                     }
 
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -29,6 +30,6 @@ fun TextInputLayout.searchFlow(): Flow<String> {
                 awaitClose { editText?.removeTextChangedListener(watcher) }
             }
 
-            return queryChanged.debounce(500)
+            return queryChanged.distinctUntilChanged().debounce(1000)
                 .flowOn(Dispatchers.IO)
         }
