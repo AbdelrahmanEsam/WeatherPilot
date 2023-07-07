@@ -38,10 +38,13 @@ maps = "17.0.0"
 androidxDataStore = "1.0.0"
 refreshLayout = "1.2.0-alpha01"
 coroutinesTest = "1.7.2"
-
+hamcrest = "2.2"
 
 #plugins sections
 androidGradlePlugin = "8.0.1"
+
+
+
 
 
 
@@ -80,6 +83,8 @@ androidx-hilt-compiler = {group = "androidx.hilt",name = "hilt-compiler" ,versio
 hilt-android = {group = "com.google.dagger",name ="hilt-android" ,version.ref = "daggerHiltCompiler" }
 hilt-compiler = {group = "com.google.dagger",name = "hilt-compiler" ,version.ref = "daggerHiltCompiler" }
 org-jetbrains-kotlinx-kotlinx-coroutines-test = {group = "org.jetbrains.kotlinx" ,name = "kotlinx-coroutines-test" , version.ref = "coroutinesTest"}
+org-hamcrest-hamcrest = {group = "org.hamcrest" , name = "hamcrest" , version.ref = "hamcrest"}
+org-hamcrest-hamcrest-library = {group = "org.hamcrest" , name = "hamcrest-library" , version.ref = "hamcrest"}
 
 
 
@@ -94,7 +99,7 @@ sdp = ["com-intuit-sdp-sdp-android","com-intuit-sdp-ssp-android"]
 hilt = ["androidx-hilt-compiler","hilt-android"]
 location-maps = ["com-google-android-gms-play-services-location","com-google-android-gms-play-services-maps"]
 data-store = ["androidx-datastore-preferences","androidx-datastore-preferences-core"]
-
+hamcrest = ["org-hamcrest-hamcrest","org-hamcrest-hamcrest-library"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

@@ -25,7 +25,7 @@ class GetAllFavouritesUseCaseTest
 
     @Before
     fun setUp()  = runTest{
-        fakeRepository = FakeRepository()
+
         deleteFavouriteFavouriteUseCase = DeleteFavouriteFavouriteUseCase(fakeRepository)
     }
 
@@ -33,18 +33,16 @@ class GetAllFavouritesUseCaseTest
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `get all locations from database`() = runTest(UnconfinedTestDispatcher()){
-
-
+    fun `get all locations from database should return the same number of items inserted to it`() = runTest(UnconfinedTestDispatcher()){
         (1..10).forEach {
             val location = FavouriteLocation(it,"القاهرة", "cairo", latitude = "1.0", longitude = "2.0")
             val response : Flow<Response<String>> =   fakeRepository.insertFavouriteLocation(location)
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { response.collect()}
         }
 
-        val resultList = mutableListOf<List<Location>>()
+        val allResult = mutableListOf<Location>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            fakeRepository.getFavourites().toList(resultList)
+            allResult.addAll(fakeRepository.getFavourites().first())
         }
         assertEquals(10,fakeRepository.getFavourites().first().size)
     }

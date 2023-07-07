@@ -1,4 +1,4 @@
-package com.example.weatherpilot.data.local.room
+package com.example.weatherpilot.data.local
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
@@ -22,4 +22,10 @@ interface LocalDataSource {
     fun getAlerts() : Flow<List<SavedAlert>>
 
     suspend fun updateAlert(alert: SavedAlert)
+
+
+    suspend fun saveStringToDataStore(key : String , value : String)
+
+
+    suspend fun getStringFromDataStore(key : String) : Flow<String?>
 }

@@ -7,6 +7,7 @@ import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -22,19 +23,39 @@ class InsertNewFavouriteUseCaseTest{
 
     @Before
     fun setUp()  = runTest{
-        fakeRepository = FakeRepository()
+
         deleteFavouriteFavouriteUseCase = DeleteFavouriteFavouriteUseCase(fakeRepository)
     }
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `insert items to database`()  = runTest(UnconfinedTestDispatcher()) {
+    fun `insert items to database should return success string`()  = runTest(UnconfinedTestDispatcher()) {
         (1..10).forEach {
             val location = FavouriteLocation(it,"القاهرة", "cairo", latitude = "1.0", longitude = "2.0")
             val response : Flow<Response<String>> =   fakeRepository.insertFavouriteLocation(location)
-            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { response.collect()}
-        }
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
 
+            assertEquals((response.first() as Response.Success<*>).data,"success")
+
+            }
+        }
+    }
+
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `insert items to database should return failure string`()  = runTest(UnconfinedTestDispatcher()) {
+        (1..10).forEach {
+            val location = FavouriteLocation(it,"القاهرة", "cairo", latitude = "1.0", longitude = "2.0")
+
+            val response : Flow<Response<String>> =   fakeRepository.insertFavouriteLocation(location)
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+
+                assertEquals((response.first() as Response.Failure<*>).error,"error")
+
+            }
+        }
     }
 }

@@ -1,7 +1,10 @@
-package com.example.weatherpilot.data.local.room
+package com.example.weatherpilot.data.local
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
+import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
+import com.example.weatherpilot.data.local.room.AlertsDao
+import com.example.weatherpilot.data.local.room.FavouritesDao
 import com.example.weatherpilot.data.mappers.toLocation
 import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.util.usescases.Response
@@ -12,7 +15,8 @@ import javax.inject.Inject
 
 class LocalDataSourceImpl @Inject constructor(
     private val favouritesDao: FavouritesDao,
-    private val alertsDao: AlertsDao
+    private val alertsDao: AlertsDao,
+    private val dataStore: DataStoreUserPreferences,
 ) : LocalDataSource {
 
 
@@ -55,6 +59,14 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun updateAlert(alert: SavedAlert) {
         alertsDao.update(alert)
+    }
+
+    override suspend fun saveStringToDataStore(key: String, value: String) {
+        dataStore.putString(key, value)
+    }
+
+    override suspend fun getStringFromDataStore(key: String): Flow<String?> {
+        return dataStore.getString(key)
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.weatherpilot.domain.usecase
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
+import com.example.weatherpilot.data.mappers.toLocation
 import com.example.weatherpilot.data.repository.FakeRepository
 import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.domain.repository.Repository
@@ -26,7 +27,7 @@ class DeleteFavouriteFavouriteUseCaseTest {
 
     @Before
     fun setUp()  = runTest{
-         fakeRepository = FakeRepository()
+
         deleteFavouriteFavouriteUseCase = DeleteFavouriteFavouriteUseCase(fakeRepository)
     }
 
@@ -34,15 +35,21 @@ class DeleteFavouriteFavouriteUseCaseTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `delete favourite location from database`()  = runTest(UnconfinedTestDispatcher()) {
+    
+    fun `delete favourite location from database should return not contained`()  = runTest(UnconfinedTestDispatcher()) {
         val location = FavouriteLocation(1,"القاهرة", "cairo", latitude = "1.0", longitude = "2.0")
         val response : Flow<Response<String>> =   fakeRepository.insertFavouriteLocation(location)
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { response.collect()}
-        launch {  fakeRepository.deleteFavouriteLocation(latitude = "1.0", longitude = "2.0")}
-        val resultList = mutableListOf<List<Location>>()
+        val addResult = mutableListOf<Location>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            fakeRepository.getFavourites().toList(resultList)
+          addResult.addAll(fakeRepository.getFavourites().first())
         }
-        assertEquals(0,fakeRepository.getFavourites().first().size)
+        assert(addResult.contains(location.toLocation()))
+        backgroundScope.launch {  fakeRepository.deleteFavouriteLocation(latitude = "1.0", longitude = "2.0")}
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            addResult.clear()
+            addResult.addAll(fakeRepository.getFavourites().first())
+        }
+        assert(!addResult.contains(location.toLocation()))
     }
 }

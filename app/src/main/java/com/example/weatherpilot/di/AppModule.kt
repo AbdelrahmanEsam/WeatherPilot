@@ -17,9 +17,11 @@ import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferencesImpl
 import com.example.weatherpilot.data.local.room.AlertsDao
 import com.example.weatherpilot.data.local.room.FavouritesDao
-import com.example.weatherpilot.data.local.room.LocalDataSource
-import com.example.weatherpilot.data.local.room.LocalDataSourceImpl
+import com.example.weatherpilot.data.local.LocalDataSource
+import com.example.weatherpilot.data.local.LocalDataSourceImpl
 import com.example.weatherpilot.data.local.room.WeatherDatabase
+import com.example.weatherpilot.data.remote.RemoteDataSource
+import com.example.weatherpilot.data.remote.RemoteDataSourceImpl
 import com.example.weatherpilot.util.alarm.AlarmScheduler
 import com.example.weatherpilot.util.alarm.AlarmSchedulerInterface
 import dagger.Module
@@ -98,17 +100,26 @@ object AppModule
 
     @Provides
     @Singleton
-    fun providesLocalDataSource(alertsDao: AlertsDao,favouritesDao: FavouritesDao) : LocalDataSource
+    fun providesLocalDataSource(alertsDao: AlertsDao,favouritesDao: FavouritesDao ,dataStore : DataStoreUserPreferences) : LocalDataSource
     {
-        return LocalDataSourceImpl(favouritesDao, alertsDao)
+        return LocalDataSourceImpl(favouritesDao, alertsDao,dataStore)
+    }
+
+
+    @Provides
+    @Singleton
+    fun providesRemoteDataSource(remote: WeatherInterface) : RemoteDataSource
+    {
+        return RemoteDataSourceImpl(remote)
     }
 
 
     @Singleton
     @Provides
-    fun providesRepository(remote: WeatherInterface
-       ,dataStore : DataStoreUserPreferences,localDataSource: LocalDataSource): Repository
-    = RepositoryImpl(remote,dataStore,localDataSource)
+    fun providesRepository(remote: RemoteDataSource
+      ,localDataSource: LocalDataSource
+    ): Repository
+    = RepositoryImpl(remote,localDataSource)
 
     @Singleton
     @Provides

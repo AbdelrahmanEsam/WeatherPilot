@@ -2,13 +2,10 @@ package com.example.weatherpilot.data.repository
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
-import com.example.weatherpilot.data.dto.SearchResponseItem
-import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
-import com.example.weatherpilot.data.local.room.LocalDataSource
+import com.example.weatherpilot.data.local.LocalDataSource
 import com.example.weatherpilot.data.mappers.toAlertItem
-import com.example.weatherpilot.data.mappers.toSearchItem
-import com.example.weatherpilot.data.mappers.toSearchResponse
 import com.example.weatherpilot.data.mappers.toWeatherModel
+import com.example.weatherpilot.data.remote.RemoteDataSource
 import com.example.weatherpilot.data.remote.WeatherInterface
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
@@ -22,8 +19,7 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
-    private val remote: WeatherInterface,
-    private val dataStore: DataStoreUserPreferences,
+    private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
 ) : Repository {
     override suspend fun <T> getWeatherResponse(
@@ -31,53 +27,19 @@ class RepositoryImpl @Inject constructor(
         latitude: String,
         language: String
     ): Flow<Response<T>> {
-        return try {
-            flowOf(
-                Response.Success(
-                    remote.getWeatherResponse(
-                        longitude = longitude,
-                        latitude = latitude,
-                        lang = language
-                    ).toWeatherModel() as T
-                )
-            )
-        } catch (e: Exception) {
-            flowOf(Response.Failure(e.message ?: "error"))
-        } catch (e: HttpException) {
-            flowOf(Response.Failure(e.message ?: "Something went wrong"))
-        } catch (e: IOException) {
-            flowOf(Response.Failure("Please check your network connection"))
-        } catch (e: Exception) {
-            flowOf(Response.Failure("Something went wrong"))
-        }
+      return remoteDataSource.getWeatherResponse(longitude, latitude, language)
     }
 
     override suspend fun <T> getSearchResponse(search: String): Flow<Response<T>> {
-        return try {
-            flowOf(
-                Response.Success(
-                    remote.searchCityByName(
-                     search
-                    ).toSearchResponse() as T
-                )
-            )
-        } catch (e: Exception) {
-            flowOf(Response.Failure(e.message ?: "error"))
-        } catch (e: HttpException) {
-            flowOf(Response.Failure(e.message ?: "Something went wrong"))
-        } catch (e: IOException) {
-            flowOf(Response.Failure("Please check your network connection"))
-        } catch (e: Exception) {
-            flowOf(Response.Failure("Something went wrong"))
-        }
+        return remoteDataSource.getSearchResponse(search)
     }
 
     override suspend fun saveStringToDataStore(key: String, value: String) {
-        dataStore.putString(key, value)
+      localDataSource.saveStringToDataStore(key,value)
     }
 
     override suspend fun getStringFromDataStore(key: String): Flow<String?> {
-        return dataStore.getString(key)
+      return  localDataSource.getStringFromDataStore(key)
     }
 
     override fun getFavourites(): Flow<List<Location>> {
@@ -97,7 +59,13 @@ class RepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAlertFromDatabase(item : SavedAlert) {
+        try {
+
+
         localDataSource.deleteAlertFromDatabase(item)
+        }catch (e : Exception){
+            throw  e
+        }
     }
 
     override fun getAlerts(): Flow<List<AlertItem>> {
