@@ -1,6 +1,7 @@
 package com.example.weatherpilot.domain.usecase.transformers
 
-import org.junit.Assert.*
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Test
 
@@ -22,7 +23,7 @@ class TempTransformerUseCaseTest{
         val temp = 20
         val expectedTemp = "68 F"
         val actualTemp = useCase.execute(Temperature.Fahrenheit(temp))
-        assertEquals(expectedTemp, actualTemp)
+        MatcherAssert.assertThat(actualTemp, CoreMatchers.equalTo(expectedTemp))
     }
 
 
@@ -31,7 +32,7 @@ class TempTransformerUseCaseTest{
         val temp = -20
         val expectedTemp = "-4 F"
         val actualTemp = useCase.execute(Temperature.Fahrenheit(temp))
-        assertEquals(expectedTemp, actualTemp)
+        MatcherAssert.assertThat(actualTemp, CoreMatchers.equalTo(expectedTemp))
     }
 
     @Test
@@ -39,7 +40,7 @@ class TempTransformerUseCaseTest{
         val temp = 20
         val expectedTemp = "293 K"
         val actualTemp = useCase.execute(Temperature.Kelvin(temp))
-        assertEquals(expectedTemp, actualTemp)
+        MatcherAssert.assertThat(actualTemp, CoreMatchers.equalTo(expectedTemp))
     }
 
 
@@ -48,7 +49,7 @@ class TempTransformerUseCaseTest{
         val temp = -50
         val expectedTemp = "223 K"
         val actualTemp = useCase.execute(Temperature.Kelvin(temp))
-        assertEquals(expectedTemp, actualTemp)
+        MatcherAssert.assertThat(actualTemp, CoreMatchers.equalTo(expectedTemp))
     }
 
     @Test
@@ -56,6 +57,6 @@ class TempTransformerUseCaseTest{
         val temp = 20
         val expectedTemp = "20 C"
         val actualTemp = useCase.execute(Temperature.Celsius(temp))
-        assertEquals(expectedTemp, actualTemp)
+        MatcherAssert.assertThat(actualTemp, CoreMatchers.equalTo(expectedTemp))
     }
 }

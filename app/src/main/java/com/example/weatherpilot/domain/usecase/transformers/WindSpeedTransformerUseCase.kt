@@ -8,10 +8,12 @@ class WindSpeedTransformerUseCase {
     {
 
        return when(type){
-           "M/S" -> (speed * 0.44704)
+
+
+           "M/S" -> (speed.coerceAtLeast(0) * 0.44704)
                .toInt().toString() + " M/S"
 
-           else -> (speed *  2.23694).roundToInt().toString() + " M/H"
+           else -> (speed.coerceAtLeast(0) *  2.23694).roundToInt().toString() + " M/H"
        }
 
     }
