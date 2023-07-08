@@ -3,11 +3,12 @@ package com.example.weatherpilot.presentation.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherpilot.domain.usecase.GetCurrentDateUseCase
-import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
-import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
-import com.example.weatherpilot.domain.usecase.TempTransformerUseCase
-import com.example.weatherpilot.domain.usecase.WindSpeedTransformerUseCase
+import com.example.weatherpilot.domain.usecase.transformers.GetCurrentDateUseCase
+import com.example.weatherpilot.domain.usecase.network.GetWeatherDataUseCase
+import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.transformers.TempTransformerUseCase
+import com.example.weatherpilot.domain.usecase.transformers.Temperature
+import com.example.weatherpilot.domain.usecase.transformers.WindSpeedTransformerUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import com.example.weatherpilot.util.usescases.Response
@@ -89,6 +90,13 @@ class HomeViewModel @Inject constructor(
                         }
                         is Response.Success -> {
                             with(response.data!!){ _stateDisplay.update {
+
+
+                              val tempPref =   when(_statePreferences.value.temperatureType.toString()){
+                                    "F" ->   Temperature.Fahrenheit(temp.roundToInt())
+                                    "K" -> Temperature.Kelvin(temp.roundToInt())
+                                    else ->  Temperature.Celsius(temp.roundToInt())
+                              }
                                 it.copy(city = city, weatherState =   description
                                     , pressure =  pressure.toString()
                                     , clouds = clouds.toString()
@@ -97,8 +105,7 @@ class HomeViewModel @Inject constructor(
                                         _statePreferences.value.windType.toString()
                                     )
                                     , dayState = hoursWeather
-                                    , temp = tempTransformerUseCase.execute(temp.roundToInt()
-                                        ,_statePreferences.value.temperatureType.toString())
+                                    , temp = tempTransformerUseCase.execute(tempPref)
                                     , visibility = visibility.toString()
                                     , iconCode = icon
                                     , weekState = daysWeather ?: listOf()

@@ -1,4 +1,4 @@
-package com.example.weatherpilot.domain.usecase
+package com.example.weatherpilot.domain.usecase.network
 
 import com.example.weatherpilot.domain.model.SearchItem
 import com.example.weatherpilot.domain.model.SearchResponse

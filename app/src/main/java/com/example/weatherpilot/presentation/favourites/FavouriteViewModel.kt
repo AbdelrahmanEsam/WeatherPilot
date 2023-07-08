@@ -2,8 +2,8 @@ package com.example.weatherpilot.presentation.favourites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherpilot.domain.usecase.DeleteFavouriteUseCase
-import com.example.weatherpilot.domain.usecase.GetAllFavouritesUseCase
+import com.example.weatherpilot.domain.usecase.favourites.DeleteFavouriteUseCase
+import com.example.weatherpilot.domain.usecase.favourites.GetAllFavouritesUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import dagger.hilt.android.lifecycle.HiltViewModel

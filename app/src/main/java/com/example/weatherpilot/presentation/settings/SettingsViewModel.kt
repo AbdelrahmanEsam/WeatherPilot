@@ -3,15 +3,14 @@ package com.example.weatherpilot.presentation.settings
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
-import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.datastore.SaveStringToDataStoreUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,7 +18,6 @@ import com.example.weatherpilot.util.usescases.Response.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.shareIn
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(

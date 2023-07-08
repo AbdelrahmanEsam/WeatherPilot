@@ -1,4 +1,4 @@
-package com.example.weatherpilot.domain.usecase
+package com.example.weatherpilot.domain.usecase.alerts
 
 import com.example.weatherpilot.data.mappers.toSavedAlert
 import com.example.weatherpilot.domain.model.AlertItem

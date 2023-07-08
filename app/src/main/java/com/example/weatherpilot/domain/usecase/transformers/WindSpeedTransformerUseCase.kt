@@ -1,4 +1,4 @@
-package com.example.weatherpilot.domain.usecase
+package com.example.weatherpilot.domain.usecase.transformers
 
 import kotlin.math.roundToInt
 

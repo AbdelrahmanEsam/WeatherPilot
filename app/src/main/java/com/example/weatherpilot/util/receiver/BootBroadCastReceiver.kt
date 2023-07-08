@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.example.weatherpilot.domain.model.AlertItem
-import com.example.weatherpilot.domain.usecase.GetAllAlertsUseCase
+import com.example.weatherpilot.domain.usecase.alerts.GetAllAlertsUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import com.example.weatherpilot.util.alarm.AlarmSchedulerInterface

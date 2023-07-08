@@ -1,24 +1,15 @@
-package com.example.weatherpilot.domain.usecase
+package com.example.weatherpilot.domain.usecase.favourites
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
-import com.example.weatherpilot.data.mappers.toFavouriteLocation
-import com.example.weatherpilot.data.repository.FakeRepository
-import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.domain.repository.Repository
-import com.example.weatherpilot.util.usescases.Response
+import com.example.weatherpilot.domain.usecase.favourites.GetAllFavouritesUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers
-import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import org.hamcrest.MatcherAssert.assertThat
 import org.mockito.Mockito
 import org.mockito.kotlin.times
 
@@ -75,8 +66,7 @@ class GetAllFavouritesUseCaseTest {
 
 //    @OptIn(ExperimentalCoroutinesApi::class)
 //    @Test
-//    fun `get all locations from database should return the same number of items inserted to it`() =
-//        runTest(UnconfinedTestDispatcher()) {
+//    fun `get all locations from database should return the same number of items inserted to it`() =     runTest {
 //
 //            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
 //             getAllFavouriteUseCase.execute().collect{

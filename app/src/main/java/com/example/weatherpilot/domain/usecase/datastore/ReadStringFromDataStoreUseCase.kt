@@ -1,6 +1,5 @@
-package com.example.weatherpilot.domain.usecase
+package com.example.weatherpilot.domain.usecase.datastore
 
-import android.util.Log
 import com.example.weatherpilot.domain.repository.Repository
 import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.flow.Flow

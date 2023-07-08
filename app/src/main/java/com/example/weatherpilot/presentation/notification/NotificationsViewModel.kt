@@ -3,9 +3,9 @@ package com.example.weatherpilot.presentation.notification
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.model.AlertItem
-import com.example.weatherpilot.domain.usecase.DeleteAlertUseCase
-import com.example.weatherpilot.domain.usecase.GetAllAlertsUseCase
-import com.example.weatherpilot.domain.usecase.UpdateAlertUseCase
+import com.example.weatherpilot.domain.usecase.alerts.DeleteAlertUseCase
+import com.example.weatherpilot.domain.usecase.alerts.GetAllAlertsUseCase
+import com.example.weatherpilot.domain.usecase.alerts.UpdateAlertUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import com.example.weatherpilot.util.usescases.Response

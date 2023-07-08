@@ -1,17 +1,13 @@
-package com.example.weatherpilot.domain.usecase
+package com.example.weatherpilot.domain.usecase.alerts
 
 import com.example.weatherpilot.data.dto.SavedAlert
 import com.example.weatherpilot.data.mappers.toAlertItem
-import com.example.weatherpilot.data.repository.FakeRepository
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.repository.Repository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
@@ -82,10 +78,7 @@ class InsertAlertUseCaseTest {
 
 //    @OptIn(ExperimentalCoroutinesApi::class)
 //    @Test
-//    fun `insert alert to database should return flow with success message`() = runTest(
-//        UnconfinedTestDispatcher()
-//    )
-//    {
+//    fun `insert alert to database should return flow with success message`() = runTest{
 //
 //         val alert = alerts.first().copy(id = 5)
 //        assertThat(alerts.size,equalTo(4))
@@ -103,10 +96,7 @@ class InsertAlertUseCaseTest {
 //
 //    @OptIn(ExperimentalCoroutinesApi::class)
 //    @Test
-//    fun `insert alert to database with simulated exception should return flow with success message`() = runTest(
-//        UnconfinedTestDispatcher()
-//    )
-//    {
+//    fun `insert alert to database with simulated exception should return flow with success message`() = runTest{
 //
 //        val alert = alerts.first().copy(id = 5)
 //        assertThat(alerts.size,equalTo(4))
@@ -124,8 +114,7 @@ class InsertAlertUseCaseTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `call execute function from the use case should call the insert alert function in repo`() = runTest(
-        UnconfinedTestDispatcher()){
+    fun `call execute function from the use case should call the insert alert function in repo`() = runTest{
         val alert = alerts.first()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             insertAlertUseCase.execute(alert.toAlertItem())

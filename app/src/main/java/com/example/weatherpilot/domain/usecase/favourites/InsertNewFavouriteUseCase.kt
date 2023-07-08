@@ -1,4 +1,4 @@
-package com.example.weatherpilot.domain.usecase
+package com.example.weatherpilot.domain.usecase.favourites
 
 
 import com.example.weatherpilot.data.mappers.toFavouriteLocation

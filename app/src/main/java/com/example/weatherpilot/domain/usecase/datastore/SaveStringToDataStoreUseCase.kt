@@ -1,4 +1,4 @@
-package com.example.weatherpilot.domain.usecase
+package com.example.weatherpilot.domain.usecase.datastore
 
 import com.example.weatherpilot.domain.model.WeatherModel
 import com.example.weatherpilot.domain.repository.Repository

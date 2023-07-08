@@ -134,8 +134,8 @@ class FakeRepository(
     }
 
     override suspend fun <T> saveStringToDataStore(key: String, value: String) : Flow<Response<T>> {
-        dataStore[key] = value
-        return flowOf(if (shouldReturnGeneralError) Response.Failure("error")  else Response.Success("success" as T))
+
+        return flowOf(if (shouldReturnGeneralError) Response.Failure("error")  else {dataStore[key] = value;Response.Success("success" as T)})
     }
 
     override suspend fun <T> getStringFromDataStore(key: String):  Flow<Response<T>> {

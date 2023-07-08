@@ -1,21 +1,13 @@
-package com.example.weatherpilot.domain.usecase
+package com.example.weatherpilot.domain.usecase.alerts
 
 import com.example.weatherpilot.data.dto.SavedAlert
 import com.example.weatherpilot.data.mappers.toAlertItem
-import com.example.weatherpilot.data.repository.FakeRepository
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.repository.Repository
-import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
-import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.times
@@ -91,8 +83,7 @@ class DeleteAlertUseCaseTest {
 //
 //
 //    @Test
-//    fun `delete alert item from database should return flow with response success and item is deleted from my list`() = runTest(UnconfinedTestDispatcher())
-//    {
+//    fun `delete alert item from database should return flow with response success and item is deleted from my list`() = runTest {
 //
 //        val alert =  alerts.first()
 //        MatcherAssert.assertThat(alerts.contains(alert), CoreMatchers.equalTo(true))

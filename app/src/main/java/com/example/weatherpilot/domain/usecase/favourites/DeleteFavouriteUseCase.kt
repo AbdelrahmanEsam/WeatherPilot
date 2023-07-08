@@ -1,4 +1,4 @@
-package com.example.weatherpilot.domain.usecase
+package com.example.weatherpilot.domain.usecase.favourites
 
 import com.example.weatherpilot.domain.repository.Repository
 import com.example.weatherpilot.util.usescases.Response

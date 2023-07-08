@@ -1,17 +1,16 @@
 package com.example.weatherpilot.presentation.map
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
-import com.example.weatherpilot.domain.usecase.GetTimeStampUseCase
-import com.example.weatherpilot.domain.usecase.InsertAlertUseCase
-import com.example.weatherpilot.domain.usecase.InsertNewFavouriteUseCase
-import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
-import com.example.weatherpilot.domain.usecase.SaveStringToDataStoreUseCase
-import com.example.weatherpilot.domain.usecase.SearchCityByNameUseCase
-import com.example.weatherpilot.domain.usecase.UpdateAlertUseCase
+import com.example.weatherpilot.domain.usecase.transformers.GetTimeStampUseCase
+import com.example.weatherpilot.domain.usecase.alerts.InsertAlertUseCase
+import com.example.weatherpilot.domain.usecase.favourites.InsertNewFavouriteUseCase
+import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.datastore.SaveStringToDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.network.SearchCityByNameUseCase
+import com.example.weatherpilot.domain.usecase.alerts.UpdateAlertUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import com.example.weatherpilot.util.usescases.Response

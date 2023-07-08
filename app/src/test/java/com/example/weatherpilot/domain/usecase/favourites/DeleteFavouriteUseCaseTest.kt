@@ -1,19 +1,15 @@
-package com.example.weatherpilot.domain.usecase
+package com.example.weatherpilot.domain.usecase.favourites
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
-import com.example.weatherpilot.data.repository.FakeRepository
 import com.example.weatherpilot.domain.repository.Repository
-import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.kotlin.times
 
@@ -24,7 +20,8 @@ class DeleteFavouriteUseCaseTest {
 //    private lateinit var fakeRepository: Repository
 
 
-    private var fakeRepository: Repository = Mockito.mock()
+    @Mock
+    private lateinit var fakeRepository: Repository
     private lateinit var deleteFavouriteUseCase : DeleteFavouriteUseCase
 
 
@@ -66,6 +63,7 @@ class DeleteFavouriteUseCaseTest {
 //            fakeRepository = FakeRepository(favourites = favourites)
 //        deleteFavouriteFavouriteUseCase = DeleteFavouriteUseCase(fakeRepository)
 
+        fakeRepository  = Mockito.mock()
         deleteFavouriteUseCase = DeleteFavouriteUseCase(fakeRepository)
     }
 
@@ -74,7 +72,7 @@ class DeleteFavouriteUseCaseTest {
 //    @OptIn(ExperimentalCoroutinesApi::class)
 //    @Test
 //
-//    fun `delete favourite location from database should return flow with success value and not contained`()  = runTest(UnconfinedTestDispatcher()) {
+//    fun `delete favourite location from database should return flow with success value and not contained`()  = runTest{
 //        val location = favourites.first()
 //        val resultFlow = deleteFavouriteUseCase.execute(latitude = location.latitude, longitude = location.longitude)
 //        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {

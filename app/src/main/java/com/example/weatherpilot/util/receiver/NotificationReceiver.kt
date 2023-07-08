@@ -9,9 +9,9 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.weatherpilot.R
 import com.example.weatherpilot.domain.model.AlertItem
-import com.example.weatherpilot.domain.usecase.DeleteAlertUseCase
-import com.example.weatherpilot.domain.usecase.GetWeatherDataUseCase
-import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.alerts.DeleteAlertUseCase
+import com.example.weatherpilot.domain.usecase.network.GetWeatherDataUseCase
+import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import com.example.weatherpilot.util.coroutines.broadcastScope
