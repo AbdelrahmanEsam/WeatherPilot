@@ -3,11 +3,13 @@ package com.example.weatherpilot.util.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.usecase.GetAllAlertsUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import com.example.weatherpilot.util.alarm.AlarmSchedulerInterface
 import com.example.weatherpilot.util.coroutines.broadcastScope
+import com.example.weatherpilot.util.usescases.Response
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collectLatest
@@ -37,8 +39,11 @@ class BootBroadCastReceiver : BroadcastReceiver()  {
     private fun getAndScheduleAllAlerts()
     {
         broadcastScope(ioDispatcher) {
-            getAllAlertsUseCase.execute().collectLatest { alerts ->
-                    alarmScheduler.schedule(alerts)
+            getAllAlertsUseCase.execute<List<AlertItem>>().collectLatest { response ->
+                if (response is Response.Success){
+
+                    alarmScheduler.schedule(response.data!!)
+                }
             }
         }
     }

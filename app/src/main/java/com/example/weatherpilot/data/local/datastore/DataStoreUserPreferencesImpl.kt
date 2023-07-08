@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -35,15 +36,15 @@ class DataStoreUserPreferencesImpl @Inject constructor(private val context: Cont
         }
     }
 
-    override suspend fun getString(key: String): Flow<String?> {
+    override suspend fun <T>getString(key: String): Flow<Response<T>> {
 
 
             val preferenceKey = stringPreferencesKey(key)
              return context.dataStore.data
-                .catch { emit(emptyPreferences()) }
+                .catch {  Response.Failure<T>( it.message ?: "error") }
                 .map { preference ->
 
-                  preference[preferenceKey]
+                  Response.Success(preference[preferenceKey] as T)
                 }
     }
 

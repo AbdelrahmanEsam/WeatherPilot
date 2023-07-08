@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
@@ -18,7 +19,9 @@ import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentHomeBinding
 import com.example.weatherpilot.databinding.FragmentSettingsBinding
 import com.example.weatherpilot.presentation.map.MapViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
@@ -49,7 +52,7 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
         stateObserver()
-
+       snackBarObserver()
         binding.GPSRadioImageView.setOnClickListener {
             viewModel.onEvent(SettingsIntent.LocationChange(getString(R.string.gps_type)))
         }
@@ -97,6 +100,25 @@ class SettingsFragment : Fragment() {
             viewModel.onEvent(SettingsIntent.NotificationChange(getString(R.string.disabled_type)))
         }
 
+    }
+
+
+    private fun snackBarObserver() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.snackBarFlow.collectLatest { errorMessage ->
+                    Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG)
+                        .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                        .setBackgroundTint(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.baby_blue
+                            )
+                        )
+                        .show()
+                }
+            }
+        }
     }
 
 

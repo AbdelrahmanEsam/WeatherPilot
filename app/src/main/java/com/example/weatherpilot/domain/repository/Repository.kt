@@ -15,23 +15,23 @@ interface Repository {
 
     suspend fun <T> getSearchResponse(search : String) : Flow<Response<T>>
 
-    suspend fun saveStringToDataStore(key : String , value : String)
+    suspend fun <T>  saveStringToDataStore(key : String , value : String) : Flow<Response<T>>
 
 
-    suspend fun getStringFromDataStore(key : String) : Flow<String?>
+    suspend fun <T> getStringFromDataStore(key : String) : Flow<Response<T>>
 
      fun getFavourites() : Flow<List<Location>>
 
     suspend fun <T> insertFavouriteLocation(location: FavouriteLocation) : Flow<Response<T>>
 
-    suspend fun deleteFavouriteLocation(longitude: String,latitude: String)
+    suspend fun <T> deleteFavouriteLocation(longitude: String,latitude: String) : Flow<Response<T>>
 
     suspend fun <T> insertAlertToDatabase(alert : SavedAlert) : Flow<Response<T>>
 
-    suspend fun deleteAlertFromDatabase(item: SavedAlert )
+    suspend fun <T> deleteAlertFromDatabase(item: SavedAlert ) : Flow<Response<T>>
 
-    fun getAlerts() : Flow<List<AlertItem>>
+    fun <T>getAlerts() : Flow<Response<T>>
 
 
-    suspend fun updateAlert(alert: SavedAlert)
+    suspend fun <T> updateAlert(alert: SavedAlert) : Flow<Response<T>>
 }

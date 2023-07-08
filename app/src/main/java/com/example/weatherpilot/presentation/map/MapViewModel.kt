@@ -156,13 +156,17 @@ class MapViewModel @Inject constructor(
     private fun readLocationLatLonFromDataStore() {
 
         viewModelScope.launch(ioDispatcher) {
-            readStringFromDataStoreUseCase.execute("latitude")
-                .combine(readStringFromDataStoreUseCase.execute("longitude")) { lat, long ->
-                    _state.update {
-                        it.copy(
-                            longitude = long,
-                            latitude = lat
-                        )
+            readStringFromDataStoreUseCase.execute<String?>("latitude")
+                .combine(readStringFromDataStoreUseCase.execute<String?>("longitude")) { latResponse, longResponse ->
+
+                    if (latResponse is Response.Success &&  longResponse is Response.Success) {
+
+                        _state.update {
+                            it.copy(
+                                longitude = longResponse.data,
+                                latitude = latResponse.data
+                            )
+                        }
                     }
                 }.collect()
         }
@@ -200,7 +204,6 @@ class MapViewModel @Inject constructor(
                             _favouriteState.update { it.copy(insertFavouriteResult = true, saveState = true) }
                             _snackBarFlow.emit("data saved successfully")
                         }
-
                         else -> _snackBarFlow.emit(insertResponse.error ?: "something went Wrong")
                     }
 
@@ -248,7 +251,7 @@ class MapViewModel @Inject constructor(
     private fun updateAlertStateToScheduled(alert : AlertItem)
     {
         viewModelScope.launch(ioDispatcher) {
-              updateAlertUseCase.execute(alert.copy(scheduled =  true))
+              updateAlertUseCase.execute(alert.copy(scheduled =  true)).collect()
         }
     }
 

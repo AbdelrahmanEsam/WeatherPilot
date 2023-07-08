@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.weatherpilot.R
 import com.example.weatherpilot.domain.model.AlertItem
@@ -16,6 +15,7 @@ import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import com.example.weatherpilot.util.coroutines.broadcastScope
+import com.example.weatherpilot.util.usescases.Response
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
@@ -52,38 +52,40 @@ class NotificationReceiver : BroadcastReceiver() {
     lateinit var mainDispatcher: CoroutineDispatcher
     override fun onReceive(context: Context, intent: Intent) = broadcastScope(mainDispatcher) {
         withContext(ioDispatcher) {
-            val notificationEnabled =
-                readStringFromDataStoreUseCase.execute(context.getString(R.string.notificationtype))
+            val notificationEnabledResponse =
+                readStringFromDataStoreUseCase.execute<String?>(context.getString(R.string.notificationtype))
                     .first()
-           if (notificationEnabled == context.getString(R.string.enabled_type)  || notificationEnabled.isNullOrEmpty()) {
-                withContext(mainDispatcher) {
-                    val alertItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        intent.getParcelableExtra(
-                            context.getString(R.string.broadcast_item),
-                            AlertItem::class.java
-                        )
-                    } else {
-                        intent.getParcelableExtra(context.getString(R.string.broadcast_item))
-                    }
-                    alertItem?.let {
-                        deleteAlert(alertItem)
-                        getWeatherAlert(context, alertItem) {
-                            notificationBuilder(context, it)
+            if (notificationEnabledResponse is Response.Success) {
+                if (notificationEnabledResponse.data == context.getString(R.string.enabled_type) || notificationEnabledResponse.data.isNullOrEmpty()) {
+                    withContext(mainDispatcher) {
+                        val alertItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            intent.getParcelableExtra(
+                                context.getString(R.string.broadcast_item),
+                                AlertItem::class.java
+                            )
+                        } else {
+                            intent.getParcelableExtra(context.getString(R.string.broadcast_item))
+                        }
+                        alertItem?.let {
+                            deleteAlert(alertItem)
+                            getWeatherAlert(context, alertItem) {
+                                notificationBuilder(context, it)
+                            }
+
+
                         }
 
 
                     }
 
-
                 }
-
             }
         }
     }
 
 
     private suspend fun getDataStorePrefLanguage(language: suspend (String?) -> Unit) {
-        language(readStringFromDataStoreUseCase.execute("languageType").first())
+        language(readStringFromDataStoreUseCase.execute<String?>("languageType").first().data)
     }
 
     private fun getWeatherAlert(

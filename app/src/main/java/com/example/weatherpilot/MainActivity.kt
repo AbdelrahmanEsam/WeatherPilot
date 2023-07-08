@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.example.weatherpilot.util.hiltanotations.Dispatchers.*
+import com.example.weatherpilot.util.usescases.Response
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -85,19 +86,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun langToRtlObserver() {
         lifecycleScope.launch(ioDispatcher) {
-            dataStore.getString("languageType")
+            dataStore.getString<String>(getString(R.string.languagetype))
                 .catch { Log.d("error", it.message.toString()) }
-                .collect {
-                    it?.let {
+                .collect {languageTypeResult->
+                    languageTypeResult.let {
                         withContext(Dispatchers.Main) {
-                            if (it == getString(R.string.ar)) {
-                                window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
-                                updateResources(getString(R.string.ar))
-                            } else {
-                                window.decorView.layoutDirection = View.LAYOUT_DIRECTION_LTR
-                                updateResources(getString(R.string.en))
-                            }
 
+                            if (languageTypeResult is Response.Success) {
+
+                                if (languageTypeResult.data == getString(R.string.ar)) {
+                                    window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
+                                    updateResources(getString(R.string.ar))
+                                } else {
+                                    window.decorView.layoutDirection = View.LAYOUT_DIRECTION_LTR
+                                    updateResources(getString(R.string.en))
+                                }
+                            }
                         }
                     }
                 }

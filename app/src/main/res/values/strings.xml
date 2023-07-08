@@ -85,6 +85,7 @@
     <string name="ok">OK</string>
     <string name="weather_database">weather_database</string>
     <string name="notificationtype">notificationType</string>
+    <string name="languagetype">languageType</string>
 
 
     <bool name="is_english">true</bool>

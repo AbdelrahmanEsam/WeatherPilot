@@ -1,5 +1,6 @@
 package com.example.weatherpilot.presentation.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.usecase.GetCurrentDateUseCase
@@ -118,9 +119,11 @@ class HomeViewModel @Inject constructor(
     private fun readLocationLatLonFromDataStore()
     {
         viewModelScope.launch(ioDispatcher) {
-          readStringFromDataStoreUseCase.execute("latitude")
-              .combine(readStringFromDataStoreUseCase.execute("longitude")){ lat , long ->
-                  _stateLongLat.update { it.copy(latitude = lat, longitude = long) }
+          readStringFromDataStoreUseCase.execute<String?>("latitude")
+              .combine(readStringFromDataStoreUseCase.execute<String?>("longitude")){ latResponse , longResponse ->
+                  if (latResponse is Response.Success &&  longResponse is Response.Success){
+                      _stateLongLat.update { it.copy(latitude = latResponse.data, longitude = longResponse.data) }
+                  }
               }.distinctUntilChanged().collect{
                   getWeatherResponse()
               }
@@ -140,10 +143,11 @@ class HomeViewModel @Inject constructor(
 
                     val property =   HomeState.Preferences::class.java.getDeclaredField(field.name)
                     property.isAccessible = true
-                    readStringFromDataStoreUseCase.execute(field.name)
+                    readStringFromDataStoreUseCase.execute<String?>(field.name)
                         .collect{
+                            Log.d("latlong",it.data.toString())
                     val newState = _statePreferences.value.copy()
-                    property.set(newState,it)
+                    property.set(newState,it.data)
                     _statePreferences.update { newState }
 
                 }

@@ -14,7 +14,6 @@ class FakeLocalDataSourceImpl (private val favourites : MutableList<FavouriteLoc
 
     private var shouldReturnGeneralError = false
 
-    private var shouldReturnConnectionError = false
 
     fun setShouldReturnGeneralError(should : Boolean)
     {
@@ -22,10 +21,9 @@ class FakeLocalDataSourceImpl (private val favourites : MutableList<FavouriteLoc
     }
 
 
-    fun setShouldReturnConnectionError(should : Boolean)
-    {
-        shouldReturnConnectionError = should
-    }
+
+
+
 
 
 
@@ -34,37 +32,72 @@ class FakeLocalDataSourceImpl (private val favourites : MutableList<FavouriteLoc
     }
 
     override suspend fun <T> insertFavouriteLocation(location: FavouriteLocation): Flow<Response<T>> {
-        favourites.add(location)
-       return flowOf(if (shouldReturnGeneralError) Response.Failure("error") else Response.Success("success" as T))
+        return flowOf(if(shouldReturnGeneralError){
+            Response.Failure("error")
+        }else{
+            favourites.add(location)
+            Response.Success("success" as T)
+        } )
     }
 
-    override suspend fun deleteFavouriteLocation(longitude: String, latitude: String) {
-        favourites.removeIf { it.longitude == longitude && it.latitude == latitude }
+    override suspend fun <T> deleteFavouriteLocation(longitude: String, latitude: String)  : Flow<Response<T>> {
+
+        return flowOf(if(shouldReturnGeneralError){
+            Response.Failure("error")
+        }else{
+            favourites.removeIf { it.longitude == longitude && it.latitude == latitude }
+            Response.Success("success" as T)
+        } )
     }
 
     override suspend fun <T> insertAlertToDatabase(alert: SavedAlert): Flow<Response<T>> {
-        alerts.add(alert)
-        return  flowOf(if (shouldReturnGeneralError) Response.Failure("error") else Response.Success("success" as T))
+
+        return flowOf(if(shouldReturnGeneralError){
+            Response.Failure("error")
+        }else{
+            alerts.add(alert)
+            Response.Success("success" as T)
+        } )
+
     }
 
-    override suspend fun deleteAlertFromDatabase(item: SavedAlert) {
-        alerts.remove(item)
+    override suspend fun  <T> deleteAlertFromDatabase(item: SavedAlert)  : Flow<Response<T>>{
+        return flowOf( if (shouldReturnGeneralError){
+          Response.Failure("error")
+        }else{
+            alerts.remove(item)
+          Response.Success("success" as T)
+        })
     }
 
-    override fun getAlerts(): Flow<List<SavedAlert>> {
-        return  flowOf(alerts)
+    override fun <T> getAlerts(): Flow<Response<T>> {
+
+
+        return flowOf( if (shouldReturnGeneralError){
+            Response.Failure("error")
+        }else{
+            Response.Success(alerts as T)
+        })
     }
 
-    override suspend fun updateAlert(alert: SavedAlert) {
-        alerts.removeIf { it.time == alert.time }
-        alerts.add(alert)
+    override suspend fun <T> updateAlert(alert: SavedAlert) : Flow<Response<T>> {
+        return flowOf(if(shouldReturnGeneralError){
+            Response.Failure("error")
+        }else{
+            alerts.removeIf { it.time == alert.time }
+            alerts.add(alert)
+            Response.Success("success" as T)
+        } )
+
     }
 
-    override suspend fun saveStringToDataStore(key: String, value: String) {
+    override suspend fun <T> saveStringToDataStore(key: String, value: String) : Flow<Response<T>> {
         dataStore[key] = value
+        return flowOf(if (shouldReturnGeneralError) Response.Failure("error")  else Response.Success("success" as T))
     }
 
-    override suspend fun getStringFromDataStore(key: String): Flow<String?> {
-        return flowOf(if (dataStore[key].isNullOrBlank()) null else dataStore[key])
+    override suspend fun <T> getStringFromDataStore(key: String):  Flow<Response<T>> {
+       val value = dataStore[key]
+        return flowOf(if (value.isNullOrBlank()) Response.Failure("error") else Response.Success(value as T))
     }
 }

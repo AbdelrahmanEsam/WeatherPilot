@@ -1,7 +1,7 @@
 package com.example.weatherpilot.data.dto
 
 data class WeatherResponse(
-    val current: Current = Current() ,
+    val current: Current,
     val daily: List<Daily> = mutableListOf(),
     val hourly: List<Hourly> = mutableListOf(),
     val alerts : List<Alert>?= mutableListOf(),

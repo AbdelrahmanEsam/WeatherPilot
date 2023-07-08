@@ -8,10 +8,12 @@ import com.example.weatherpilot.domain.usecase.GetAllAlertsUseCase
 import com.example.weatherpilot.domain.usecase.UpdateAlertUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
+import com.example.weatherpilot.util.usescases.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -56,14 +58,21 @@ class NotificationsViewModel @Inject constructor(
 
     private fun deleteAlertFromDatabase(id: AlertItem) {
         viewModelScope.launch(ioDispatcher){
-             deleteAlertUseCase.execute(id)
+             deleteAlertUseCase.execute(id).collect()
         }
     }
 
     private fun getAllAlerts() {
         viewModelScope.launch(ioDispatcher) {
-            getAllAlertsUseCase.execute().collectLatest { alertsList ->
-                _alertsAndNotificationsState.update { it.copy(alertsAndNotificationsList = alertsList) }
+            getAllAlertsUseCase.execute<List<AlertItem>>().collectLatest { response ->
+                when(response){
+                    is Response.Success -> {
+                        _alertsAndNotificationsState.update { it.copy(alertsAndNotificationsList = response.data!!) }
+                    }
+                    else -> {
+                    //todo
+                    }
+                }
             }
         }
     }

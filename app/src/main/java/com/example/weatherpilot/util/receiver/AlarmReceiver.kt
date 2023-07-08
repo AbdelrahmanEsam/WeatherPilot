@@ -9,7 +9,6 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
@@ -22,6 +21,7 @@ import com.example.weatherpilot.domain.usecase.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.util.coroutines.broadcastScope
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
+import com.example.weatherpilot.util.usescases.Response
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
@@ -72,36 +72,33 @@ class AlarmReceiver : BroadcastReceiver() {
         deleteAlert(alertItem)
         }
         withContext(ioDispatcher) {
-            val notificationEnabled =
-                readStringFromDataStoreUseCase.execute(context.getString(R.string.notificationtype))
+            val notificationEnabledResponse =
+                readStringFromDataStoreUseCase.execute<String?>(context.getString(R.string.notificationtype))
                     .first()
 
-            Log.d("notificationEnabled",notificationEnabled.toString())
-          if (notificationEnabled == context.getString(R.string.enabled_type)  || notificationEnabled.isNullOrEmpty()) {
-                withContext(mainDispatcher) {
+            if (notificationEnabledResponse is Response.Success) {
+                if (notificationEnabledResponse.data == context.getString(R.string.enabled_type) || notificationEnabledResponse.data.isNullOrEmpty()) {
+                    withContext(mainDispatcher) {
 
 
+                        if (!Settings.canDrawOverlays(context)) {
+                            val settingsIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                            settingsIntent.apply {
 
+                                data = Uri.parse("package:" + context.packageName)
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            }
+                            context.startActivity(settingsIntent)
+                        } else {
+                            alertItem?.let {
 
-
-
-                    if (!Settings.canDrawOverlays(context)) {
-                        val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-                        intent.apply {
-
-                            data = Uri.parse("package:" + context.packageName)
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        }
-                        context.startActivity(intent)
-                    } else {
-                        alertItem?.let {
-
-                            getWeatherAlert(context, alertItem) {
-                                dialogBuilder(context, it)
+                                getWeatherAlert(context, alertItem) {
+                                    dialogBuilder(context, it)
+                                }
                             }
                         }
-                    }
 
+                   }
                 }
             }
         }
@@ -109,7 +106,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
 
     private suspend fun getDataStorePrefLanguage(language: suspend (String?) -> Unit) {
-        language(readStringFromDataStoreUseCase.execute("languageType").first())
+        language(readStringFromDataStoreUseCase.execute<String?>("languageType").first().data)
     }
 
     private fun getWeatherAlert(

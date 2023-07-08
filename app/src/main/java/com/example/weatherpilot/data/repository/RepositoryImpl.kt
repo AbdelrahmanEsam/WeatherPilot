@@ -34,11 +34,11 @@ class RepositoryImpl @Inject constructor(
         return remoteDataSource.getSearchResponse(search)
     }
 
-    override suspend fun saveStringToDataStore(key: String, value: String) {
-      localDataSource.saveStringToDataStore(key,value)
+    override suspend fun <T> saveStringToDataStore(key: String, value: String) : Flow<Response<T>> {
+      return localDataSource.saveStringToDataStore(key,value)
     }
 
-    override suspend fun getStringFromDataStore(key: String): Flow<String?> {
+    override suspend fun  <T> getStringFromDataStore(key: String): Flow<Response<T>> {
       return  localDataSource.getStringFromDataStore(key)
     }
 
@@ -50,7 +50,7 @@ class RepositoryImpl @Inject constructor(
       return  localDataSource.insertFavouriteLocation(location)
     }
 
-    override suspend fun deleteFavouriteLocation(longitude: String, latitude: String) {
+    override suspend fun <T> deleteFavouriteLocation(longitude: String, latitude: String) : Flow<Response<T>> {
         return localDataSource.deleteFavouriteLocation(longitude, latitude)
     }
 
@@ -58,21 +58,15 @@ class RepositoryImpl @Inject constructor(
         return localDataSource.insertAlertToDatabase(alert)
     }
 
-    override suspend fun deleteAlertFromDatabase(item : SavedAlert) {
-        try {
-
-
-        localDataSource.deleteAlertFromDatabase(item)
-        }catch (e : Exception){
-            throw  e
-        }
+    override suspend fun <T> deleteAlertFromDatabase(item : SavedAlert) : Flow<Response<T>> {
+       return  localDataSource.deleteAlertFromDatabase(item)
     }
 
-    override fun getAlerts(): Flow<List<AlertItem>> {
-        return  localDataSource.getAlerts().map { it.map { savedAlert -> savedAlert.toAlertItem() } }
+    override fun <T> getAlerts(): Flow<Response<T>> {
+        return  localDataSource.getAlerts()
     }
 
-    override suspend fun updateAlert(alert: SavedAlert) {
-       localDataSource.updateAlert(alert)
+    override suspend fun <T> updateAlert(alert: SavedAlert) : Flow<Response<T>> {
+       return localDataSource.updateAlert(alert)
     }
 }

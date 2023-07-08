@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -15,6 +16,7 @@ import com.example.weatherpilot.NavGraphDirections
 import com.example.weatherpilot.R
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.databinding.FragmentSplashBinding
+import com.example.weatherpilot.util.usescases.Response
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -95,10 +97,14 @@ class SplashFragment(
         dataStoreResult: (String?) -> Unit
     ) {
         lifecycleScope.launch(ioDispatcher) {
-            val locationTypeResult = dataStore.getString(key).first()
+            val locationTypeResult = dataStore.getString<String>(key).first()
 
             withContext(Dispatchers.Main) {
-                dataStoreResult(locationTypeResult)
+                if (locationTypeResult is Response.Success) {
+                    dataStoreResult(locationTypeResult.data)
+                }else{
+                    Toast.makeText(requireContext(), locationTypeResult.error, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

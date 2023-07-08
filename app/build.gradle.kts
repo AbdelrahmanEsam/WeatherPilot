@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.androidx.core.core.splashscreen)
     implementation(libs.com.airbnb.android.lottie)
     testImplementation (libs.junit)
+    testImplementation(libs.org.mockito.kotlin.mockito.kotlin)
     testImplementation(libs.bundles.hamcrest)
     androidTestImplementation(libs.bundles.hamcrest)
     testImplementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.test)
