@@ -14,8 +14,8 @@ fun WeatherResponse.toWeatherModel(): WeatherModel {
 
     return WeatherModel(
         city = timezone.split("/")[1],
-        code = current!!.weather[0].icon,
-        hoursWeather = hourly.slice(0..23).map(Hourly::toHourWeatherModel),
+        code = current.weather[0].icon,
+        hoursWeather = hourly?.take(24)?.map(Hourly::toHourWeatherModel) ?: mutableListOf(),
         pressure = current.pressure,
         visibility = current.visibility,
         wind = current.wind_speed.toInt(),
@@ -24,8 +24,8 @@ fun WeatherResponse.toWeatherModel(): WeatherModel {
         description = current.weather[0].description,
         temp = current.temp,
         icon = current.weather[0].icon,
-        daysWeather = daily.map(Daily::toDayWeatherModel),
-        alertMessage = alerts?.first()?.description
+        daysWeather = daily?.map(Daily::toDayWeatherModel),
+        alertMessage = alerts?.take(1)?.first()?.description ?: ""
     )
 }
 

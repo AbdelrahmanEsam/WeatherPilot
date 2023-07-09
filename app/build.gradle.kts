@@ -18,7 +18,7 @@ android {
         versionCode =  libs.versions.codeVersion.get().toInt()
         versionName = libs.versions.codeVersion.get()
         resourceConfigurations.addAll(listOf("en","ar"))
-        testInstrumentationRunner  = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner  = "com.example.weatherpilot.HiltTestRunner"
     }
 
 
@@ -75,11 +75,18 @@ dependencies {
     implementation(libs.bundles.hilt)
     implementation(libs.bundles.room)
     kapt(libs.androidx.room.compiler)
-    kapt(libs.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
+    kapt(libs.com.google.dagger.hilt.compiler)
+    kapt(libs.androidx.hilt.hilt.compiler)
+    kaptTest(libs.com.google.dagger.hilt.android.compiler)
+    kaptAndroidTest(libs.com.google.dagger.hilt.android.compiler)
+    kaptTest(libs.com.google.dagger.hilt.android.testing)
+    kapt(libs.com.google.dagger.hilt.android.testing)
+    androidTestImplementation(libs.com.google.dagger.hilt.android.testing)
     implementation(libs.androidx.core.core.splashscreen)
     implementation(libs.com.airbnb.android.lottie)
     testImplementation (libs.junit)
+    testImplementation(libs.org.robolectric.robolectric)
+    androidTestImplementation(libs.org.robolectric.robolectric)
     testImplementation(libs.org.mockito.kotlin.mockito.kotlin)
     testImplementation(libs.bundles.hamcrest)
     androidTestImplementation(libs.bundles.hamcrest)

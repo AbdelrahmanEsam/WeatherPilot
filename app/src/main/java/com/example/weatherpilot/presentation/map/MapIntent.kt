@@ -29,7 +29,7 @@ sealed interface MapIntent {
         val longitude: String
     ) : MapIntent
 
-    data class AlertDateIntent(val date : String) : MapIntent
+
 
     data class ShowSnackBar(val message : String) : MapIntent
 

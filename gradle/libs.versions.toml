@@ -42,6 +42,7 @@ refreshLayout = "1.2.0-alpha01"
 coroutinesTest = "1.7.2"
 hamcrest = "2.2"
 mockitoKotlin = "5.0.0"
+robolectric = "4.9"
 
 #plugins sections
 androidGradlePlugin = "8.0.1"
@@ -82,13 +83,21 @@ com-airbnb-android-lottie = {group = "com.airbnb.android",name = "lottie",versio
 com-google-android-gms-play-services-location = {group = "com.google.android.gms",name = "play-services-location" ,version.ref = "location" }
 com-google-android-gms-play-services-maps = {group = "com.google.android.gms",name = "play-services-maps" ,version.ref = "maps" }
 com-android-tools-desugar ={ group = "com.android.tools", name = "desugar_jdk_libs",version.ref = "desugaring"}
-androidx-hilt-compiler = {group = "androidx.hilt",name = "hilt-compiler" ,version.ref = "hiltCompiler" }
-hilt-android = {group = "com.google.dagger",name ="hilt-android" ,version.ref = "daggerHiltCompiler" }
-hilt-compiler = {group = "com.google.dagger",name = "hilt-compiler" ,version.ref = "daggerHiltCompiler" }
+androidx-hilt-hilt-compiler = {group = "androidx.hilt",name = "hilt-compiler" ,version.ref = "hiltCompiler" }
+com-google-dagger-hilt-android = {group = "com.google.dagger",name ="hilt-android" ,version.ref = "daggerHiltCompiler" }
+com-google-dagger-hilt-compiler = {group = "com.google.dagger",name = "hilt-compiler" ,version.ref = "daggerHiltCompiler" }
+com-google-dagger-hilt-android-testing = {group = "com.google.dagger",name="hilt-android-testing",version.ref="daggerHiltCompiler"}
+com-google-dagger-hilt-android-compiler={group = "com.google.dagger",name="hilt-android-compiler",version.ref="daggerHiltCompiler"}
+
+
 org-jetbrains-kotlinx-kotlinx-coroutines-test = {group = "org.jetbrains.kotlinx" ,name = "kotlinx-coroutines-test" , version.ref = "coroutinesTest"}
 org-hamcrest-hamcrest = {group = "org.hamcrest" , name = "hamcrest" , version.ref = "hamcrest"}
 org-hamcrest-hamcrest-library = {group = "org.hamcrest" , name = "hamcrest-library" , version.ref = "hamcrest"}
 org-mockito-kotlin-mockito-kotlin = {group = "org.mockito.kotlin" , name = "mockito-kotlin",version.ref = "mockitoKotlin"}
+org-robolectric-robolectric = {group = "org.robolectric",name = "robolectric",version.ref = "robolectric"}
+
+
+
 
 
 
@@ -99,7 +108,7 @@ okhttp = ["com-squareu-okhttp3-okhttp","com-squareu-okhttp3-logging-interceptor"
 retrofit = ["com-squareu-retrofit2-retrofit","com-squareu-retrofit2-gson-converter"]
 room = ["androidx-room-ktx", "androidx-room-runtime"]
 sdp = ["com-intuit-sdp-sdp-android","com-intuit-sdp-ssp-android"]
-hilt = ["androidx-hilt-compiler","hilt-android"]
+hilt = ["androidx-hilt-hilt-compiler","com-google-dagger-hilt-android"]
 location-maps = ["com-google-android-gms-play-services-location","com-google-android-gms-play-services-maps"]
 data-store = ["androidx-datastore-preferences","androidx-datastore-preferences-core"]
 hamcrest = ["org-hamcrest-hamcrest","org-hamcrest-hamcrest-library"]

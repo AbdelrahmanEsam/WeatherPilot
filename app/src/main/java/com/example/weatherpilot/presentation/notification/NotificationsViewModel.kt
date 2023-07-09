@@ -11,7 +11,10 @@ import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import com.example.weatherpilot.util.usescases.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -33,6 +36,10 @@ class NotificationsViewModel @Inject constructor(
             AlertsAndNotificationsState()
         )
     val alertsAndNotificationsState = _alertsAndNotificationsState.asStateFlow()
+
+
+    private val _snackBarFlow: MutableSharedFlow<String> = MutableSharedFlow()
+    val snackBarFlow: SharedFlow<String> = _snackBarFlow.asSharedFlow()
 
 
     fun onEvent(intent: NotificationIntent) {
@@ -70,7 +77,7 @@ class NotificationsViewModel @Inject constructor(
                         _alertsAndNotificationsState.update { it.copy(alertsAndNotificationsList = response.data!!) }
                     }
                     else -> {
-                    //todo
+                       _snackBarFlow.emit(response.error.toString())
                     }
                 }
             }

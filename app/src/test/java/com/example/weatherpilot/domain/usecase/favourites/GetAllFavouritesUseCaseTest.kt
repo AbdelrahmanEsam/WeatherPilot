@@ -4,6 +4,7 @@ import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.domain.repository.Repository
 import com.example.weatherpilot.domain.usecase.favourites.GetAllFavouritesUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -19,7 +20,7 @@ class GetAllFavouritesUseCaseTest {
 //    private lateinit var fakeRepository: Repository
 
     private lateinit var getAllFavouriteUseCase: GetAllFavouritesUseCase
-    private  var fakeRepository: Repository = Mockito.mock()
+    private lateinit var fakeRepository: Repository
 
     private val favourites: MutableList<FavouriteLocation> = mutableListOf(
         FavouriteLocation(
@@ -58,8 +59,10 @@ class GetAllFavouritesUseCaseTest {
     fun setUp() = runTest {
 
 //        fakeRepository = FakeRepository(favourites = favourites)
+
 //        getAllFavouriteUseCase = GetAllFavouritesUseCase(fakeRepository)
 
+        fakeRepository  = Mockito.mock()
         getAllFavouriteUseCase = GetAllFavouritesUseCase(fakeRepository)
     }
 
@@ -78,10 +81,10 @@ class GetAllFavouritesUseCaseTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `call execute fun function from use case should call the getAll function in repo`() =   runTest(UnconfinedTestDispatcher()) {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+    fun `call execute fun function from use case should call the getAll function in repo`() =   runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
            getAllFavouriteUseCase.execute()
-            Mockito.verify(fakeRepository, times(1)).getFavourites()
         }
+            Mockito.verify(fakeRepository, times(1)).getFavourites()
     }
 }

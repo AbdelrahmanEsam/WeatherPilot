@@ -52,7 +52,7 @@ class HomeViewModel @Inject constructor(
     {
         when(intent){
             is HomeIntent.NewLocationFromGPS -> {
-                    _stateLongLat.update { it.copy(longitude = intent.longitude, latitude = intent.latitude,) }
+                    _stateLongLat.update { it.copy(longitude = intent.longitude, latitude = intent.latitude) }
                     getWeatherResponse()
             }
 
@@ -118,7 +118,7 @@ class HomeViewModel @Inject constructor(
                 }
 
             } ?: kotlin.run {
-                _stateDisplay.update { it.copy(loading = false) }
+                _stateDisplay.update { it.copy(loading = false, error = "invalid location") }
             }
         }
     }
@@ -152,7 +152,7 @@ class HomeViewModel @Inject constructor(
                     property.isAccessible = true
                     readStringFromDataStoreUseCase.execute<String?>(field.name)
                         .collect{
-                            Log.d("latlong",it.data.toString())
+
                     val newState = _statePreferences.value.copy()
                     property.set(newState,it.data)
                     _statePreferences.update { newState }
@@ -162,8 +162,6 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
-
 
     init {
         readAllPreferencesFromDataStore()

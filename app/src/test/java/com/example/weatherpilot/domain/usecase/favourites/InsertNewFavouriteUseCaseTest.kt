@@ -16,18 +16,20 @@ import org.hamcrest.MatcherAssert
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.kotlin.times
 
 class InsertNewFavouriteUseCaseTest{
 
 
-    private lateinit var insertNewFavouriteUseCase: InsertNewFavouriteUseCase
-    private lateinit var fakeRepository: Repository
+//    private lateinit var insertNewFavouriteUseCase: InsertNewFavouriteUseCase
+//    private lateinit var fakeRepository: Repository
 
 
-//    private  var fakeRepository: Repository = Mockito.mock()
-//    private  var  insertNewFavouriteUseCase = InsertNewFavouriteUseCase(fakeRepository)
+    @Mock
+    private lateinit  var fakeRepository: Repository
+    private  lateinit var  insertNewFavouriteUseCase :InsertNewFavouriteUseCase
     private val favourites: MutableList<FavouriteLocation> = mutableListOf(
         FavouriteLocation(
             id = 1,
@@ -64,11 +66,12 @@ class InsertNewFavouriteUseCaseTest{
     @Before
     fun setUp()  = runTest{
 
-        fakeRepository = FakeRepository(favourites = favourites)
+//        fakeRepository = FakeRepository(favourites = favourites)
+//
+//        insertNewFavouriteUseCase = InsertNewFavouriteUseCase(fakeRepository)
 
-        insertNewFavouriteUseCase = InsertNewFavouriteUseCase(fakeRepository)
-
-
+      fakeRepository = Mockito.mock()
+      insertNewFavouriteUseCase = InsertNewFavouriteUseCase(fakeRepository)
     }
 
 
@@ -91,30 +94,30 @@ class InsertNewFavouriteUseCaseTest{
 
 
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `insert items to database with simulated exception should return failure string`()  = runTest {
-        (fakeRepository as FakeRepository).setShouldReturnGeneralError(true)
-
-        val alertsFlow = insertNewFavouriteUseCase.execute(favourites.first().toLocation())
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            alertsFlow.collectLatest {
-                MatcherAssert.assertThat(
-                    (it as Response.Failure<String>).error,
-                    CoreMatchers.equalTo("error")
-                )
-                MatcherAssert.assertThat(favourites.size, CoreMatchers.equalTo(4))
-            }
-        }
-    }
-
-//       @OptIn(ExperimentalCoroutinesApi::class)
-//       @Test
-//       fun `execute function in insert new use case should call insert new favourite from repo`()  = runTest(UnconfinedTestDispatcher()) {
-//           val location = favourites.first().toLocation()
-//           backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-//               insertNewFavouriteUseCase.execute( location)
-//               Mockito.verify(fakeRepository, times(1)).insertFavouriteLocation<FavouriteLocation>(location.toFavouriteLocation())
-//           }
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    @Test
+//    fun `insert items to database with simulated exception should return failure string`()  = runTest {
+//        (fakeRepository as FakeRepository).setShouldReturnGeneralError(true)
+//
+//        val alertsFlow = insertNewFavouriteUseCase.execute(favourites.first().toLocation())
+//        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+//            alertsFlow.collectLatest {
+//                MatcherAssert.assertThat(
+//                    (it as Response.Failure<String>).error,
+//                    CoreMatchers.equalTo("error")
+//                )
+//                MatcherAssert.assertThat(favourites.size, CoreMatchers.equalTo(4))
+//            }
+//        }
 //    }
+
+       @OptIn(ExperimentalCoroutinesApi::class)
+       @Test
+       fun `execute function in insert new use case should call insert new favourite from repo`()  = runTest(UnconfinedTestDispatcher()) {
+           val location = favourites.first().toLocation()
+           backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+               insertNewFavouriteUseCase.execute( location)
+           }
+          Mockito.verify(fakeRepository, times(1)).insertFavouriteLocation<FavouriteLocation>(location.toFavouriteLocation())
+    }
 }

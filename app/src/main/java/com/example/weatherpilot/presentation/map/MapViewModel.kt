@@ -131,7 +131,6 @@ class MapViewModel @Inject constructor(
                 }
             }
 
-            is MapIntent.AlertDateIntent -> TODO()
             is MapIntent.ShowSnackBar -> viewModelScope.launch { _snackBarFlow.emit(intent.message) }
             is MapIntent.SetAlarmDateIntent -> _alertState.update { it.copy(date = intent.date) }
             is MapIntent.SetAlarmTimeIntent -> _alertState.update { it.copy(time = intent.time) }

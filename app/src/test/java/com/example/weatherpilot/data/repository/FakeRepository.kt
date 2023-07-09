@@ -7,6 +7,7 @@ import com.example.weatherpilot.data.dto.WeatherResponse
 import com.example.weatherpilot.data.local.LocalDataSource
 import com.example.weatherpilot.data.mappers.toAlertItem
 import com.example.weatherpilot.data.mappers.toLocation
+import com.example.weatherpilot.data.mappers.toWeatherModel
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.domain.model.WeatherModel
@@ -57,7 +58,7 @@ class FakeRepository(
     ): Flow<Response<T>> {
         return  flowOf(
             if (shouldReturnGeneralError)  Response.Failure("error") else if(shouldReturnConnectionError) Response.Failure("Please check your network connection") else Response.Success(
-                weatherItems.firstOrNull { it.lon == longitude.toDouble() && it.lat == latitude.toDouble()} as T
+                weatherItems.firstOrNull { it.lon == longitude.toDouble() && it.lat == latitude.toDouble()}?.toWeatherModel() as T
             )
         )
 
@@ -118,7 +119,7 @@ class FakeRepository(
             Response.Failure("error")
         }else{
 
-            Response.Success(alerts as T)
+            Response.Success(alerts.map { it.toAlertItem() } as T)
         })
     }
 
