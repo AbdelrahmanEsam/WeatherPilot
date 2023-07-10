@@ -1,3 +1,4 @@
+import com.example.buildlogic.WagbatBuildTypes
 plugins {
     id("example.android.application")
     id("androidx.navigation.safeargs")
@@ -14,6 +15,7 @@ android {
     buildTypes {
         val debug by getting {
             isMinifyEnabled = false
+            applicationIdSuffix = WagbatBuildTypes.DEBUG.applicationIdSuffix
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 
         }
@@ -22,6 +24,7 @@ android {
 
         val release by getting {
             isMinifyEnabled = true
+            applicationIdSuffix = WagbatBuildTypes.RELEASE.applicationIdSuffix
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
 
