@@ -33,6 +33,7 @@ sealed interface MapState {
         val time : String = "" ,
         val saveState: Boolean? = null,
         val insertNotification: Boolean? = null,
+        val kind : String = "notificationType" ,
         val mapLoadingState: Boolean = true,
 
     ) : MapState

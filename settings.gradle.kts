@@ -6,7 +6,7 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
-
+//    enableFeaturePreview("VERSION_CATALOGS")
     includeBuild("build-logic")
     versionCatalogs {
         create("myLibs") {

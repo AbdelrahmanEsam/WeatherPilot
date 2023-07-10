@@ -148,11 +148,10 @@
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:layout_marginStart="@dimen/_20sdp"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        app:layout_constraintBottom_toTopOf="@+id/englishRadioImageView"
+                        android:layout_marginBottom="@dimen/_15sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/languageRow"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/radio_checked" />
+                        app:srcCompat="@drawable/radio_unchecked" />
 
 
                     <TextView
@@ -171,13 +170,13 @@
                         android:id="@+id/englishRadioImageView"
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginBottom="@dimen/_15sdp"
                         android:elevation="@dimen/_15sdp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/arabicRadioImageView"
                         app:layout_constraintStart_toStartOf="@+id/arabicRadioImageView"
-                        app:layout_constraintTop_toBottomOf="@+id/arabicRadioImageView"
-                        app:srcCompat="@drawable/radio_unchecked" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/radio_checked" />
 
                     <TextView
                         android:id="@+id/englishTextView"

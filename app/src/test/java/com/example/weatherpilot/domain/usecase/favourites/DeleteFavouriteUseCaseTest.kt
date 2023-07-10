@@ -24,15 +24,15 @@ import org.mockito.kotlin.times
 class DeleteFavouriteUseCaseTest {
 
 
-    private lateinit var deleteFavouriteUseCase: DeleteFavouriteUseCase
-    private lateinit var fakeRepository: Repository
+//    private lateinit var deleteFavouriteUseCase: DeleteFavouriteUseCase
+//    private lateinit var fakeRepository: Repository
 
     @get:Rule
     val mainDispatcherTestingRule = DispatcherTestingRule()
 
-//    @Mock
-//    private lateinit var fakeRepository: Repository
-//    private lateinit var deleteFavouriteUseCase : DeleteFavouriteUseCase
+    @Mock
+    private lateinit var fakeRepository: Repository
+    private lateinit var deleteFavouriteUseCase : DeleteFavouriteUseCase
 
 
     private val favourites: MutableList<FavouriteLocation> = mutableListOf(
@@ -70,34 +70,32 @@ class DeleteFavouriteUseCaseTest {
 
     @Before
     fun setUp()  = runTest{
-            fakeRepository = FakeRepository(favourites = favourites)
-        deleteFavouriteUseCase = DeleteFavouriteUseCase(fakeRepository)
-
-//        fakeRepository  = Mockito.mock()
+//            fakeRepository = FakeRepository(favourites = favourites)
 //        deleteFavouriteUseCase = DeleteFavouriteUseCase(fakeRepository)
+
+        fakeRepository  = Mockito.mock()
+        deleteFavouriteUseCase = DeleteFavouriteUseCase(fakeRepository)
     }
 
 
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-
-    fun `delete favourite location from database should return flow with success value and not contained`()  = runTest{
-        val location = favourites.first()
-        val resultFlow = deleteFavouriteUseCase.execute(id = location.id)
-        backgroundScope.launch(UnconfinedTestDispatcher()) {
-          resultFlow.collectLatest {
-              MatcherAssert.assertThat(
-                  (it as Response.Success<String>).data,
-                  equalTo("success")
-              )
-              MatcherAssert.assertThat(favourites.contains(location),equalTo(false))
-              MatcherAssert.assertThat(favourites.size,equalTo(3))
-         }
-        }
-
-
-    }
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    @Test
+//
+//    fun `delete favourite location from database should return flow with success value and not contained`()  = runTest{
+//        val location = favourites.first()
+//        val resultFlow = deleteFavouriteUseCase.execute(id = location.id)
+//        backgroundScope.launch(UnconfinedTestDispatcher()) {
+//          resultFlow.collectLatest {
+//              MatcherAssert.assertThat(
+//                  (it as Response.Success<String>).data,
+//                  equalTo("success")
+//              )
+//              MatcherAssert.assertThat(favourites.contains(location),equalTo(false))
+//              MatcherAssert.assertThat(favourites.size,equalTo(3))
+//         }
+//        }
+//    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test

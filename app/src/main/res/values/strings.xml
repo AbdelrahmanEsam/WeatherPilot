@@ -81,13 +81,16 @@
     <string name="weather_is_fine_no_alerts_for_the_scheduled_period">weather is fine no alerts for the scheduled period</string>
     <string name="weather_alert">weather alert</string>
     <string name="alarm">alarm</string>
+    <string name="alert">alert</string>
     <string name="item_object">item object</string>
     <string name="ok">OK</string>
     <string name="weather_database">weather_database</string>
     <string name="notificationtype">notificationType</string>
+    <string name="alertType">alertType</string>
     <string name="languagetype">languageType</string>
     <string name="am">AM</string>
     <string name="pm">PM</string>
+    <string name="choose_alert_type">choose alert type</string>
 
 
     <bool name="is_english">true</bool>

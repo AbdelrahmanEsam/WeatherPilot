@@ -1,5 +1,6 @@
 package com.example.weatherpilot.domain.usecase.transformers
 
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -27,11 +28,12 @@ class GetTimeStampUseCase {
                 append(splittedDate[4]+":")
                 append("00")
             }
-            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale("ar", "EG"))
 
 
             val parsedDate =
                 format.parse(builder.toString())
+
             parsedDate?.time
         } catch (e: Exception) {
             null

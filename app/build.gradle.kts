@@ -15,7 +15,6 @@ android {
     buildTypes {
         val debug by getting {
             isMinifyEnabled = false
-            applicationIdSuffix = WagbatBuildTypes.DEBUG.applicationIdSuffix
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 
         }

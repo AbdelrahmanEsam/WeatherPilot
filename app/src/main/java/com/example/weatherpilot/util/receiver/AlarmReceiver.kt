@@ -102,6 +102,8 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
             }
         }
+
+
     }
 
 
@@ -147,6 +149,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val alertDialog: AlertDialog.Builder =
                 AlertDialog.Builder(ContextThemeWrapper(context, R.style.myDialog))
             alertDialog.apply {
+
 
                 setTitle(context.getString(R.string.weather_alert))
                 setMessage(alertItem.message)

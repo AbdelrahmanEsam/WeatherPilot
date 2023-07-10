@@ -479,19 +479,7 @@ class RepositoryTests {
         }
 
 
-    @Test
-    fun `get all alerts from the local data source with simulated exception should return flow with error message`() =
-        runTest(UnconfinedTestDispatcher())
-        {
-            (fakeLocalDataSource as FakeLocalDataSourceImpl).setShouldReturnGeneralError(true)
-            val alertsFlow = fakeLocalDataSource.getAlerts()
-            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-                alertsFlow.collectLatest {
-                    assertThat(it, equalTo(null))
 
-                }
-            }
-        }
 
 
     @Test

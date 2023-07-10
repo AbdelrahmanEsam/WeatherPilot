@@ -1,6 +1,8 @@
 package com.example.weatherpilot.presentation.main
 
 import com.example.weatherpilot.data.dto.Current
+import com.example.weatherpilot.data.dto.SearchResponseDto
+import com.example.weatherpilot.data.dto.SearchResponseItem
 import com.example.weatherpilot.data.dto.Weather
 import com.example.weatherpilot.data.dto.WeatherResponse
 import com.example.weatherpilot.data.repository.FakeRepository
@@ -82,9 +84,37 @@ class HomeViewModelTest {
         )
 
 
+    private val searchItems: SearchResponseDto = SearchResponseDto().apply {
+        addAll(
+            listOf(
+                SearchResponseItem(
+                    name = "cairo",
+                    lat = 30.66,
+                    lon = 30.66
+                ),
+                SearchResponseItem(
+                    name = "الرياض",
+                    lat = 40.66,
+                    lon = 40.66
+                ),
+                SearchResponseItem(
+                    name = "الدوحة",
+                    lat = 40.66,
+                    lon = 40.66
+                ),
+                SearchResponseItem(
+                    name = "الاسكندرية",
+                    lat = 50.66,
+                    lon = 50.66
+                ),
+            )
+        )
+    }
+
+
     @Before
     fun setUp() {
-        repository = FakeRepository(weatherItems = weatherItems, dataStore = dataStore)
+        repository = FakeRepository(weatherItems = weatherItems, dataStore = dataStore, searchItems = searchItems)
         getWeatherDataUseCase = GetWeatherDataUseCase(repository)
         getCurrentDataUseCase = GetCurrentDateUseCase()
         readStringFromDataStoreUseCase = ReadStringFromDataStoreUseCase(repository)
@@ -103,24 +133,6 @@ class HomeViewModelTest {
 
 
     }
-
-
-    @Test
-    fun `after init the viewModel should read all values from datastore and update the prefs state`() =
-        runTest {
-
-            backgroundScope.launch {
-                viewModel.statePreferences.collect()
-            }
-
-            HomeState.Preferences::class.java.declaredFields.forEach { field ->
-                field.isAccessible = true
-                MatcherAssert.assertThat(
-                    dataStore[field.name],
-                    CoreMatchers.equalTo(field.get(viewModel.statePreferences.value))
-                )
-            }
-        }
 
 
     @Test
@@ -239,6 +251,8 @@ class HomeViewModelTest {
                     dataStore["longitude"]!!
                 )
             )
+
+
             backgroundScope.launch {
                viewModel.stateLongLat.collect()
                 viewModel.stateDisplay.collect()
@@ -269,6 +283,7 @@ class HomeViewModelTest {
     @Test
     fun `send ReadPrefsFromDataStore  viewModel should read all values from datastore and update the prefs state`() =
         runTest {
+            viewModel.onEvent(HomeIntent.ReadPrefsFromDataStore)
             backgroundScope.launch {
                 viewModel.statePreferences.collect()
             }

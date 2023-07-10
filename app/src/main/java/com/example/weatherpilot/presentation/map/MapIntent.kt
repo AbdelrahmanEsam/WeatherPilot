@@ -38,6 +38,8 @@ sealed interface MapIntent {
 
     data class SetAlarmTimeIntent(val time : String) : MapIntent
 
+    data class SetAlarmType(val type: String) : MapIntent
+
 
     data class UpdateAlertStateToScheduled(val alert : AlertItem) : MapIntent
 
