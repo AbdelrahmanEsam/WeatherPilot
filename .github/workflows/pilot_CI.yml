@@ -20,5 +20,5 @@ jobs:
 
 
         - name: Run Tests
-          run: .\gradlew test
+          run: ./gradlew test
 
