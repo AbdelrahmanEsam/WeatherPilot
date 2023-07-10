@@ -23,7 +23,5 @@ jobs:
       - name: Run Tests
         run: ./gradlew test
 
-      - name: assemble
-        run: ./gradlew assemble
 
 
