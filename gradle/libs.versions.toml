@@ -45,7 +45,7 @@ mockitoKotlin = "5.0.0"
 robolectric = "4.9"
 
 #plugins sections
-androidGradlePlugin = "8.0.1"
+androidGradlePlugin = "8.0.2"
 
 
 
@@ -97,7 +97,8 @@ org-mockito-kotlin-mockito-kotlin = {group = "org.mockito.kotlin" , name = "mock
 org-robolectric-robolectric = {group = "org.robolectric",name = "robolectric",version.ref = "robolectric"}
 
 
-
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
 
 

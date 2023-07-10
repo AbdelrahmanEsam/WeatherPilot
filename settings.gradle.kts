@@ -7,7 +7,7 @@ pluginManagement {
 }
 dependencyResolutionManagement {
 
-
+    includeBuild("build-logic")
     versionCatalogs {
         create("myLibs") {
             from(files("/gradle/libs.versions.toml"))

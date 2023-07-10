@@ -1,25 +1,14 @@
 plugins {
-    id ("com.android.application")
-    id ("org.jetbrains.kotlin.android")
+    id("example.android.application")
     id("androidx.navigation.safeargs")
-    id("org.jetbrains.kotlin.kapt")
-    id("dagger.hilt.android.plugin")
-    id("kotlin-parcelize")
+    id("example.android.hilt")
 }
 
 android {
     namespace = libs.versions.applicationNameSpace.get()
     compileSdk  = libs.versions.compileSDK.get().toInt()
 
-    defaultConfig {
-        applicationId = libs.versions.applicationId.get()
-        minSdk = libs.versions.minSDK.get().toInt()
-        targetSdk = libs.versions.targetSDK.get().toInt()
-        versionCode =  libs.versions.codeVersion.get().toInt()
-        versionName = libs.versions.codeVersion.get()
-        resourceConfigurations.addAll(listOf("en","ar"))
-        testInstrumentationRunner  = "com.example.weatherpilot.HiltTestRunner"
-    }
+
 
 
     buildTypes {
@@ -42,57 +31,8 @@ android {
         }
 
     }
-    compileOptions {
-        sourceCompatibility  = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-        isCoreLibraryDesugaringEnabled = true
-    }
-    kotlinOptions {
-        jvmTarget = libs.versions.javaVersion.get()
-    }
-
-
-    buildFeatures {
-        viewBinding = true
-        dataBinding = true
-        buildConfig = true
-    }
 }
 
 dependencies {
-    implementation (libs.androidx.core.ktx)
-    implementation (libs.androidx.appcompat.appcompat)
-    implementation (libs.com.google.android.material.material)
-    implementation (libs.androidx.constraintlayout)
-    implementation(libs.bundles.navigation.component)
-    implementation(libs.bundles.location.maps)
-    implementation(libs.bundles.retrofit)
-    implementation(libs.bundles.okhttp)
-    implementation(libs.bundles.data.store)
-    implementation(libs.com.github.bumtech.glide.glide)
-    implementation(libs.androidx.swiperefreshlayout.swiperefreshlayout)
-    implementation(libs.bundles.sdp)
-    implementation(libs.bundles.hilt)
-    implementation(libs.bundles.room)
-    kapt(libs.androidx.room.compiler)
-    kapt(libs.com.google.dagger.hilt.compiler)
-    kapt(libs.androidx.hilt.hilt.compiler)
-    kaptTest(libs.com.google.dagger.hilt.android.compiler)
-    kaptAndroidTest(libs.com.google.dagger.hilt.android.compiler)
-    kaptTest(libs.com.google.dagger.hilt.android.testing)
-    kapt(libs.com.google.dagger.hilt.android.testing)
-    androidTestImplementation(libs.com.google.dagger.hilt.android.testing)
-    implementation(libs.androidx.core.core.splashscreen)
-    implementation(libs.com.airbnb.android.lottie)
-    testImplementation (libs.junit)
-    testImplementation(libs.org.robolectric.robolectric)
-    androidTestImplementation(libs.org.robolectric.robolectric)
-    testImplementation(libs.org.mockito.kotlin.mockito.kotlin)
-    testImplementation(libs.bundles.hamcrest)
-    androidTestImplementation(libs.bundles.hamcrest)
-    testImplementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.test)
-    androidTestImplementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.test)
-    androidTestImplementation (libs.androidx.test.ext)
-    androidTestImplementation (libs.androidx.test.espresso)
-    coreLibraryDesugaring(libs.com.android.tools.desugar)
+
 }
