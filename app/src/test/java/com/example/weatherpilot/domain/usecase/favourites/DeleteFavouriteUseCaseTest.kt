@@ -84,7 +84,7 @@ class DeleteFavouriteUseCaseTest {
 
     fun `delete favourite location from database should return flow with success value and not contained`()  = runTest{
         val location = favourites.first()
-        val resultFlow = deleteFavouriteUseCase.execute(latitude = location.latitude, longitude = location.longitude)
+        val resultFlow = deleteFavouriteUseCase.execute(id = location.id)
         backgroundScope.launch(UnconfinedTestDispatcher()) {
           resultFlow.collectLatest {
               MatcherAssert.assertThat(
@@ -104,9 +104,9 @@ class DeleteFavouriteUseCaseTest {
     fun `execute function should call deleteFavouriteLocation function`() = runTest {
         val location = favourites.first()
         backgroundScope.launch(UnconfinedTestDispatcher()) {
-            deleteFavouriteUseCase.execute(latitude = location.latitude, longitude =  location.longitude)
+            deleteFavouriteUseCase.execute(location.id)
         }
-            Mockito.verify(fakeRepository, times(1)).deleteFavouriteLocation<String>(location.longitude,location.latitude)
+            Mockito.verify(fakeRepository, times(1)).deleteFavouriteLocation<String>(location.id)
     }
 
 }

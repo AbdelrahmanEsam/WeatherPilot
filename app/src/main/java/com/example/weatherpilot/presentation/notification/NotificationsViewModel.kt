@@ -8,7 +8,6 @@ import com.example.weatherpilot.domain.usecase.alerts.GetAllAlertsUseCase
 import com.example.weatherpilot.domain.usecase.alerts.UpdateAlertUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
-import com.example.weatherpilot.util.usescases.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -50,12 +49,12 @@ class NotificationsViewModel @Inject constructor(
             }
 
 
-            is NotificationIntent.DeleteAlert ->{
+            is NotificationIntent.DeleteAlert -> {
                 deleteAlertFromDatabase(intent.item)
             }
 
 
-            is  NotificationIntent.UpdateAlertState ->{
+            is NotificationIntent.UpdateAlertState -> {
                 updateAlertStateToScheduled(intent.alert)
             }
 
@@ -64,31 +63,25 @@ class NotificationsViewModel @Inject constructor(
     }
 
     private fun deleteAlertFromDatabase(id: AlertItem) {
-        viewModelScope.launch(ioDispatcher){
-             deleteAlertUseCase.execute(id).collect()
+        viewModelScope.launch(ioDispatcher) {
+            deleteAlertUseCase.execute(id).collect()
         }
     }
 
     private fun getAllAlerts() {
         viewModelScope.launch(ioDispatcher) {
-            getAllAlertsUseCase.execute<List<AlertItem>>().collectLatest { response ->
-                when(response){
-                    is Response.Success -> {
-                        _alertsAndNotificationsState.update { it.copy(alertsAndNotificationsList = response.data!!) }
-                    }
-                    else -> {
-                       _snackBarFlow.emit(response.error.toString())
-                    }
-                }
+            getAllAlertsUseCase.execute().collectLatest { response ->
+
+                _alertsAndNotificationsState.update { it.copy(alertsAndNotificationsList = response) }
+
             }
         }
     }
 
 
-    private fun updateAlertStateToScheduled(alert : AlertItem)
-    {
+    private fun updateAlertStateToScheduled(alert: AlertItem) {
         viewModelScope.launch(ioDispatcher) {
-            updateAlertUseCase.execute(alert.copy(scheduled =  true))
+            updateAlertUseCase.execute(alert.copy(scheduled = true))
         }
     }
 

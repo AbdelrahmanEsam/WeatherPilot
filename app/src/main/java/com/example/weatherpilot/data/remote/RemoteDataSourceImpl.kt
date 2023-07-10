@@ -1,5 +1,7 @@
 package com.example.weatherpilot.data.remote
 
+import com.example.weatherpilot.data.mappers.toSearchItem
+import com.example.weatherpilot.data.mappers.toSearchResponse
 import com.example.weatherpilot.data.mappers.toWeatherModel
 import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.flow.Flow
@@ -41,7 +43,7 @@ class RemoteDataSourceImpl @Inject constructor(private val remote: WeatherInterf
                 Response.Success(
                     remote.searchCityByName(
                         search
-                    ) as T
+                    ).toSearchResponse() as T
                 )
             )
         } catch (e: Exception) {

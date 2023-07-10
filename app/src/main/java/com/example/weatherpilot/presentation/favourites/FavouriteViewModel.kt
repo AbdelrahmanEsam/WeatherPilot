@@ -59,7 +59,7 @@ class FavouriteViewModel
     private fun deleteFavouriteItem(location: com.example.weatherpilot.domain.model.Location)
     {
         viewModelScope.launch(ioDispatcher) {
-            deleteFavouriteFavouriteUseCase.execute(location.longitude,location.latitude).collect()
+            deleteFavouriteFavouriteUseCase.execute(location.id).collect()
         }
     }
 

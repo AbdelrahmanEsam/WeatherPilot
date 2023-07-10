@@ -3,9 +3,11 @@ package com.example.weatherpilot.presentation.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherpilot.domain.model.SearchResponse
 import com.example.weatherpilot.domain.usecase.transformers.GetCurrentDateUseCase
 import com.example.weatherpilot.domain.usecase.network.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.network.SearchCityByNameUseCase
 import com.example.weatherpilot.domain.usecase.transformers.TempTransformerUseCase
 import com.example.weatherpilot.domain.usecase.transformers.Temperature
 import com.example.weatherpilot.domain.usecase.transformers.WindSpeedTransformerUseCase
@@ -16,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -32,7 +35,8 @@ class HomeViewModel @Inject constructor(
     private val getCurrentDateUseCase: GetCurrentDateUseCase,
     private val readStringFromDataStoreUseCase: ReadStringFromDataStoreUseCase,
     private val windSpeedTransformerUseCase: WindSpeedTransformerUseCase,
-    private val tempTransformerUseCase: TempTransformerUseCase
+    private val tempTransformerUseCase: TempTransformerUseCase,
+    private val searchCityByNameUseCase: SearchCityByNameUseCase,
 ) : ViewModel() {
 
 
@@ -58,6 +62,7 @@ class HomeViewModel @Inject constructor(
 
             is HomeIntent.FetchDataOfFavouriteLocation -> {
                 _stateLongLat.update { it.copy(longitude = intent.longitude, latitude = intent.latitude) }
+                _statePreferences.update { it.copy(locationType = "favourite") }
                 getWeatherResponse()
             }
 
@@ -89,6 +94,7 @@ class HomeViewModel @Inject constructor(
                             _stateDisplay.update { it.copy(loading = true) }
                         }
                         is Response.Success -> {
+
                             with(response.data!!){ _stateDisplay.update {
 
 
@@ -97,7 +103,10 @@ class HomeViewModel @Inject constructor(
                                     "K" -> Temperature.Kelvin(temp.roundToInt())
                                     else ->  Temperature.Celsius(temp.roundToInt())
                               }
-                                it.copy(city = city, weatherState =   description
+
+                              getLocalCityName(city,statePreferences.value.languageType ?: "en")
+
+                                it.copy(weatherState =   description
                                     , pressure =  pressure.toString()
                                     , clouds = clouds.toString()
                                     , humidity = humidity.toString()
@@ -119,6 +128,23 @@ class HomeViewModel @Inject constructor(
 
             } ?: kotlin.run {
                 _stateDisplay.update { it.copy(loading = false, error = "invalid location") }
+            }
+        }
+    }
+
+    private suspend fun getLocalCityName(city : String,local : String)
+    {
+        searchCityByNameUseCase.execute(city).collectLatest { response ->
+            when(response){
+                is Response.Success -> {
+                    if (local == "ar"){
+                        val localCityName :String =   (response.data as SearchResponse).searchResults.first()?.LocalNames?.ar  ?: response.data.searchResults.first()?.LocalNames?.en!!
+                      _stateDisplay.update { it.copy(city = localCityName)}
+                    }else{
+                      _stateDisplay.update { it.copy(city = (response.data as SearchResponse).searchResults.first()?.LocalNames?.en) }
+                    }
+                }
+                else -> TODO()
             }
         }
     }
@@ -163,9 +189,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    init {
-        readAllPreferencesFromDataStore()
-    }
+
 
 
 }

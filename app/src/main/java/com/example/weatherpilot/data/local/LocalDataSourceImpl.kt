@@ -1,5 +1,6 @@
 package com.example.weatherpilot.data.local
 
+import android.util.Log
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
@@ -37,10 +38,10 @@ class LocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun <T> deleteFavouriteLocation(longitude: String, latitude: String) : Flow<Response<T>> {
+    override suspend fun <T> deleteFavouriteLocation(id : Int) : Flow<Response<T>> {
         return try {
-            favouritesDao.delete(longitude, latitude)
-            flowOf(Response.Success("successful insert" as T))
+            favouritesDao.delete(id)
+            flowOf(Response.Success("successful delete" as T))
         }catch (e : Exception) {
             flowOf(Response.Failure(e.message ?: "unknown error"))
         }
@@ -66,14 +67,8 @@ class LocalDataSourceImpl @Inject constructor(
         })
     }
 
-    override fun <T>getAlerts():  Flow<Response<T>> {
-
-        return flowOf(try {
-            Response.Success(alertsDao.getAllAlerts().map { savedAlerts-> savedAlerts.map { it.toAlertItem() } }  as T)
-        }catch (e : Exception){
-            Response.Failure(e.message ?: "unknown error")
-        })
-
+    override fun getAlerts():  Flow<List<SavedAlert>> {
+           return alertsDao.getAllAlerts()
     }
 
     override suspend fun <T> updateAlert(alert: SavedAlert) : Flow<Response<T>> {

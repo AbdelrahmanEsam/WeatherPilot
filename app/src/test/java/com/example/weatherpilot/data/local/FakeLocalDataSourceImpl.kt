@@ -40,12 +40,12 @@ class FakeLocalDataSourceImpl (private val favourites : MutableList<FavouriteLoc
         } )
     }
 
-    override suspend fun <T> deleteFavouriteLocation(longitude: String, latitude: String)  : Flow<Response<T>> {
+    override suspend fun <T> deleteFavouriteLocation(id : Int)  : Flow<Response<T>> {
 
         return flowOf(if(shouldReturnGeneralError){
             Response.Failure("error")
         }else{
-            favourites.removeIf { it.longitude == longitude && it.latitude == latitude }
+            favourites.removeIf { it.id == id }
             Response.Success("success" as T)
         } )
     }
@@ -70,14 +70,8 @@ class FakeLocalDataSourceImpl (private val favourites : MutableList<FavouriteLoc
         })
     }
 
-    override fun <T> getAlerts(): Flow<Response<T>> {
-
-
-        return flowOf( if (shouldReturnGeneralError){
-            Response.Failure("error")
-        }else{
-            Response.Success(alerts as T)
-        })
+    override fun  getAlerts(): Flow<List<SavedAlert>> {
+         return  flowOf(alerts)
     }
 
     override suspend fun <T> updateAlert(alert: SavedAlert) : Flow<Response<T>> {

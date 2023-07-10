@@ -13,13 +13,13 @@ interface LocalDataSource {
 
     suspend fun <T> insertFavouriteLocation(location: FavouriteLocation) : Flow<Response<T>>
 
-    suspend fun <T> deleteFavouriteLocation(longitude: String,latitude: String) : Flow<Response<T>>
+    suspend fun <T> deleteFavouriteLocation(id : Int) : Flow<Response<T>>
 
     suspend fun <T> insertAlertToDatabase(alert : SavedAlert)  : Flow<Response<T>>
 
     suspend fun <T> deleteAlertFromDatabase(item : SavedAlert ) : Flow<Response<T>>
 
-    fun <T>getAlerts() : Flow<Response<T>>
+    fun getAlerts() : Flow<List<SavedAlert>>
 
     suspend fun <T> updateAlert(alert: SavedAlert) : Flow<Response<T>>
 

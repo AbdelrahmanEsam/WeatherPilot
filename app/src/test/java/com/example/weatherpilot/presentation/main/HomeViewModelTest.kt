@@ -7,6 +7,7 @@ import com.example.weatherpilot.data.repository.FakeRepository
 import com.example.weatherpilot.domain.repository.Repository
 import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.network.GetWeatherDataUseCase
+import com.example.weatherpilot.domain.usecase.network.SearchCityByNameUseCase
 import com.example.weatherpilot.domain.usecase.transformers.GetCurrentDateUseCase
 import com.example.weatherpilot.domain.usecase.transformers.TempTransformerUseCase
 import com.example.weatherpilot.domain.usecase.transformers.WindSpeedTransformerUseCase
@@ -40,6 +41,7 @@ class HomeViewModelTest {
     private lateinit var readStringFromDataStoreUseCase: ReadStringFromDataStoreUseCase
     private lateinit var windSpeedTransformerUseCase: WindSpeedTransformerUseCase
     private lateinit var tempTransformerUseCase: TempTransformerUseCase
+    private lateinit var searchCityByNameUseCase: SearchCityByNameUseCase
 
 
     private val dataStore: MutableMap<String, String?> = mutableMapOf(
@@ -88,13 +90,15 @@ class HomeViewModelTest {
         readStringFromDataStoreUseCase = ReadStringFromDataStoreUseCase(repository)
         windSpeedTransformerUseCase = WindSpeedTransformerUseCase()
         tempTransformerUseCase = TempTransformerUseCase()
+        searchCityByNameUseCase = SearchCityByNameUseCase(repository)
         viewModel = HomeViewModel(
             ioDispatcher = kotlinx.coroutines.Dispatchers.Unconfined,
             getWeatherDataUseCase,
             getCurrentDataUseCase,
             readStringFromDataStoreUseCase,
             windSpeedTransformerUseCase,
-            tempTransformerUseCase
+            tempTransformerUseCase,
+            searchCityByNameUseCase
         )
 
 
@@ -116,8 +120,6 @@ class HomeViewModelTest {
                     CoreMatchers.equalTo(field.get(viewModel.statePreferences.value))
                 )
             }
-
-
         }
 
 
@@ -138,8 +140,6 @@ class HomeViewModelTest {
                 viewModel.stateLongLat.value.longitude,
                 CoreMatchers.equalTo(dataStore["longitude"])
             )
-
-
         }
 
     @Test

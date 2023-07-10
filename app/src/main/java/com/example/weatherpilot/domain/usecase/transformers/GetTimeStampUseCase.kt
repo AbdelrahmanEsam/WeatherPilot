@@ -1,27 +1,38 @@
 package com.example.weatherpilot.domain.usecase.transformers
 
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 class GetTimeStampUseCase {
 
     fun execute(dateAndTime: String?): Long? {
-
-        val calendar = Calendar.getInstance()
         return try {
 
             if (dateAndTime.isNullOrBlank()) return -1
 
 
             val splittedDate = dateAndTime.split(" ")
-            calendar.set(
-                splittedDate[0].toInt(),
-                splittedDate[1].toInt(),
-                splittedDate[2].toInt(),
-                splittedDate[3].toInt(),
-                splittedDate[4].toInt(),
-                0
-            )
-            return calendar.timeInMillis
+            val builder = StringBuilder()
+            builder.apply {
+                append(splittedDate[0]+"-")
+                if (splittedDate[1].length <2) append("0")
+                append(splittedDate[1]+"-")
+
+                if (splittedDate[2].length <2) append("0")
+                append(splittedDate[2]+" ")
+                if (splittedDate[3].length <2) append("0")
+                append(splittedDate[3]+":")
+                if (splittedDate[4].length <2) append("0")
+                append(splittedDate[4]+":")
+                append("00")
+            }
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+
+
+            val parsedDate =
+                format.parse(builder.toString())
+            parsedDate?.time
         } catch (e: Exception) {
             null
         }

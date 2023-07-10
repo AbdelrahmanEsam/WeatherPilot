@@ -49,7 +49,6 @@ class FavouritesFragment : Fragment() {
         navController = Navigation.findNavController(view)
         setFavouritesRecyclerView()
         favouritesStateObserver()
-        swipeRecyclerItemListener()
         viewModel.onEvent(FavouritesIntent.FetchFavouritesFromDatabase)
 
         binding.addNewFavouriteButton.setOnClickListener {
@@ -72,22 +71,7 @@ class FavouritesFragment : Fragment() {
     }
 
 
-    private fun swipeRecyclerItemListener() {
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
-            }
-
-        }).attachToRecyclerView(binding.favouritesRecycler)
-    }
 
 
     private fun favouritesStateObserver() {
@@ -109,10 +93,10 @@ class FavouritesFragment : Fragment() {
     }
 
     private fun onFavouriteItemClickAction(position: Int) {
-        val favouriteItem = viewModel.favouriteState.value.favourites?.get(position)
+        val favouriteItemLocation = viewModel.favouriteState.value.favourites?.get(position)
         navController.navigate(
-            FavouritesFragmentDirections.actionFavouritesFragmentToHomeFragment(
-                favouriteItem
+            NavGraphDirections.actionToHomeFragment(
+                favouriteItemLocation
             )
         )
     }

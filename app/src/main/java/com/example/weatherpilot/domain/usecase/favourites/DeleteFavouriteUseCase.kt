@@ -7,8 +7,8 @@ import javax.inject.Inject
 
 class DeleteFavouriteUseCase @Inject constructor(private val repository: Repository) {
 
-    suspend fun execute(latitude : String,longitude : String)  : Flow<Response<String>>
+    suspend fun execute(id : Int)  : Flow<Response<String>>
     {
-       return repository.deleteFavouriteLocation(longitude, latitude)
+       return repository.deleteFavouriteLocation(id)
     }
 }

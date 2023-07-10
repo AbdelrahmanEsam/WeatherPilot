@@ -62,7 +62,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_20sdp"
-            android:text="@{@string/tempWithParams(day.minTemp,day.maxTemp)}"
+            min="@{day.minTemp}"
+            max="@{day.maxTemp}"
             app:layout_constraintBottom_toBottomOf="@+id/weatherImageView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/weatherImageView" />

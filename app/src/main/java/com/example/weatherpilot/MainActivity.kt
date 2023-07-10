@@ -2,10 +2,12 @@ package com.example.weatherpilot
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -20,6 +22,8 @@ import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.databinding.ActivityMainBinding
 import com.example.weatherpilot.util.connectivity.ConnectivityObserver
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
+import com.example.weatherpilot.util.hiltanotations.Dispatchers.*
+import com.example.weatherpilot.util.usescases.Response
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -27,8 +31,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.example.weatherpilot.util.hiltanotations.Dispatchers.*
-import com.example.weatherpilot.util.usescases.Response
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -126,5 +128,20 @@ class MainActivity : AppCompatActivity() {
     private fun updateResources(language: String) {
         val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(language)
         AppCompatDelegate.setApplicationLocales(appLocale)
+    }
+
+
+    private fun enableInteraction() {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+    }
+
+
+    private fun disableInteraction() {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
     }
 }

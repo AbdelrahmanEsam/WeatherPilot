@@ -111,8 +111,8 @@ class GetAllAlertsUseCaseTest{
     fun `execute fun in use case should call the get All Alerts fun from the repository`()  = runTest(UnconfinedTestDispatcher())
     {
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            getAllAlertsUseCase.execute<AlertItem>()
-            Mockito.verify(fakeRepository, times(1)).getAlerts<SavedAlert>()
+            getAllAlertsUseCase.execute()
+            Mockito.verify(fakeRepository, times(1)).getAlerts()
         }
 
     }

@@ -39,11 +39,8 @@ class BootBroadCastReceiver : BroadcastReceiver()  {
     private fun getAndScheduleAllAlerts()
     {
         broadcastScope(ioDispatcher) {
-            getAllAlertsUseCase.execute<List<AlertItem>>().collectLatest { response ->
-                if (response is Response.Success){
-
-                    alarmScheduler.schedule(response.data!!)
-                }
+            getAllAlertsUseCase.execute().collectLatest { response ->
+                    alarmScheduler.schedule(response)
             }
         }
     }

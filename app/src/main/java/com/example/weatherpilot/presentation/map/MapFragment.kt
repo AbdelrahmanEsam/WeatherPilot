@@ -4,7 +4,6 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +39,6 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -122,7 +120,7 @@ class MapFragment(
                 }
                 datePicker.show(parentFragmentManager, "")
             }, regularImpl = {
-                viewModel.onEvent(MapIntent.SaveDataToDataStore)
+                viewModel.onEvent(MapIntent.SaveLocationToDataStore)
             },{})
         }
 

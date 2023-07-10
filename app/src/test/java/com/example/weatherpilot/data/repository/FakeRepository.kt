@@ -7,9 +7,12 @@ import com.example.weatherpilot.data.dto.WeatherResponse
 import com.example.weatherpilot.data.local.LocalDataSource
 import com.example.weatherpilot.data.mappers.toAlertItem
 import com.example.weatherpilot.data.mappers.toLocation
+import com.example.weatherpilot.data.mappers.toSearchItem
 import com.example.weatherpilot.data.mappers.toWeatherModel
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
+import com.example.weatherpilot.domain.model.SearchItem
+import com.example.weatherpilot.domain.model.SearchResponse
 import com.example.weatherpilot.domain.model.WeatherModel
 import com.example.weatherpilot.domain.repository.Repository
 import com.example.weatherpilot.util.usescases.Response
@@ -65,7 +68,8 @@ class FakeRepository(
     }
 
     override suspend fun <T> getSearchResponse(search: String): Flow<Response<T>> {
-        return flowOf(if (shouldReturnGeneralError) Response.Failure("error") else if(shouldReturnConnectionError) Response.Failure("Please check your network connection") else Response.Success(searchItems?.firstOrNull { it.name == search } as T))
+        return flowOf(if (shouldReturnGeneralError) Response.Failure("error") else if(shouldReturnConnectionError) Response.Failure("Please check your network connection") else Response.Success(SearchResponse(
+            searchItems?.filter { it.name == search }?.map { it.toSearchItem() } ?: emptyList()) as T))
     }
 
 
@@ -84,12 +88,12 @@ class FakeRepository(
         } )
     }
 
-    override suspend fun <T> deleteFavouriteLocation(longitude: String, latitude: String)  : Flow<Response<T>> {
+    override suspend fun <T> deleteFavouriteLocation(id : Int)  : Flow<Response<T>> {
 
         return flowOf(if(shouldReturnGeneralError){
             Response.Failure("error")
         }else{
-            favourites.removeIf { it.longitude == longitude && it.latitude == latitude }
+            favourites.removeIf { it.id == id }
             Response.Success("success" as T)
         } )
     }
@@ -114,13 +118,8 @@ class FakeRepository(
         })
     }
 
-    override fun <T> getAlerts() : Flow<Response<T>>{
-        return flowOf( if (shouldReturnGeneralError){
-            Response.Failure("error")
-        }else{
-
-            Response.Success(alerts.map { it.toAlertItem() } as T)
-        })
+    override fun  getAlerts() :  Flow<List<AlertItem>>{
+        return  flowOf(alerts.map { it.toAlertItem() })
     }
 
     override suspend fun <T> updateAlert(alert: SavedAlert) : Flow<Response<T>> {

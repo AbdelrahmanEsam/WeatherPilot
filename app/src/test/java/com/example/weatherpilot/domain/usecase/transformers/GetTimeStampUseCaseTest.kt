@@ -18,8 +18,8 @@ class GetTimeStampUseCaseTest{
 
     @Test
     fun `execute with valid date and time returns correct timestamp`() {
-        val dateAndTime = "2023 07 08 12 34"
-        val expectedTimestamp = 1688808840L
+        val dateAndTime = "2023 07 09 19 16"
+        val expectedTimestamp = 1688922960000L
         val transformerResult = timeStampUseCase.execute(dateAndTime)
         MatcherAssert.assertThat(transformerResult, CoreMatchers.equalTo(expectedTimestamp))
     }
@@ -39,8 +39,8 @@ class GetTimeStampUseCaseTest{
     }
 
     @Test
-    fun `execute with invalid date and time string returns null`() {
-        val dateAndTime = "2023 07 08 12:34" // should use space instead of colon
+    fun `execute with invalid date and time format string returns null`() {
+        val dateAndTime = "2023 07 08 12:34"
         val transformerResult = timeStampUseCase.execute(dateAndTime)
         MatcherAssert.assertThat(transformerResult, CoreMatchers.equalTo(null))
     }

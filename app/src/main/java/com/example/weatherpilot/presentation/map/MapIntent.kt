@@ -1,11 +1,10 @@
 package com.example.weatherpilot.presentation.map
 
-import com.example.weatherpilot.data.dto.Alert
 import com.example.weatherpilot.domain.model.AlertItem
 
 sealed interface MapIntent {
 
-    object SaveDataToDataStore : MapIntent
+    object SaveLocationToDataStore : MapIntent
 
     object SaveFavourite : MapIntent
 

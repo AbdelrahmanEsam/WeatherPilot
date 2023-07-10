@@ -6,7 +6,7 @@ import com.example.weatherpilot.domain.model.Location
 
 fun FavouriteLocation.toLocation() : Location
 {
-    return Location(arabicName,englishName, longitude, latitude)
+    return Location(id,arabicName,englishName, longitude, latitude)
 }
 
 fun  Location.toFavouriteLocation() : FavouriteLocation

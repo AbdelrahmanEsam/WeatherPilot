@@ -73,6 +73,8 @@ class HomeFragment(
     private lateinit var locationCallback: LocationCallback
 
 
+
+
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { permissions ->
@@ -167,6 +169,7 @@ class HomeFragment(
         }
 
 
+
         location?.let {
             viewModel.onEvent(
                 HomeIntent.FetchDataOfFavouriteLocation(
@@ -175,6 +178,8 @@ class HomeFragment(
                 )
             )
 
+        } ?: kotlin.run {
+            viewModel.onEvent(HomeIntent.ReadPrefsFromDataStore)
         }
     }
 
@@ -213,6 +218,8 @@ class HomeFragment(
                         getLastLocationFromGPS()
                     } else if (viewModel.statePreferences.value.locationType.equals(getString(R.string.map_type))) {
                         viewModel.onEvent(HomeIntent.ReadLatLongFromDataStore)
+                    }else{
+                        viewModel.onEvent(HomeIntent.FetchData)
                     }
             }
         }
@@ -331,13 +338,15 @@ class HomeFragment(
     private fun gpsLocationCallback() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                val location = locationResult.lastLocation
-                viewModel.onEvent(
-                    HomeIntent.NewLocationFromGPS(
-                        location?.longitude.toString(),
-                        location?.latitude.toString()
+                if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type))) {
+                    val location = locationResult.lastLocation
+                    viewModel.onEvent(
+                        HomeIntent.NewLocationFromGPS(
+                            location?.longitude.toString(),
+                            location?.latitude.toString()
+                        )
                     )
-                )
+                }
             }
         }
     }

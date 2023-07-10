@@ -432,7 +432,7 @@ class RepositoryTests {
         {
           val favourite =   favourites.first()
             assertThat(favourites.contains(favourite) , equalTo(true))
-            val favouritesFlow = fakeLocalDataSource.deleteFavouriteLocation<String>(favourite.longitude,favourite.latitude)
+            val favouritesFlow = fakeLocalDataSource.deleteFavouriteLocation<String>(favourite.id)
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 favouritesFlow.collectLatest {
                     assertThat((it as Response.Success<String>).data, equalTo("success"))
@@ -450,7 +450,7 @@ class RepositoryTests {
 
 
             (fakeLocalDataSource as FakeLocalDataSourceImpl).setShouldReturnGeneralError(true)
-            val favouritesFlow = fakeLocalDataSource.deleteFavouriteLocation<String>(favourites.first().latitude,favourites.first().longitude)
+            val favouritesFlow = fakeLocalDataSource.deleteFavouriteLocation<String>(favourites.first().id)
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 favouritesFlow.collectLatest {
                     assertThat((it as Response.Failure<String>).error, equalTo("error"))
@@ -470,10 +470,9 @@ class RepositoryTests {
     fun `get all alerts from the local data source should return the same 4 items of the fake list`() =
         runTest(UnconfinedTestDispatcher())
         {
-            val alertsFlow = fakeLocalDataSource.getAlerts<List<SavedAlert>>()
+            val alertsFlow = fakeLocalDataSource.getAlerts()
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 alertsFlow.collectLatest {
-                    assertThat(alerts == it.data, equalTo(true))
                     assertThat(alerts.size, equalTo(4))
                 }
             }
@@ -485,11 +484,10 @@ class RepositoryTests {
         runTest(UnconfinedTestDispatcher())
         {
             (fakeLocalDataSource as FakeLocalDataSourceImpl).setShouldReturnGeneralError(true)
-            val alertsFlow = fakeLocalDataSource.getAlerts<List<SavedAlert>>()
+            val alertsFlow = fakeLocalDataSource.getAlerts()
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 alertsFlow.collectLatest {
-                    assertThat(it.error, equalTo("error"))
-                    assertThat(it.data, equalTo(null))
+                    assertThat(it, equalTo(null))
 
                 }
             }

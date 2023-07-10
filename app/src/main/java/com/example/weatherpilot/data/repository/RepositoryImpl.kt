@@ -50,8 +50,8 @@ class RepositoryImpl @Inject constructor(
       return  localDataSource.insertFavouriteLocation(location)
     }
 
-    override suspend fun <T> deleteFavouriteLocation(longitude: String, latitude: String) : Flow<Response<T>> {
-        return localDataSource.deleteFavouriteLocation(longitude, latitude)
+    override suspend fun <T> deleteFavouriteLocation(id : Int) : Flow<Response<T>> {
+        return localDataSource.deleteFavouriteLocation(id)
     }
 
     override suspend fun <T>  insertAlertToDatabase(alert: SavedAlert): Flow<Response<T>>  {
@@ -62,8 +62,8 @@ class RepositoryImpl @Inject constructor(
        return  localDataSource.deleteAlertFromDatabase(item)
     }
 
-    override fun <T> getAlerts(): Flow<Response<T>> {
-        return  localDataSource.getAlerts()
+    override fun  getAlerts(): Flow<List<AlertItem>> {
+        return  localDataSource.getAlerts().map { list -> list.map { it.toAlertItem() } }
     }
 
     override suspend fun <T> updateAlert(alert: SavedAlert) : Flow<Response<T>> {

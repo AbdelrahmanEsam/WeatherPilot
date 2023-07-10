@@ -57,7 +57,6 @@ class MapViewModel @Inject constructor(
     val alertState = _alertState.asStateFlow()
 
 
-
     private val _searchResultState: MutableStateFlow<MapState.SearchResultState> =
         MutableStateFlow(MapState.SearchResultState())
     val searchResultState = _searchResultState.asStateFlow()
@@ -69,7 +68,7 @@ class MapViewModel @Inject constructor(
 
     fun onEvent(intent: MapIntent) {
         when (intent) {
-            MapIntent.SaveDataToDataStore -> saveLatLongToDataStore()
+            MapIntent.SaveLocationToDataStore -> saveLatLongToDataStore()
             is MapIntent.NewLatLong -> with(intent) {
                 _state.update {
                     it.copy(
@@ -101,12 +100,24 @@ class MapViewModel @Inject constructor(
             }
 
 
+            is MapIntent.NewFavouriteLocation -> {
+                _favouriteState.update {
+                    it.copy(
+                        arabicName = intent.arabicName,
+                        englishName = intent.englishName,
+                        latitude = intent.latitude,
+                        longitude = intent.longitude
+                    )
+                }
+            }
+
             is MapIntent.SaveFavourite -> {
                 saveLocationToDatabase()
             }
 
-            is MapIntent.NewFavouriteLocation -> {
-                _favouriteState.update {
+
+            is MapIntent.AlertLocationIntent -> {
+                _alertState.update {
                     it.copy(
                         arabicName = intent.arabicName,
                         englishName = intent.englishName,
@@ -120,31 +131,20 @@ class MapViewModel @Inject constructor(
                 saveAlertToDatabase()
             }
 
-            is MapIntent.AlertLocationIntent -> {
-                _alertState.update {
-                    it.copy(
-                        arabicName = intent.arabicName,
-                        englishName = intent.englishName,
-                        latitude = intent.latitude,
-                        longitude = intent.longitude
-                    )
-                }
-            }
-
             is MapIntent.ShowSnackBar -> viewModelScope.launch { _snackBarFlow.emit(intent.message) }
             is MapIntent.SetAlarmDateIntent -> _alertState.update { it.copy(date = intent.date) }
             is MapIntent.SetAlarmTimeIntent -> _alertState.update { it.copy(time = intent.time) }
 
-            is MapIntent.UpdateAlertStateToScheduled ->{
-                 updateAlertStateToScheduled(intent.alert)
-             }
+            is MapIntent.UpdateAlertStateToScheduled -> {
+                updateAlertStateToScheduled(intent.alert)
+            }
 
             is MapIntent.SearchCityName -> {
                 searchCityByName(intent.cityName)
             }
 
             MapIntent.ClearSearchList -> {
-                _searchResultState.update { it.copy(searchResult  = null,) }
+                _searchResultState.update { it.copy(searchResult = null) }
             }
         }
 
@@ -157,7 +157,7 @@ class MapViewModel @Inject constructor(
             readStringFromDataStoreUseCase.execute<String?>("latitude")
                 .combine(readStringFromDataStoreUseCase.execute<String?>("longitude")) { latResponse, longResponse ->
 
-                    if (latResponse is Response.Success &&  longResponse is Response.Success) {
+                    if (latResponse is Response.Success && longResponse is Response.Success) {
 
                         _state.update {
                             it.copy(
@@ -199,13 +199,21 @@ class MapViewModel @Inject constructor(
 
                     when (insertResponse) {
                         is Response.Success -> {
-                            _favouriteState.update { it.copy(insertFavouriteResult = true, saveState = true) }
+                            _favouriteState.update {
+                                it.copy(
+                                    insertFavouriteResult = true,
+                                    saveState = true
+                                )
+                            }
                             _snackBarFlow.emit("data saved successfully")
                         }
+
                         else -> _snackBarFlow.emit(insertResponse.error ?: "something went Wrong")
                     }
 
                 }
+            } else {
+                _snackBarFlow.emit("something went Wrong")
             }
         }
     }
@@ -246,28 +254,33 @@ class MapViewModel @Inject constructor(
 
     }
 
-    private fun updateAlertStateToScheduled(alert : AlertItem)
-    {
+    private fun updateAlertStateToScheduled(alert: AlertItem) {
         viewModelScope.launch(ioDispatcher) {
-              updateAlertUseCase.execute(alert.copy(scheduled =  true)).collect()
+            updateAlertUseCase.execute(alert.copy(scheduled = true)).collect()
         }
     }
 
 
-    private fun searchCityByName(cityName : String)
-    {
+    private fun searchCityByName(cityName: String) {
         viewModelScope.launch(ioDispatcher) {
             searchCityByNameUseCase.execute(cityName).collect { searchResponse ->
 
-                when(searchResponse){
+                when (searchResponse) {
                     is Response.Failure -> {
                         _searchResultState.update { it.copy(loading = false) }
                     }
-                    is Response.Loading ->{
+
+                    is Response.Loading -> {
                         _searchResultState.update { it.copy(loading = true) }
                     }
+
                     is Response.Success -> {
-                        _searchResultState.update { it.copy(searchResult = searchResponse.data, loading = false) }
+                        _searchResultState.update {
+                            it.copy(
+                                searchResult = searchResponse.data,
+                                loading = false
+                            )
+                        }
                     }
                 }
             }
