@@ -30,7 +30,6 @@ class GetTimeStampUseCase {
             }
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale("ar", "EG"))
 
-            Log.d("returnDate",builder.toString())
 
             val parsedDate =
                 format.parse(builder.toString())
