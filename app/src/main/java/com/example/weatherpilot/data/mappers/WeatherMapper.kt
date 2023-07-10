@@ -14,6 +14,7 @@ fun WeatherResponse.toWeatherModel(): WeatherModel {
 
     return WeatherModel(
         city = timezone.split("/")[1],
+
         code = current.weather[0].icon,
         hoursWeather = hourly?.take(24)?.map(Hourly::toHourWeatherModel) ?: mutableListOf(),
         pressure = current.pressure,
