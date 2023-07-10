@@ -3,7 +3,7 @@ name: Android Build
 on:
   push:
     branches:
-      - master
+
 
 jobs:
   build:
@@ -21,8 +21,15 @@ jobs:
 
 
       - name: Run Tests
+<<<<<<< HEAD
         run: .\gradlew test
 
       - name: assemble
         run: .\gradlew assemble
+=======
+        run: ./gradlew test
+
+      - name: assemble
+        run: ./gradlew assemble
+>>>>>>> origin/master
 
