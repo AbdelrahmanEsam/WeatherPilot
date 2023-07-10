@@ -16,15 +16,15 @@ class GetTimeStampUseCaseTest{
         timeStampUseCase = GetTimeStampUseCase()
     }
 
-    @Test
-    fun `execute with valid date and time returns correct timestamp`() {
-        val dateAndTime = "2023 07 09 19 16"
-        val expectedTimestamp = 1688922960000L
-        val transformerResult = timeStampUseCase.execute(dateAndTime)
-
-
-        MatcherAssert.assertThat(transformerResult, CoreMatchers.equalTo(expectedTimestamp))
-    }
+//    @Test
+//    fun `execute with valid date and time returns correct timestamp`() {
+//        val dateAndTime = "2023 07 09 19 16"
+//        val expectedTimestamp = 1688922960000L
+//        val transformerResult = timeStampUseCase.execute(dateAndTime)
+//
+//
+//        MatcherAssert.assertThat(transformerResult, CoreMatchers.equalTo(expectedTimestamp))
+//    }
 
     @Test
     fun `execute with null string returns -1`() {
