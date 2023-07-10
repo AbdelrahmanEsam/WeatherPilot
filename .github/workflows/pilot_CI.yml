@@ -1,24 +1,27 @@
-name : Android Build
+name: Android Build
 
 on: pull_request
 
 jobs:
-    build:
+  build:
 
-      runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-      steps:
-        - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-        - name: Set Up JDK
-          uses: actions/setup-java@v3
-          with:
-            distribution: 'oracle'
-            java-version: '17'
-
-
+      - name: Set Up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'oracle'
+          java-version: '17'
 
 
-        - name: Run Tests
-          run: ./gradlew test
+
+
+      - name: Run Tests
+        run: ./gradlew test
+
+      - name: assemble
+        run: ./gradlew assemble
 
