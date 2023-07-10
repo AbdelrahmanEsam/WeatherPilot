@@ -5,7 +5,7 @@ on: pull_request
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -15,9 +15,6 @@ jobs:
         with:
           distribution: 'oracle'
           java-version: '17'
-
-
-
 
       - name: Run Tests
         run: ./gradlew test
