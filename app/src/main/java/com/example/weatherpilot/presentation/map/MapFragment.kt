@@ -1,6 +1,7 @@
 package com.example.weatherpilot.presentation.map
 
 import android.content.Context
+import android.content.DialogInterface
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -34,6 +36,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,7 +78,7 @@ class MapFragment(
     }
 
 
-    private val datePicker: MaterialDatePicker<Long> by lazy {
+    private val datePicker by lazy {
         MaterialDatePicker.Builder.datePicker().setTheme(R.style.datePickerTheme)
             .setCalendarConstraints(
                 CalendarConstraints.Builder().setStart(MaterialDatePicker.todayInUtcMilliseconds())
@@ -83,11 +86,26 @@ class MapFragment(
             ).build()
     }
 
-    private val timePicker: MaterialTimePicker by lazy {
+    private val timePicker by lazy {
         MaterialTimePicker.Builder().setHour(
             calender.get(Calendar.HOUR_OF_DAY),
         ).setMinute(calender.get(Calendar.MINUTE)).setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
             .setTheme(R.style.timePickerTheme).build()
+    }
+
+
+    private val chooseKindAlert  by lazy {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.choose_alert_type)
+            .setPositiveButton(R.string.notification) { dialog, _ ->
+                viewModel.onEvent(MapIntent.SetAlarmType(getString(R.string.notificationtype)))
+                dialog.dismiss()
+                datePicker.show(parentFragmentManager, "")
+            }.setNegativeButton(R.string.alerts){ dialog, _ ->
+                viewModel.onEvent(MapIntent.SetAlarmType(getString(R.string.alertType)))
+                dialog.dismiss()
+                datePicker.show(parentFragmentManager, "")
+            }
     }
 
     override fun onCreateView(
@@ -118,7 +136,7 @@ class MapFragment(
                     viewModel.onEvent(MapIntent.ShowSnackBar(getString(R.string.please_choose_place_on_the_map)))
                     return@decider
                 }
-                datePicker.show(parentFragmentManager, "")
+                chooseKindAlert.show()
             }, regularImpl = {
                 viewModel.onEvent(MapIntent.SaveLocationToDataStore)
             },{})
@@ -129,7 +147,7 @@ class MapFragment(
         datePicker.addOnPositiveButtonClickListener {
             calender.timeInMillis = it
             val year = calender.get(Calendar.YEAR)
-            val month = calender.get(Calendar.MONTH)
+            val month = calender.get(Calendar.MONTH).plus(1)
             val day = calender.get(Calendar.DAY_OF_MONTH)
             viewModel.onEvent(MapIntent.SetAlarmDateIntent("$year $month $day"))
             timePicker.show(parentFragmentManager, "")
@@ -147,6 +165,8 @@ class MapFragment(
 
 
     }
+
+
 
 
     private fun decider(favouriteImpl: () -> Unit, alertImpl: () -> Unit, regularImpl: () -> Unit,optionalImpl : () ->Unit) {

@@ -109,7 +109,6 @@ class HomeFragment(
         {
             if (!checkPermission()) {
                 binding.grantLocationPermissionDialog.visibility = View.VISIBLE
-                binding.refreshLayout.isRefreshing = false
                 binding.descriptionTextView.text = getString(R.string.please_enable_location)
                 binding.grantButton.text = getString(R.string.enable)
                 return@registerForActivityResult

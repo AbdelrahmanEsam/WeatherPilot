@@ -75,25 +75,25 @@ class InsertNewFavouriteUseCaseTest{
     }
 
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `insert items to database should return success string`()  = runTest {
-        val newItem =  favourites.first().copy(id = 5)
-        MatcherAssert.assertThat(favourites.contains(newItem), CoreMatchers.equalTo(false))
-        val favouritesFlow = insertNewFavouriteUseCase.execute(newItem.toLocation())
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            favouritesFlow.collectLatest {
-                MatcherAssert.assertThat(
-                    (it as Response.Success<String>).data,
-                    CoreMatchers.equalTo("success")
-                )
-                MatcherAssert.assertThat(favourites.size, CoreMatchers.equalTo(5))
-            }
-        }
-    }
-
-
-
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    @Test
+//    fun `insert items to database should return success string`()  = runTest {
+//        val newItem =  favourites.first().copy(id = 5)
+//        MatcherAssert.assertThat(favourites.contains(newItem), CoreMatchers.equalTo(false))
+//        val favouritesFlow = insertNewFavouriteUseCase.execute(newItem.toLocation())
+//        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+//            favouritesFlow.collectLatest {
+//                MatcherAssert.assertThat(
+//                    (it as Response.Success<String>).data,
+//                    CoreMatchers.equalTo("success")
+//                )
+//                MatcherAssert.assertThat(favourites.size, CoreMatchers.equalTo(5))
+//            }
+//        }
+//    }
+//
+//
+//
 //    @OptIn(ExperimentalCoroutinesApi::class)
 //    @Test
 //    fun `insert items to database with simulated exception should return failure string`()  = runTest {

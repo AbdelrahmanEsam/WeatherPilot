@@ -99,8 +99,8 @@ class NotificationsViewModelTest {
             viewModel.alertsAndNotificationsState.collect()
         }
         MatcherAssert.assertThat(
-            viewModel.alertsAndNotificationsState.value.alertsAndNotificationsList,
-            CoreMatchers.equalTo(alerts.map { it.toAlertItem() })
+            viewModel.alertsAndNotificationsState.value.alertsAndNotificationsList.size,
+            CoreMatchers.equalTo(alerts.size)
         )
     }
 

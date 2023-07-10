@@ -80,14 +80,16 @@
     <string name="weather_is_fine_no_alerts_for_the_scheduled_period">الجو لطيف ولا يوجد اي تحذيرات للفترة المحددة </string>
     <string name="weather_alert">تذكير</string>
     <string name="alarm">alarm</string>
+    <string name="alert">تنبيهات</string>
     <string name="item_object">item object</string>
     <string name="ok">حسنا</string>
     <string name="weather_database">weather_database</string>
     <string name="notificationtype">notificationType</string>
+    <string name="alertType">alertType</string>
     <string name="languagetype">languageType</string>
     <string name="am">صباحا</string>
     <string name="pm">مساءا</string>
-
+    <string name="choose_alert_type">من فضلك اختر نوع التنبيه</string>
 
 
 

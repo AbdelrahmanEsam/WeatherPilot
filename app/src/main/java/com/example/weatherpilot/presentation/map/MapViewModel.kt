@@ -146,6 +146,8 @@ class MapViewModel @Inject constructor(
             MapIntent.ClearSearchList -> {
                 _searchResultState.update { it.copy(searchResult = null) }
             }
+
+            is MapIntent.SetAlarmType -> _alertState.update { it.copy(kind = intent.type) }
         }
 
     }
@@ -235,7 +237,7 @@ class MapViewModel @Inject constructor(
                             longitude = longitude,
                             latitude = latitude,
                             time = timeStamp,
-                            kind = "notification",
+                            kind = kind,
                         )
                     ).collectLatest { response ->
                         when (response) {
@@ -253,6 +255,9 @@ class MapViewModel @Inject constructor(
         }
 
     }
+
+
+
 
     private fun updateAlertStateToScheduled(alert: AlertItem) {
         viewModelScope.launch(ioDispatcher) {
