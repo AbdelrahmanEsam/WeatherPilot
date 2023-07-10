@@ -23,7 +23,6 @@ class GetTimeStampUseCaseTest{
         val transformerResult = timeStampUseCase.execute(dateAndTime)
 
 
-
         MatcherAssert.assertThat(transformerResult, CoreMatchers.equalTo(expectedTimestamp))
     }
 
