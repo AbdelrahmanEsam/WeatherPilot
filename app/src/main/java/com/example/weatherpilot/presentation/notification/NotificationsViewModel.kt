@@ -72,7 +72,7 @@ class NotificationsViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             getAllAlertsUseCase.execute().collectLatest { response ->
 
-                _alertsAndNotificationsState.update { it.copy(alertsAndNotificationsList = response) }
+                _alertsAndNotificationsState.update { it.copy(alertsAndNotificationsList = response.sortedBy { item -> item.time }) }
 
             }
         }

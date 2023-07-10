@@ -5,6 +5,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.provider.Settings
 import android.util.Log
 import com.example.weatherpilot.R
 import com.example.weatherpilot.domain.model.AlertItem
@@ -27,8 +28,8 @@ class AlarmScheduler(
         items.forEach { item ->
             val intent = Intent(
                 context,
-                if (item.kind == context.getString(R.string.alarm))
-                    AlarmReceiver::class.java else AlarmReceiver::class.java
+                if (item.kind == context.getString(R.string.alertType) && Settings.canDrawOverlays(context))
+                    AlarmReceiver::class.java else NotificationReceiver::class.java
             ).apply {
                 putExtra(context.getString(R.string.broadcast_item), item)
             }
