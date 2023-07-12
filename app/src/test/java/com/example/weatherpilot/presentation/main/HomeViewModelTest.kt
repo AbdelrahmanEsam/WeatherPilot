@@ -5,8 +5,11 @@ import com.example.weatherpilot.data.dto.SearchResponseDto
 import com.example.weatherpilot.data.dto.SearchResponseItem
 import com.example.weatherpilot.data.dto.Weather
 import com.example.weatherpilot.data.dto.WeatherResponse
+import com.example.weatherpilot.data.mappers.toWeatherModel
 import com.example.weatherpilot.data.repository.FakeRepository
 import com.example.weatherpilot.domain.repository.Repository
+import com.example.weatherpilot.domain.usecase.cached.GetCachedResponseUseCase
+import com.example.weatherpilot.domain.usecase.cached.UpdateCityNameUseCase
 import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.network.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.network.SearchCityByNameUseCase
@@ -44,6 +47,8 @@ class HomeViewModelTest {
     private lateinit var windSpeedTransformerUseCase: WindSpeedTransformerUseCase
     private lateinit var tempTransformerUseCase: TempTransformerUseCase
     private lateinit var searchCityByNameUseCase: SearchCityByNameUseCase
+    private lateinit var getCachedResponseUseCase: GetCachedResponseUseCase
+    private lateinit var updateCityNameUseCase: UpdateCityNameUseCase
 
 
     private val dataStore: MutableMap<String, String?> = mutableMapOf(
@@ -112,15 +117,20 @@ class HomeViewModelTest {
     }
 
 
+    private val weatherResponse = mutableListOf(WeatherResponse(current = Current(visibility = 15, weather = listOf(Weather(id = 0, description = "", main = "",icon = "1"))), lat = 55.5, lon = 55.5, timezone = "any/city"))
+
+
     @Before
     fun setUp() {
-        repository = FakeRepository(weatherItems = weatherItems, dataStore = dataStore, searchItems = searchItems)
+        repository = FakeRepository(weatherItems = weatherItems, dataStore = dataStore, searchItems = searchItems, cachedWeather = weatherResponse)
         getWeatherDataUseCase = GetWeatherDataUseCase(repository)
         getCurrentDataUseCase = GetCurrentDateUseCase()
         readStringFromDataStoreUseCase = ReadStringFromDataStoreUseCase(repository)
         windSpeedTransformerUseCase = WindSpeedTransformerUseCase()
         tempTransformerUseCase = TempTransformerUseCase()
         searchCityByNameUseCase = SearchCityByNameUseCase(repository)
+        getCachedResponseUseCase = GetCachedResponseUseCase(repository)
+        updateCityNameUseCase = UpdateCityNameUseCase(repository)
         viewModel = HomeViewModel(
             ioDispatcher = kotlinx.coroutines.Dispatchers.Unconfined,
             getWeatherDataUseCase,
@@ -128,7 +138,9 @@ class HomeViewModelTest {
             readStringFromDataStoreUseCase,
             windSpeedTransformerUseCase,
             tempTransformerUseCase,
-            searchCityByNameUseCase
+            searchCityByNameUseCase,
+            getCachedResponseUseCase,
+            updateCityNameUseCase
         )
 
 
@@ -177,16 +189,14 @@ class HomeViewModelTest {
         )
 
         MatcherAssert.assertThat(
-            viewModel.stateDisplay.value.pressure?.toInt(), CoreMatchers.equalTo(
-                weatherItems.first {
-                    it.lat == dataStore["latitude"]!!.toDouble()
-                            && it.lon == dataStore["longitude"]!!.toDouble()
+            weatherItems.first {
+                it.lat == dataStore["latitude"]!!.toDouble()
+                        && it.lon == dataStore["longitude"]!!.toDouble()
 
-                }.current.pressure
+            }.current.pressure, CoreMatchers.equalTo(
+               weatherResponse.first().current.pressure
             )
         )
-
-
     }
 
 
@@ -271,11 +281,7 @@ class HomeViewModelTest {
 
             MatcherAssert.assertThat(
                 viewModel.stateDisplay.value.pressure?.toInt(), CoreMatchers.equalTo(
-                    weatherItems.first {
-                        it.lat == dataStore["latitude"]!!.toDouble()
-                                && it.lon == dataStore["longitude"]!!.toDouble()
-
-                    }.current.pressure
+                    weatherResponse.first().current.pressure
                 )
             )
         }
@@ -297,4 +303,18 @@ class HomeViewModelTest {
             }
         }
 
+
+
+    @Test
+    fun `get cached weather should update the display state with the cached`() = runTest(UnconfinedTestDispatcher()) {
+        val resultFlow =  repository.getCachedWeatherFromDatabase()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            resultFlow.collectLatest {
+                MatcherAssert.assertThat(
+                    it.first(),
+                    CoreMatchers.equalTo(weatherResponse.first().toWeatherModel())
+                )
+            }
+        }
+    }
 }

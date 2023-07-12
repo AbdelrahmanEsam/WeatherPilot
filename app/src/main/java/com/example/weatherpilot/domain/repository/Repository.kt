@@ -41,7 +41,6 @@ interface Repository {
     suspend fun <T> updateResponseToDatabase(city: String)  : Flow<Response<T>>
 
 
-    suspend fun <T> deleteResponseFromDatabase(lat : Double , long : Double) : Flow<Response<T>>
 
 
     suspend fun getCachedWeatherFromDatabase() : Flow<List<WeatherModel>>

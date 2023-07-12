@@ -35,7 +35,7 @@ class FakeRemoteDataSource( private val weatherItems : List<WeatherResponse>,pri
         language: String
     ): Flow<Response<T>> {
         return  flowOf(
-                if (shouldReturnGeneralError)  Response.Failure("error") else if(shouldReturnConnectionError) Response.Failure("Please check your network connection") else Response.Success(
+                if (shouldReturnGeneralError)  Response.Failure("unknown error") else if(shouldReturnConnectionError) Response.Failure("Please check your network connection") else Response.Success(
                         weatherItems.firstOrNull { it.lon == longitude.toDouble() && it.lat == latitude.toDouble()} as T
                         )
         )
@@ -43,7 +43,7 @@ class FakeRemoteDataSource( private val weatherItems : List<WeatherResponse>,pri
     }
 
     override suspend fun <T> getSearchResponse(search: String): Flow<Response<T>> {
-        return flowOf(if (shouldReturnGeneralError) Response.Failure("error") else if(shouldReturnConnectionError) Response.Failure("Please check your network connection") else Response.Success(searchItems.firstOrNull { it.name == search } as T))
+        return flowOf(if (shouldReturnGeneralError) Response.Failure("unknown error") else if(shouldReturnConnectionError) Response.Failure("Please check your network connection") else Response.Success(searchItems.firstOrNull { it.name == search } as T))
         }
     }
 

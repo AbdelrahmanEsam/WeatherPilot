@@ -119,9 +119,8 @@ object AppModule
     @Provides
     fun providesRepository(remote: RemoteDataSource
       ,localDataSource: LocalDataSource,
-      connectivityObserver: ConnectivityObserver
     ): Repository
-    = RepositoryImpl(remote,localDataSource,connectivityObserver)
+    = RepositoryImpl(remote,localDataSource)
 
     @Singleton
     @Provides

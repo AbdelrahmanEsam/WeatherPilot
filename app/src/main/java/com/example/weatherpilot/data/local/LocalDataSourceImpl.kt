@@ -127,17 +127,6 @@ class LocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun <T> deleteResponseFromDatabase(
-        lat: Double,
-        long: Double
-    ): Flow<Response<T>> {
-        return try {
-            weatherCacheDao.delete(lat, long)
-            flowOf(Response.Success("successful insert" as T))
-        } catch (e: Exception) {
-            flowOf(Response.Failure(e.message ?: "unknown error"))
-        }
-    }
 
     override suspend fun <T> clearWeatherCacheDatabase(): Flow<Response<T>> {
         return try {

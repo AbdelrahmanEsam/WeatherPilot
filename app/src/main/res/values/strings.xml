@@ -94,6 +94,7 @@
     <string name="this_data_isn_t_updated">this data isn\'t updated</string>
     <string name="successful_insert">new pref is saved</string>
     <string name="unknown_error">something went wrong</string>
+    <string name="image_url">"https://openweathermap.org/img/wn/${%1$s}@2x.png"</string>
 
 
     <bool name="is_english">true</bool>

@@ -8,7 +8,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.kotlin.times
 
@@ -19,8 +21,9 @@ class DeleteAlertUseCaseTest {
 //    private lateinit var fakeRepository: Repository
 
 
-    private var fakeRepository: Repository = Mockito.mock()
-    private var deleteAlertUseCase = DeleteAlertUseCase(fakeRepository)
+    @Mock
+    private lateinit  var fakeRepository: Repository
+    private lateinit var deleteAlertUseCase : DeleteAlertUseCase
 
 
     private val alerts: MutableList<SavedAlert> = mutableListOf(
@@ -72,12 +75,16 @@ class DeleteAlertUseCaseTest {
     )
 
 
-//    @Before
-//    fun setUp()  = runTest{
-//
+    @Before
+    fun setUp()  = runTest{
+
 //        fakeRepository = FakeRepository(alerts =  alerts)
-//        deleteAlertUseCase = DeleteAlertUseCase(fakeRepository)
-//    }
+
+
+        fakeRepository = Mockito.mock()
+        deleteAlertUseCase = DeleteAlertUseCase(fakeRepository)
+
+    }
 //
 //
 //

@@ -27,6 +27,7 @@ class FakeRepository(
     , private val alerts : MutableList<SavedAlert> = mutableListOf()
     , private val dataStore : MutableMap<String,String?> = mutableMapOf()
     , private val weatherItems : List<WeatherResponse> = mutableListOf()
+    , private val cachedWeather : MutableList<WeatherResponse> = mutableListOf()
     , private val searchItems : SearchResponseDto?= null
 ) : Repository  {
 
@@ -59,9 +60,12 @@ class FakeRepository(
         latitude: String,
         language: String
     ): Flow<Response<T>> {
+      val response =   weatherItems.firstOrNull { it.lon == longitude.toDouble() && it.lat == latitude.toDouble()}
+        cachedWeather.clear()
+        response?.let { cachedWeather.add(it) }
         return  flowOf(
             if (shouldReturnGeneralError)  Response.Failure("error") else if(shouldReturnConnectionError) Response.Failure("Please check your network connection") else Response.Success(
-                weatherItems.firstOrNull { it.lon == longitude.toDouble() && it.lat == latitude.toDouble()}?.toWeatherModel() as T
+                "success" as T
             )
         )
 
@@ -131,6 +135,21 @@ class FakeRepository(
             Response.Success("success" as T)
         } )
 
+    }
+
+    override suspend fun <T> updateResponseToDatabase(city: String): Flow<Response<T>> {
+        return flowOf(if(shouldReturnGeneralError){
+            Response.Failure("error")
+        }else{
+
+            Response.Success("success" as T)
+        } )
+    }
+
+
+
+    override suspend fun getCachedWeatherFromDatabase(): Flow<List<WeatherModel>> {
+       return   flowOf(cachedWeather.map { it.toWeatherModel() })
     }
 
     override suspend fun <T> saveStringToDataStore(key: String, value: String) : Flow<Response<T>> {

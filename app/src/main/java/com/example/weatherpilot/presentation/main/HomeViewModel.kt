@@ -89,7 +89,6 @@ class HomeViewModel @Inject constructor(
                         ,statePreferences.value.languageType ?: "en"
                     )
 
-                Log.d("viewModelBefore","before")
                 weatherResponse.collectLatest { response ->
                     when(response){
                         is Response.Failure -> {

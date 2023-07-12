@@ -41,7 +41,6 @@ fun loadLottieImage(image: LottieAnimationView, url: String?) {
     @JvmStatic
     @BindingAdapter("loadImage")
     fun loadImage(image: ImageView, url: String?) {
-        Log.d("image",url.toString())
             Glide.with(image.context)
                 .load("https://openweathermap.org/img/wn/${url}@2x.png")
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)

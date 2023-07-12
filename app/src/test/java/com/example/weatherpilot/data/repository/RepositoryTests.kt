@@ -5,16 +5,18 @@ import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
 import com.example.weatherpilot.data.dto.SearchResponseDto
 import com.example.weatherpilot.data.dto.SearchResponseItem
+import com.example.weatherpilot.data.dto.Weather
 import com.example.weatherpilot.data.dto.WeatherResponse
 import com.example.weatherpilot.data.local.FakeLocalDataSourceImpl
 import com.example.weatherpilot.data.local.LocalDataSource
+import com.example.weatherpilot.data.mappers.toWeatherModel
 import com.example.weatherpilot.data.remote.FakeRemoteDataSource
 import com.example.weatherpilot.data.remote.RemoteDataSource
+import com.example.weatherpilot.domain.model.WeatherModel
 import com.example.weatherpilot.domain.repository.Repository
 import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -24,7 +26,6 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
-import org.hamcrest.CoreMatchers.`is` as Is
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RepositoryTests {
@@ -155,19 +156,21 @@ class RepositoryTests {
         )
     }
 
+    private val weatherResponse = mutableListOf(WeatherResponse(current = Current(visibility = 15, weather = listOf(Weather(id = 0, description = "", main = "",icon = "1"))), lat = 55.5, lon = 55.5, timezone = "any/city"))
+
 
     @Before
     fun setUp() {
-        fakeLocalDataSource = FakeLocalDataSourceImpl(favourites, alerts, dataStore)
+        fakeLocalDataSource = FakeLocalDataSourceImpl(favourites, alerts,weatherResponse,dataStore)
         fakeRemoteDataSource = FakeRemoteDataSource(weatherItems, searchItems)
         repository = RepositoryImpl(fakeRemoteDataSource, fakeLocalDataSource)
     }
 
     @Test
-    fun `get weather response from remote source with valid lat and long should return value`() =
+    fun `get weather response from remote source with valid lat and long should return succees value`() =
         runTest(UnconfinedTestDispatcher())
         {
-            val item: Flow<Response<WeatherResponse>> = repository.getWeatherResponse(
+            val item: Flow<Response<Int>> = repository.getWeatherResponse(
                 weatherItems.first().lat.toString(),
                 weatherItems.first().lon.toString(),
                 "en"
@@ -177,12 +180,8 @@ class RepositoryTests {
 
 
                     assertThat(
-                        (item.first() as Response.Success).data?.lat,
-                        equalTo(weatherItems.first().lat)
-                    )
-                    assertThat(
-                        (item.first() as Response.Success).data?.lon,
-                        equalTo(weatherItems.first().lon)
+                        (item.first() as Response.Success).data,
+                        equalTo("success")
                     )
                 }
             }
@@ -190,17 +189,13 @@ class RepositoryTests {
 
 
     @Test
-    fun `get weather response from remote source with Invalid lat and long should return empty success value`() =
+    fun `get weather response from cached source should return valid value`() =
         runTest(UnconfinedTestDispatcher())
         {
-            val item: Flow<Response<WeatherResponse>> = repository.getWeatherResponse(
-                "888",
-                "888",
-                "en"
-            )
+            val item: Flow<List<WeatherModel>> = repository.getCachedWeatherFromDatabase()
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 item.collect {
-                    assertThat((item.first() as Response.Success).data, equalTo(null))
+                    assertThat(it.first().visibility, equalTo(15))
                 }
             }
         }
@@ -222,7 +217,7 @@ class RepositoryTests {
                 item.collect {
 
 
-                    assertThat((item.first() as Response.Failure).error, equalTo("error"))
+                    assertThat((item.first() as Response.Failure).error, equalTo("unknown error"))
                 }
             }
         }
@@ -242,8 +237,6 @@ class RepositoryTests {
 
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 item.collect {
-
-
                     assertThat(
                         (item.first() as Response.Failure).error,
                         equalTo("Please check your network connection")
@@ -297,7 +290,7 @@ class RepositoryTests {
             val searchResult: Flow<Response<SearchResponseItem>> = repository.getSearchResponse("")
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 searchResult.collect {
-                    assertThat((it as Response.Failure).error, equalTo("error"))
+                    assertThat((it as Response.Failure).error, equalTo("unknown error"))
                 }
             }
 
@@ -580,6 +573,16 @@ class RepositoryTests {
                 }
             }
         }
+
+    @Test
+    fun `get cached weather from local database should return the last response`() = runTest(UnconfinedTestDispatcher()) {
+       val resultFlow =  repository.getCachedWeatherFromDatabase()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            resultFlow.collectLatest {
+                assertThat(it.first(), equalTo(weatherResponse.first().toWeatherModel()))
+            }
+        }
+    }
 
 
 
