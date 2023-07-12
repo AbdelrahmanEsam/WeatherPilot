@@ -25,9 +25,8 @@ fun WeatherResponse.toWeatherModel(): WeatherModel {
         description = current.weather[0].description,
         temp = current.temp,
         icon = current.weather[0].icon,
-        daysWeather = daily?.map(Daily::toDayWeatherModel),
-        alertMessage = alerts?.take(1)?.first()?.description ?: ""
-    )
+        daysWeather = daily.map(Daily::toDayWeatherModel),
+        alertMessage = if (alerts.isNotEmpty()) alerts.take(1).first().description else  "")
 }
 
 

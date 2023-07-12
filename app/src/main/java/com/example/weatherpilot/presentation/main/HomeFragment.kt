@@ -36,6 +36,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collectLatest
@@ -261,8 +262,8 @@ class HomeFragment(
             connectivityObserver.observe().collectLatest { status ->
                 withContext(mainDispatcher) {
                     if (status == ConnectivityObserver.Status.Lost || status == ConnectivityObserver.Status.Unavailable) {
-                        binding.connectionLostDialog.visibility = View.VISIBLE
-                        binding.contentLayout.visibility = View.GONE
+                        binding.refreshLayout.isRefreshing = true
+
                     }
 
 

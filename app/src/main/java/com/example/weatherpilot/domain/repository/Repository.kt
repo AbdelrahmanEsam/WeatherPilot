@@ -2,8 +2,10 @@ package com.example.weatherpilot.domain.repository
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
+import com.example.weatherpilot.data.dto.WeatherResponse
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
+import com.example.weatherpilot.domain.model.WeatherModel
 import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.flow.Flow
 
@@ -34,4 +36,13 @@ interface Repository {
 
 
     suspend fun <T> updateAlert(alert: SavedAlert) : Flow<Response<T>>
+
+
+    suspend fun <T> updateResponseToDatabase(city: String)  : Flow<Response<T>>
+
+
+    suspend fun <T> deleteResponseFromDatabase(lat : Double , long : Double) : Flow<Response<T>>
+
+
+    suspend fun getCachedWeatherFromDatabase() : Flow<List<WeatherModel>>
 }

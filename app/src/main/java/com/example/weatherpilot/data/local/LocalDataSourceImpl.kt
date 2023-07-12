@@ -3,12 +3,15 @@ package com.example.weatherpilot.data.local
 import android.util.Log
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
+import com.example.weatherpilot.data.dto.WeatherResponse
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
 import com.example.weatherpilot.data.local.room.AlertsDao
 import com.example.weatherpilot.data.local.room.FavouritesDao
+import com.example.weatherpilot.data.local.room.WeatherCacheDao
 import com.example.weatherpilot.data.mappers.toAlertItem
 import com.example.weatherpilot.data.mappers.toLocation
 import com.example.weatherpilot.domain.model.Location
+import com.example.weatherpilot.util.connectivity.ConnectivityObserver
 import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -20,7 +23,9 @@ import javax.inject.Inject
 class LocalDataSourceImpl @Inject constructor(
     private val favouritesDao: FavouritesDao,
     private val alertsDao: AlertsDao,
+    private val weatherCacheDao: WeatherCacheDao,
     private val dataStore: DataStoreUserPreferences,
+
 ) : LocalDataSource {
 
 
@@ -99,6 +104,59 @@ class LocalDataSourceImpl @Inject constructor(
             flowOf(Response.Failure(e.message ?: "unknown error"))
         }
     }
+
+
+
+    override suspend fun <T> saveResponseToDatabase(response: WeatherResponse): Flow<Response<T>> {
+        return try {
+            Log.d("response in local impl",response.toString())
+            weatherCacheDao.insert(response)
+            Log.d("response in local impl","success")
+
+            flowOf(Response.Success("successful insert" as T))
+        } catch (e: Exception) {
+            Log.d("response in local impl",e.message ?: "unknow")
+            flowOf(Response.Failure(e.message ?: "unknown error"))
+        }
+    }
+
+    override suspend fun <T> updateResponseToDatabase(city: String): Flow<Response<T>> {
+        return try {
+            val response = weatherCacheDao.getCachedWeather().first().first()
+            weatherCacheDao.insert(response.copy(timezone = "any/$city"))
+            flowOf(Response.Success("successful insert" as T))
+        } catch (e: Exception) {
+            flowOf(Response.Failure(e.message ?: "unknown error"))
+        }
+    }
+
+    override suspend fun <T> deleteResponseFromDatabase(
+        lat: Double,
+        long: Double
+    ): Flow<Response<T>> {
+        return try {
+            weatherCacheDao.delete(lat, long)
+            flowOf(Response.Success("successful insert" as T))
+        } catch (e: Exception) {
+            flowOf(Response.Failure(e.message ?: "unknown error"))
+        }
+    }
+
+    override suspend fun <T> clearWeatherCacheDatabase(): Flow<Response<T>> {
+        return try {
+            weatherCacheDao.clearTable()
+            flowOf(Response.Success("successful insert" as T))
+        } catch (e: Exception) {
+            flowOf(Response.Failure(e.message ?: "unknown error"))
+        }
+    }
+
+    override suspend fun getCachedWeatherFromDatabase(): Flow<List<WeatherResponse>> {
+        return weatherCacheDao.getCachedWeather()
+    }
+
+
+
 
 
 }

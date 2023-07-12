@@ -1,5 +1,6 @@
 package com.example.weatherpilot.data.remote
 
+import android.util.Log
 import com.example.weatherpilot.data.mappers.toSearchItem
 import com.example.weatherpilot.data.mappers.toSearchResponse
 import com.example.weatherpilot.data.mappers.toWeatherModel
@@ -16,6 +17,7 @@ class RemoteDataSourceImpl @Inject constructor(private val remote: WeatherInterf
         latitude: String,
         language: String
     ): Flow<Response<T>> {
+        Log.d("language",language)
         return try {
             flowOf(
                 Response.Success(
@@ -23,7 +25,7 @@ class RemoteDataSourceImpl @Inject constructor(private val remote: WeatherInterf
                         longitude = longitude,
                         latitude = latitude,
                         lang = language
-                    ).toWeatherModel() as T
+                    ) as T
                 )
             )
         } catch (e: Exception) {

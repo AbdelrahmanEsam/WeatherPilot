@@ -2,6 +2,7 @@ package com.example.weatherpilot.data.local
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
+import com.example.weatherpilot.data.dto.WeatherResponse
 import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.util.usescases.Response
 import kotlinx.coroutines.flow.Flow
@@ -28,4 +29,19 @@ interface LocalDataSource {
 
 
     suspend fun <T> getStringFromDataStore(key : String) : Flow<Response<T>>
+
+
+    suspend fun <T> saveResponseToDatabase(response : WeatherResponse) : Flow<Response<T>>
+
+
+    suspend fun <T> updateResponseToDatabase(city: String)  : Flow<Response<T>>
+
+
+    suspend fun <T> deleteResponseFromDatabase(lat : Double , long : Double) : Flow<Response<T>>
+
+
+    suspend fun <T> clearWeatherCacheDatabase() : Flow<Response<T>>
+
+
+    suspend fun getCachedWeatherFromDatabase() :  Flow<List<WeatherResponse>>
 }

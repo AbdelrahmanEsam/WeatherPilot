@@ -19,6 +19,7 @@ import com.example.weatherpilot.data.local.room.AlertsDao
 import com.example.weatherpilot.data.local.room.FavouritesDao
 import com.example.weatherpilot.data.local.LocalDataSource
 import com.example.weatherpilot.data.local.LocalDataSourceImpl
+import com.example.weatherpilot.data.local.room.WeatherCacheDao
 import com.example.weatherpilot.data.local.room.WeatherDatabase
 import com.example.weatherpilot.data.remote.RemoteDataSource
 import com.example.weatherpilot.data.remote.RemoteDataSourceImpl
@@ -100,9 +101,9 @@ object AppModule
 
     @Provides
     @Singleton
-    fun providesLocalDataSource(alertsDao: AlertsDao,favouritesDao: FavouritesDao ,dataStore : DataStoreUserPreferences) : LocalDataSource
+    fun providesLocalDataSource(alertsDao: AlertsDao,weatherCacheDao: WeatherCacheDao,favouritesDao: FavouritesDao ,dataStore : DataStoreUserPreferences) : LocalDataSource
     {
-        return LocalDataSourceImpl(favouritesDao, alertsDao,dataStore)
+        return LocalDataSourceImpl(favouritesDao, alertsDao,weatherCacheDao,dataStore)
     }
 
 
@@ -117,9 +118,10 @@ object AppModule
     @Singleton
     @Provides
     fun providesRepository(remote: RemoteDataSource
-      ,localDataSource: LocalDataSource
+      ,localDataSource: LocalDataSource,
+      connectivityObserver: ConnectivityObserver
     ): Repository
-    = RepositoryImpl(remote,localDataSource)
+    = RepositoryImpl(remote,localDataSource,connectivityObserver)
 
     @Singleton
     @Provides
@@ -142,5 +144,13 @@ object AppModule
     fun providesAlertsDao(database: WeatherDatabase) : AlertsDao
     {
         return  database.alertsDao
+    }
+
+
+    @Singleton
+    @Provides
+    fun providesWeatherCacheDao(database: WeatherDatabase) : WeatherCacheDao
+    {
+        return database.weatherCacheDao
     }
 }

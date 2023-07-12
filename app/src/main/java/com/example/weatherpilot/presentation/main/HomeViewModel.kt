@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.domain.model.SearchResponse
+import com.example.weatherpilot.domain.usecase.cached.GetCachedResponseUseCase
+import com.example.weatherpilot.domain.usecase.cached.UpdateCityNameUseCase
 import com.example.weatherpilot.domain.usecase.transformers.GetCurrentDateUseCase
 import com.example.weatherpilot.domain.usecase.network.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
@@ -37,6 +39,8 @@ class HomeViewModel @Inject constructor(
     private val windSpeedTransformerUseCase: WindSpeedTransformerUseCase,
     private val tempTransformerUseCase: TempTransformerUseCase,
     private val searchCityByNameUseCase: SearchCityByNameUseCase,
+    private val getCachedResponseUseCase: GetCachedResponseUseCase,
+    private val updateCityNameUseCase: UpdateCityNameUseCase
 ) : ViewModel() {
 
 
@@ -85,43 +89,18 @@ class HomeViewModel @Inject constructor(
                         ,statePreferences.value.languageType ?: "en"
                     )
 
+                Log.d("viewModelBefore","before")
                 weatherResponse.collectLatest { response ->
                     when(response){
                         is Response.Failure -> {
                             _stateDisplay.update { it.copy(error = response.error, loading = false) }
+                            getCachedResponse()
                         }
                         is Response.Loading ->{
                             _stateDisplay.update { it.copy(loading = true) }
                         }
                         is Response.Success -> {
-
-                            with(response.data!!){ _stateDisplay.update {
-
-
-                              val tempPref =   when(_statePreferences.value.temperatureType.toString()){
-                                    "F" ->   Temperature.Fahrenheit(temp.roundToInt())
-                                    "K" -> Temperature.Kelvin(temp.roundToInt())
-                                    else ->  Temperature.Celsius(temp.roundToInt())
-                              }
-
-                              getLocalCityName(city,statePreferences.value.languageType ?: "en")
-
-                                it.copy(weatherState =   description
-                                    , pressure =  pressure.toString()
-                                    , clouds = clouds.toString()
-                                    , humidity = humidity.toString()
-                                    , wind = windSpeedTransformerUseCase.execute(wind,
-                                        _statePreferences.value.windType.toString()
-                                    )
-                                    , dayState = hoursWeather
-                                    , temp = tempTransformerUseCase.execute(tempPref)
-                                    , visibility = visibility.toString()
-                                    , iconCode = icon
-                                    , weekState = daysWeather ?: listOf()
-                                    , date = getCurrentDateUseCase.execute()
-                                    , loading = false
-                                )
-                            }}
+                            getCachedResponse()
                         }
                     }
                 }
@@ -140,11 +119,12 @@ class HomeViewModel @Inject constructor(
                     if (local == "ar"){
                         val localCityName :String =   (response.data as SearchResponse).searchResults.first()?.LocalNames?.ar  ?: response.data.searchResults.first()?.LocalNames?.en!!
                       _stateDisplay.update { it.copy(city = localCityName)}
+                        updateCityNameUseCase.execute<Response<String>>(_stateDisplay.value.city!!)
                     }else{
                       _stateDisplay.update { it.copy(city = (response.data as SearchResponse).searchResults.first()?.LocalNames?.en) }
                     }
                 }
-                else -> TODO()
+                else -> {_stateDisplay.update { it.copy(city = city) }}
             }
         }
     }
@@ -185,6 +165,50 @@ class HomeViewModel @Inject constructor(
 
                 }
 
+            }
+        }
+    }
+
+
+    private fun getCachedResponse() {
+        viewModelScope.launch(ioDispatcher) {
+            _stateDisplay.update { it.copy(loading = true) }
+            val weatherResponse =
+                getCachedResponseUseCase.execute()
+
+            weatherResponse.collectLatest { response ->
+
+                if (response.isEmpty()) return@collectLatest
+                with(response.first()){
+                            _stateDisplay.update {
+                                val tempPref =
+                                    when (_statePreferences.value.temperatureType.toString()) {
+                                        "F" -> Temperature.Fahrenheit(temp.roundToInt())
+                                        "K" -> Temperature.Kelvin(temp.roundToInt())
+                                        else -> Temperature.Celsius(temp.roundToInt())
+                                    }
+
+                                getLocalCityName(city, statePreferences.value.languageType ?: "en")
+
+                                it.copy(
+                                    weatherState = description,
+                                    pressure = pressure.toString(),
+                                    clouds = clouds.toString(),
+                                    humidity = humidity.toString(),
+                                    wind = windSpeedTransformerUseCase.execute(
+                                        wind,
+                                        _statePreferences.value.windType.toString()
+                                    ),
+                                    dayState = hoursWeather,
+                                    temp = tempTransformerUseCase.execute(tempPref),
+                                    visibility = visibility.toString(),
+                                    iconCode = icon,
+                                    weekState = daysWeather ?: listOf(),
+                                    date = getCurrentDateUseCase.execute(),
+                                    loading = false
+                                )
+                            }
+            }
             }
         }
     }

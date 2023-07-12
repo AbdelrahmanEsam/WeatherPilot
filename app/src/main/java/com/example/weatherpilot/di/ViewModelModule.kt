@@ -14,6 +14,8 @@ import com.example.weatherpilot.domain.usecase.datastore.SaveStringToDataStoreUs
 import com.example.weatherpilot.domain.usecase.network.SearchCityByNameUseCase
 import com.example.weatherpilot.domain.usecase.transformers.TempTransformerUseCase
 import com.example.weatherpilot.domain.usecase.alerts.UpdateAlertUseCase
+import com.example.weatherpilot.domain.usecase.cached.GetCachedResponseUseCase
+import com.example.weatherpilot.domain.usecase.cached.UpdateCityNameUseCase
 import com.example.weatherpilot.domain.usecase.transformers.WindSpeedTransformerUseCase
 import dagger.Module
 import dagger.Provides
@@ -107,4 +109,14 @@ object ViewModelModule {
     fun providesSearchCityByNameUseCase(repository: Repository) : SearchCityByNameUseCase
             = SearchCityByNameUseCase(repository)
 
+    @Provides
+    @ViewModelScoped
+    fun providesCachedResponseUseCase(repository: Repository) : GetCachedResponseUseCase
+    = GetCachedResponseUseCase(repository)
+
+
+    @Provides
+    @ViewModelScoped
+    fun providesUpdateCityNameUseCase(repository: Repository) : UpdateCityNameUseCase
+    = UpdateCityNameUseCase(repository)
 }
