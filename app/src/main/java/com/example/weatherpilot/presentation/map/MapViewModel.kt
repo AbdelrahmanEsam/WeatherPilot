@@ -2,6 +2,7 @@ package com.example.weatherpilot.presentation.map
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherpilot.R
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.domain.usecase.transformers.GetTimeStampUseCase
@@ -62,8 +63,8 @@ class MapViewModel @Inject constructor(
     val searchResultState = _searchResultState.asStateFlow()
 
 
-    private val _snackBarFlow: MutableSharedFlow<String> = MutableSharedFlow()
-    val snackBarFlow: SharedFlow<String> = _snackBarFlow.asSharedFlow()
+    private val _snackBarFlow: MutableSharedFlow<Int> = MutableSharedFlow()
+    val snackBarFlow: SharedFlow<Int> = _snackBarFlow.asSharedFlow()
 
 
     fun onEvent(intent: MapIntent) {
@@ -207,15 +208,15 @@ class MapViewModel @Inject constructor(
                                     saveState = true
                                 )
                             }
-                            _snackBarFlow.emit("data saved successfully")
+                            _snackBarFlow.emit(R.string.successful_insert)
                         }
 
-                        else -> _snackBarFlow.emit(insertResponse.error ?: "something went Wrong")
+                        else -> _snackBarFlow.emit(R.string.unknown_error)
                     }
 
                 }
             } else {
-                _snackBarFlow.emit("something went Wrong")
+                _snackBarFlow.emit(R.string.unknown_error)
             }
         }
     }
@@ -241,15 +242,15 @@ class MapViewModel @Inject constructor(
                         )
                     ).collectLatest { response ->
                         when (response) {
-                            is Response.Success -> _snackBarFlow.emit("data saved successfully")
-                            else -> _snackBarFlow.emit(response.error ?: "something went Wrong")
+                            is Response.Success -> _snackBarFlow.emit(R.string.successful_insert)
+                            else -> _snackBarFlow.emit(R.string.unknown_error)
                         }
 
                     }
 
                     _alertState.update { it.copy(saveState = true) }
                 } ?: run {
-                    _snackBarFlow.emit(" something went wrong")
+                    _snackBarFlow.emit(R.string.unknown_error)
                 }
             }
         }

@@ -36,6 +36,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.material.snackbar.Snackbar
 
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
@@ -262,13 +263,20 @@ class HomeFragment(
             connectivityObserver.observe().collectLatest { status ->
                 withContext(mainDispatcher) {
                     if (status == ConnectivityObserver.Status.Lost || status == ConnectivityObserver.Status.Unavailable) {
-                        binding.refreshLayout.isRefreshing = true
-
+                        Snackbar.make(binding.root, getString(R.string.this_data_isn_t_updated), Snackbar.LENGTH_LONG)
+                            .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                            .setBackgroundTint(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.baby_blue
+                                )
+                            )
+                            .show()
                     }
 
 
                     if (status == ConnectivityObserver.Status.Available && checkPermission()) {
-                        loadingAndFetchData()
+                         loadingAndFetchData()
                     }
                 }
             }

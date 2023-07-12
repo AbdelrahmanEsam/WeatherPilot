@@ -107,7 +107,7 @@ class SettingsFragment : Fragment() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.snackBarFlow.collectLatest { errorMessage ->
-                    Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG)
+                    Snackbar.make(binding.root, getString(errorMessage), Snackbar.LENGTH_LONG)
                         .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
                         .setBackgroundTint(
                             ContextCompat.getColor(

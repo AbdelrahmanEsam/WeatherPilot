@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import com.example.weatherpilot.R
 
@@ -43,6 +44,7 @@ fun loadLottieImage(image: LottieAnimationView, url: String?) {
         Log.d("image",url.toString())
             Glide.with(image.context)
                 .load("https://openweathermap.org/img/wn/${url}@2x.png")
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .downsample(DownsampleStrategy.CENTER_INSIDE)
                 .into(image)
 

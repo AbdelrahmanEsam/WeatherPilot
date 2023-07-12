@@ -1,6 +1,7 @@
 package com.example.weatherpilot.data.local
 
 import android.util.Log
+import com.example.weatherpilot.R
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
 import com.example.weatherpilot.data.dto.WeatherResponse
@@ -109,13 +110,9 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun <T> saveResponseToDatabase(response: WeatherResponse): Flow<Response<T>> {
         return try {
-            Log.d("response in local impl",response.toString())
             weatherCacheDao.insert(response)
-            Log.d("response in local impl","success")
-
-            flowOf(Response.Success("successful insert" as T))
+            flowOf(Response.Success(R.string.successful_insert as T))
         } catch (e: Exception) {
-            Log.d("response in local impl",e.message ?: "unknow")
             flowOf(Response.Failure(e.message ?: "unknown error"))
         }
     }

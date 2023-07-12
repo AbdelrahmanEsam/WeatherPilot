@@ -133,7 +133,7 @@ class MapFragment(
                 viewModel.onEvent(MapIntent.SaveFavourite)
             }, {
                 if (viewModel.alertState.value.longitude.isBlank()) {
-                    viewModel.onEvent(MapIntent.ShowSnackBar(getString(R.string.please_choose_place_on_the_map)))
+                    viewModel.onEvent(MapIntent.ShowSnackBar(R.string.please_choose_place_on_the_map))
                     return@decider
                 }
                 chooseKindAlert.show()
@@ -386,7 +386,7 @@ class MapFragment(
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.snackBarFlow.collectLatest { errorMessage ->
-                    Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG)
+                    Snackbar.make(binding.root, getString(errorMessage), Snackbar.LENGTH_LONG)
                         .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
                         .setBackgroundTint(
                             ContextCompat.getColor(

@@ -3,6 +3,7 @@ package com.example.weatherpilot.presentation.settings
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherpilot.R
 import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.datastore.SaveStringToDataStoreUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
@@ -30,8 +31,8 @@ class SettingsViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
 
-    private val _snackBarFlow: MutableSharedFlow<String> = MutableSharedFlow()
-    val snackBarFlow: SharedFlow<String> = _snackBarFlow.asSharedFlow()
+    private val _snackBarFlow: MutableSharedFlow<Int> = MutableSharedFlow()
+    val snackBarFlow: SharedFlow<Int> = _snackBarFlow.asSharedFlow()
 
 
     fun onEvent(intent: SettingsIntent)
@@ -65,11 +66,11 @@ class SettingsViewModel @Inject constructor(
 
                 when (response) {
                     is Success -> {
-                        _snackBarFlow.emit(response.data!!)
+                        _snackBarFlow.emit(R.string.successful_insert)
                     }
 
                     else -> {
-                        _snackBarFlow.emit(response.error!!)
+                        _snackBarFlow.emit(R.string.unknown_error)
                     }
                 }
             }
@@ -89,7 +90,7 @@ class SettingsViewModel @Inject constructor(
 
                 readStringFromDataStoreUseCase.execute<String?>(property.name).collect{ response ->
 
-                            Log.d("newState",response.data.toString())
+
                     when (response){
                         is Success -> {
                             val newState = _state.value.copy()
@@ -97,8 +98,7 @@ class SettingsViewModel @Inject constructor(
                             _state.update { newState }
                         }
                         else ->{
-                            Log.d("newState", "error")
-                            _snackBarFlow.emit(response.error!!)
+                            _snackBarFlow.emit(R.string.unknown_error)
                         }
                     }
 

@@ -30,7 +30,7 @@ sealed interface MapIntent {
 
 
 
-    data class ShowSnackBar(val message : String) : MapIntent
+    data class ShowSnackBar(val message : Int) : MapIntent
 
 
     data class SetAlarmDateIntent(val date: String) : MapIntent
