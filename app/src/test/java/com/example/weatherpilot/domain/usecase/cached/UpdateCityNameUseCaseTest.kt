@@ -34,8 +34,6 @@ internal class UpdateCityNameUseCaseTest
         UnconfinedTestDispatcher()
     )
     {
-
-
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             updateCityNameUseCase.execute<String>("city")
             Mockito.verify(fakeRepository, times(1)).updateResponseToDatabase<Response<String>>("city")
