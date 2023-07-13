@@ -11,6 +11,7 @@ import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
@@ -24,10 +25,13 @@ import com.example.weatherpilot.util.connectivity.ConnectivityObserver
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers.*
 import com.example.weatherpilot.util.usescases.Response
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -35,17 +39,17 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var navHostFragment: NavHostFragment
-     lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     @Inject
     lateinit var connectivityObserver: ConnectivityObserver
 
     @Inject
-    @Dispatcher(IO)lateinit var ioDispatcher: CoroutineDispatcher
+    @Dispatcher(IO)
+    lateinit var ioDispatcher: CoroutineDispatcher
 
     @Inject
-    lateinit var  notificationManager: NotificationManager
-
+    lateinit var notificationManager: NotificationManager
 
 
     @Inject
@@ -59,6 +63,33 @@ class MainActivity : AppCompatActivity() {
         setupNavigation()
         currentFragmentObserver()
         langToRtlObserver()
+        connectivityObserver()
+        binding.bottomNavigationView.menu.findItem(R.id.mapFragment).setOnMenuItemClickListener {
+            lifecycleScope.launch(ioDispatcher) {
+                connectivityObserver.observe()
+                    .collectLatest { status ->
+
+                        withContext(Dispatchers.Main) {
+                            if (status == ConnectivityObserver.Status.Lost) {
+                                binding.bottomNavigationView.menu.findItem(R.id.mapFragment).isEnabled =
+                                    false
+                            }
+
+
+                            if (status == ConnectivityObserver.Status.Available) {
+                                binding.bottomNavigationView.menu.findItem(R.id.mapFragment).isEnabled =
+                                    true
+                                navHostFragment.navController.navigate(
+                                    NavGraphDirections.actionToMapFragment(
+                                        null
+                                    )
+                                )
+                            }
+                        }
+                    }
+            }
+            true
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()
         }
@@ -90,7 +121,7 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(ioDispatcher) {
             dataStore.getString<String>(getString(R.string.languagetype))
                 .catch { Log.d("error", it.message.toString()) }
-                .collect {languageTypeResult->
+                .collect { languageTypeResult ->
                     languageTypeResult.let {
                         withContext(Dispatchers.Main) {
 
@@ -113,35 +144,41 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    private fun connectivityObserver() {
+        lifecycleScope.launch(ioDispatcher) {
+            connectivityObserver.observe().collectLatest { status ->
+                withContext(Dispatchers.Main) {
+                    if (status == ConnectivityObserver.Status.Lost) {
+                        binding.bottomNavigationView.menu.findItem(R.id.mapFragment).isEnabled =
+                            false
+                    }
+
+
+                    if (status == ConnectivityObserver.Status.Available) {
+                        binding.bottomNavigationView.menu.findItem(R.id.mapFragment).isEnabled =
+                            true
+                    }
+                }
+            }
+        }
+    }
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
-        Log.d("channel","channel is created")
         val importance = NotificationManager.IMPORTANCE_HIGH
-        val channel = NotificationChannel( getString(R.string.weather_alert), getString(R.string.weather_alert), importance)
+        val channel = NotificationChannel(
+            getString(R.string.weather_alert),
+            getString(R.string.weather_alert),
+            importance
+        )
         channel.description = getString(R.string.weather_alert)
         notificationManager.createNotificationChannel(channel)
     }
 
 
-
-
     private fun updateResources(language: String) {
         val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(language)
         AppCompatDelegate.setApplicationLocales(appLocale)
-    }
-
-
-    private fun enableInteraction() {
-        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
-    }
-
-
-    private fun disableInteraction() {
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
     }
 }

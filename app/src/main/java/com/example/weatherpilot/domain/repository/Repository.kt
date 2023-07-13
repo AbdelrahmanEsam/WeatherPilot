@@ -2,7 +2,6 @@ package com.example.weatherpilot.domain.repository
 
 import com.example.weatherpilot.data.dto.FavouriteLocation
 import com.example.weatherpilot.data.dto.SavedAlert
-import com.example.weatherpilot.data.dto.WeatherResponse
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
 import com.example.weatherpilot.domain.model.WeatherModel
@@ -27,6 +26,8 @@ interface Repository {
     suspend fun <T> insertFavouriteLocation(location: FavouriteLocation) : Flow<Response<T>>
 
     suspend fun <T> deleteFavouriteLocation(id : Int) : Flow<Response<T>>
+
+    suspend fun  getWeatherFromRemoteResponse(longitude: String, latitude: String, language: String) : Flow<Response<WeatherModel>>
 
     suspend fun <T> insertAlertToDatabase(alert : SavedAlert) : Flow<Response<T>>
 

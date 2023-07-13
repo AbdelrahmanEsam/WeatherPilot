@@ -5,13 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.weatherpilot.R
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.model.Location
-import com.example.weatherpilot.domain.usecase.transformers.GetTimeStampUseCase
 import com.example.weatherpilot.domain.usecase.alerts.InsertAlertUseCase
-import com.example.weatherpilot.domain.usecase.favourites.InsertNewFavouriteUseCase
+import com.example.weatherpilot.domain.usecase.alerts.UpdateAlertUseCase
 import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
 import com.example.weatherpilot.domain.usecase.datastore.SaveStringToDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.favourites.InsertNewFavouriteUseCase
 import com.example.weatherpilot.domain.usecase.network.SearchCityByNameUseCase
-import com.example.weatherpilot.domain.usecase.alerts.UpdateAlertUseCase
+import com.example.weatherpilot.domain.usecase.transformers.GetTimeStampUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import com.example.weatherpilot.util.usescases.Response
@@ -40,7 +40,7 @@ class MapViewModel @Inject constructor(
     private val insertAlertUseCase: InsertAlertUseCase,
     private val getTimeStampUseCase: GetTimeStampUseCase,
     private val updateAlertUseCase: UpdateAlertUseCase,
-    private val searchCityByNameUseCase: SearchCityByNameUseCase
+    private val searchCityByNameUseCase: SearchCityByNameUseCase,
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<MapState.RegularMapState> =
@@ -256,8 +256,6 @@ class MapViewModel @Inject constructor(
         }
 
     }
-
-
 
 
     private fun updateAlertStateToScheduled(alert: AlertItem) {

@@ -102,6 +102,19 @@ class FakeRepository(
         } )
     }
 
+    override suspend fun getWeatherFromRemoteResponse(
+        longitude: String,
+        latitude: String,
+        language: String
+    ): Flow<Response<WeatherModel>> {
+
+        return flowOf(if(shouldReturnGeneralError){
+            Response.Failure("error")
+        }else{
+            Response.Success(weatherItems.firstOrNull { it.lat == latitude.toDouble() && it.lon == longitude.toDouble() }!!.toWeatherModel())
+        })
+    }
+
     override suspend fun <T> insertAlertToDatabase(alert: SavedAlert): Flow<Response<T>> {
 
         return flowOf(if(shouldReturnGeneralError){

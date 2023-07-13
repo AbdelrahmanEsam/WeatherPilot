@@ -139,6 +139,7 @@ class HomeFragment(
         displayStateObserver()
         latLongStateObserver()
         connectivityObserver()
+        snackBarObserver()
 
         binding.refreshLayout.setOnRefreshListener {
             loadingAndFetchData()
@@ -178,6 +179,7 @@ class HomeFragment(
                     it.latitude
                 )
             )
+            binding.refreshLayout.isEnabled = false
 
         } ?: kotlin.run {
             viewModel.onEvent(HomeIntent.ReadPrefsFromDataStore)
@@ -190,8 +192,8 @@ class HomeFragment(
         if (viewModel.statePreferences.value.locationType.equals(getString(R.string.gps_type))) {
             getLastLocationFromGPS()
         }
-        viewModel.onEvent(HomeIntent.FetchData)
 
+        viewModel.onEvent(HomeIntent.FetchData)
     }
 
 
@@ -219,8 +221,6 @@ class HomeFragment(
                         getLastLocationFromGPS()
                     } else if (viewModel.statePreferences.value.locationType.equals(getString(R.string.map_type))) {
                         viewModel.onEvent(HomeIntent.ReadLatLongFromDataStore)
-                    }else{
-                        viewModel.onEvent(HomeIntent.FetchData)
                     }
             }
         }
@@ -363,6 +363,25 @@ class HomeFragment(
     private fun isLocationEnabled(): Boolean {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+
+    private fun snackBarObserver() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.snackBarFlow.collectLatest { errorMessage ->
+                    Snackbar.make(binding.root, getString(errorMessage), Snackbar.LENGTH_LONG)
+                        .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                        .setBackgroundTint(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.baby_blue
+                            )
+                        )
+                        .show()
+                }
+            }
+        }
     }
 
 

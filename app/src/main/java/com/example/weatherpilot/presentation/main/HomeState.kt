@@ -21,11 +21,12 @@ sealed interface HomeState
     ,val dayState : List<HourWeatherModel> = listOf(),
     val weekState : List<DayWeatherModel> = listOf(),
     val loading :Boolean? = null,
-    val error : String? = null
+    val error : String? = null,
+    val fromFavourite : Boolean = false
     ) : HomeState
 
     data class Preferences(val locationType : String? = null,
-    val  languageType : String? = "english",
+    val  languageType : String? = "en",
     val windType : String? = null,
     val temperatureType : String? = null) : HomeState
 

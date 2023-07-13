@@ -5,24 +5,31 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpilot.NavGraphDirections
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentFavouritesBinding
+import com.example.weatherpilot.util.connectivity.ConnectivityObserver
 import com.example.weatherpilot.util.usescases.swipeRecyclerItemListener
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
-class FavouritesFragment : Fragment() {
+class FavouritesFragment(private val connectivityObserver: ConnectivityObserver) : Fragment() {
 
     private lateinit var binding: FragmentFavouritesBinding
 
@@ -71,9 +78,6 @@ class FavouritesFragment : Fragment() {
     }
 
 
-
-
-
     private fun favouritesStateObserver() {
         lifecycleScope.launch {
             viewModel.favouriteState.collect {
@@ -93,17 +97,45 @@ class FavouritesFragment : Fragment() {
     }
 
     private fun onFavouriteItemClickAction(position: Int) {
-        val favouriteItemLocation = viewModel.favouriteState.value.favourites?.get(position)
-        navController.navigate(
-            NavGraphDirections.actionToHomeFragment(
-                favouriteItemLocation
-            )
-        )
-    }
+        lifecycleScope.launch(Dispatchers.IO) {
+            connectivityObserver.observe().collectLatest {
+                delay(500)
+
+                withContext(Dispatchers.Main) {
+                    if (it == ConnectivityObserver.Status.Available) {
 
 
-    private fun onFavouriteItemLongClickAction(position: Int) {
+                        val favouriteItemLocation =
+                            viewModel.favouriteState.value.favourites?.get(position)
+                        navController.navigate(
+                            NavGraphDirections.actionToHomeFragment(
+                                favouriteItemLocation
+                            )
+                        )
+                    } else {
 
+                        Snackbar.make(
+                            binding.root,
+                            getString(R.string.please_connect_to_internet),
+                            Snackbar.LENGTH_LONG
+                        )
+                            .setActionTextColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.white
+                                )
+                            )
+                            .setBackgroundTint(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.baby_blue
+                                )
+                            )
+                            .show()
+                    }
+                }
+            }
+        }
     }
 
 

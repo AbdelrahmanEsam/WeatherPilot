@@ -1,10 +1,12 @@
 package com.example.weatherpilot.presentation.map
 
 import android.content.Context
-import android.content.DialogInterface
+import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,6 +23,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +31,7 @@ import com.example.weatherpilot.NavGraphDirections
 import com.example.weatherpilot.R
 import com.example.weatherpilot.databinding.FragmentMapBinding
 import com.example.weatherpilot.domain.model.SearchItem
+import com.example.weatherpilot.util.connectivity.ConnectivityObserver
 import com.example.weatherpilot.util.coroutines.searchFlow
 import com.example.weatherpilot.util.usescases.getAddress
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -53,7 +59,8 @@ import java.util.Calendar
 class MapFragment(
     private val ioDispatcher: CoroutineDispatcher,
     private val englishGeoCoder: Geocoder,
-    private val arabicGeoCoder: Geocoder
+    private val arabicGeoCoder: Geocoder,
+    private val connectivityObserver: ConnectivityObserver
 ) : Fragment() {
 
     private lateinit var binding: FragmentMapBinding
@@ -94,17 +101,71 @@ class MapFragment(
     }
 
 
-    private val chooseKindAlert  by lazy {
+    private val startDrawingPermissionActivityForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        {
+            if (!Settings.canDrawOverlays(requireContext())) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.give_drawing_permission),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+
+    private val startNotificationPermissionActivityForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        {
+            if (!Settings.canDrawOverlays(requireContext())) {
+                val settingsIntent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                settingsIntent.apply {
+
+                    data = Uri.parse("package:" + requireContext().packageName)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+            } else {
+
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.give_notification_permission),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+        }
+
+
+    private val chooseKindAlert by lazy {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.choose_alert_type)
             .setPositiveButton(R.string.notification) { dialog, _ ->
-                viewModel.onEvent(MapIntent.SetAlarmType(getString(R.string.notificationtype)))
-                dialog.dismiss()
-                datePicker.show(parentFragmentManager, "")
-            }.setNegativeButton(R.string.alerts){ dialog, _ ->
-                viewModel.onEvent(MapIntent.SetAlarmType(getString(R.string.alertType)))
-                dialog.dismiss()
-                datePicker.show(parentFragmentManager, "")
+                if (!NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
+                    val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    settingsIntent.apply {
+                        data = Uri.parse("package:" + requireContext().packageName)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    startNotificationPermissionActivityForResult.launch(settingsIntent)
+                } else {
+                    viewModel.onEvent(MapIntent.SetAlarmType(getString(R.string.notificationtype)))
+                    dialog.dismiss()
+                    datePicker.show(parentFragmentManager, "")
+                }
+            }.setNegativeButton(R.string.alerts) { dialog, _ ->
+                if (!Settings.canDrawOverlays(requireContext())) {
+                    val settingsIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                    settingsIntent.apply {
+
+                        data = Uri.parse("package:" + requireContext().packageName)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    startDrawingPermissionActivityForResult.launch(settingsIntent)
+                } else {
+                    viewModel.onEvent(MapIntent.SetAlarmType(getString(R.string.alertType)))
+                    dialog.dismiss()
+                    datePicker.show(parentFragmentManager, "")
+                }
             }
     }
 
@@ -127,19 +188,19 @@ class MapFragment(
         googleMapHandler()
         searchViewActions()
         backPressedHandler()
-
+        connectivityObserver()
         binding.go.setOnClickListener {
-            decider(favouriteImpl = {
+            stateDecider(favouriteImpl = {
                 viewModel.onEvent(MapIntent.SaveFavourite)
             }, {
                 if (viewModel.alertState.value.longitude.isBlank()) {
                     viewModel.onEvent(MapIntent.ShowSnackBar(R.string.please_choose_place_on_the_map))
-                    return@decider
+                    return@stateDecider
                 }
                 chooseKindAlert.show()
             }, regularImpl = {
                 viewModel.onEvent(MapIntent.SaveLocationToDataStore)
-            },{})
+            }, {})
         }
 
 
@@ -167,9 +228,12 @@ class MapFragment(
     }
 
 
-
-
-    private fun decider(favouriteImpl: () -> Unit, alertImpl: () -> Unit, regularImpl: () -> Unit,optionalImpl : () ->Unit) {
+    private fun stateDecider(
+        favouriteImpl: () -> Unit,
+        alertImpl: () -> Unit,
+        regularImpl: () -> Unit,
+        optionalImpl: () -> Unit
+    ) {
         when (previousDestination) {
             getString(R.string.from_favourite_fragment) -> {
                 favouriteImpl.invoke()
@@ -247,45 +311,24 @@ class MapFragment(
 
         lifecycleScope.launch {
             binding.searchInputLayout.searchFlow().collectLatest {
-
-                if (it.isNotEmpty()){
+                if (it.isNotEmpty()) {
 
                     viewModel.onEvent(MapIntent.SearchCityName(it))
-                     binding.progressBar.visibility = View.VISIBLE
-                }else{
+                    binding.progressBar.visibility = View.VISIBLE
+                } else {
                     viewModel.onEvent(MapIntent.ClearSearchList)
                 }
-//                if (resources.getBoolean(R.bool.is_english)) {
-//                    englishGeoCoder.getAddress(it) { searchResultFlow ->
-//                        collectSearchResultFlow(searchResultFlow)
-//
-//                    }
-//                } else {
-//                    arabicGeoCoder.getAddress(it) { searchResultFlow ->
-//                        collectSearchResultFlow(searchResultFlow)
-//                    }
-//                }
-
             }
         }
     }
 
 
-//    private fun collectSearchResultFlow(searchFlow: Flow<List<Address?>>) {
-//        lifecycleScope.launch {
-//            searchFlow.collectLatest {
-//                binding.progressBar.visibility = View.GONE
-//                searchAdapter.submitList(it)
-//            }
-//        }
-//    }
-
     private fun decideStateObserver() {
-        decider(favouriteImpl = {
+        stateDecider(favouriteImpl = {
             favouriteStateObserver()
         }, alertImpl = {
             alertStateObserver()
-        }, regularImpl = {  regularStateObserver()}){
+        }, regularImpl = { regularStateObserver() }) {
             snackBarObserver()
         }
     }
@@ -374,7 +417,7 @@ class MapFragment(
                 viewModel.searchResultState.collect {
 
                     binding.progressBar.visibility = View.GONE
-                     searchAdapter.submitList(it.searchResult?.searchResults)
+                    searchAdapter.submitList(it.searchResult?.searchResults)
 
                 }
             }
@@ -395,6 +438,26 @@ class MapFragment(
                             )
                         )
                         .show()
+                }
+            }
+        }
+    }
+
+
+    private fun connectivityObserver() {
+        lifecycleScope.launch(ioDispatcher) {
+            connectivityObserver.observe().collectLatest { status ->
+                withContext(Dispatchers.Main) {
+                    if (status == ConnectivityObserver.Status.Lost) {
+                        navController.apply {
+                            val navOptions = NavOptions.Builder()
+                                .setPopUpTo(R.id.nav_graph, true)
+                                .build()
+                            navigate(NavGraphDirections.actionToHomeFragment(null), navOptions)
+
+                        }
+
+                    }
                 }
             }
         }
@@ -438,8 +501,7 @@ class MapFragment(
     private fun newMapLocationIsSelected(latLong: LatLng, googleMap: GoogleMap) {
 
 
-
-        decider(favouriteImpl = {
+        stateDecider(favouriteImpl = {
             viewModel.onEvent(MapIntent.NewFavouriteLocation("", "", "", ""))
             getCityNameByLatLong(latLong, googleMap) { englishAddress, arabicAddress ->
                 viewModel.onEvent(
@@ -476,7 +538,7 @@ class MapFragment(
                 )
             )
 
-        },{})
+        }, {})
 
     }
 

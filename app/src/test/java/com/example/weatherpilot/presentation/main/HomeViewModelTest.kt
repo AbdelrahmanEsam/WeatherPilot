@@ -1,6 +1,7 @@
 package com.example.weatherpilot.presentation.main
 
 import com.example.weatherpilot.data.dto.Current
+import com.example.weatherpilot.data.dto.LocalNames
 import com.example.weatherpilot.data.dto.SearchResponseDto
 import com.example.weatherpilot.data.dto.SearchResponseItem
 import com.example.weatherpilot.data.dto.Weather
@@ -11,6 +12,7 @@ import com.example.weatherpilot.domain.repository.Repository
 import com.example.weatherpilot.domain.usecase.cached.GetCachedResponseUseCase
 import com.example.weatherpilot.domain.usecase.cached.UpdateCityNameUseCase
 import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.favourites.GetWeatherFromRemoteResponseUseCase
 import com.example.weatherpilot.domain.usecase.network.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.network.SearchCityByNameUseCase
 import com.example.weatherpilot.domain.usecase.transformers.GetCurrentDateUseCase
@@ -49,6 +51,7 @@ class HomeViewModelTest {
     private lateinit var searchCityByNameUseCase: SearchCityByNameUseCase
     private lateinit var getCachedResponseUseCase: GetCachedResponseUseCase
     private lateinit var updateCityNameUseCase: UpdateCityNameUseCase
+    private lateinit var getWeatherFromRemoteResponseUseCase : GetWeatherFromRemoteResponseUseCase
 
 
     private val dataStore: MutableMap<String, String?> = mutableMapOf(
@@ -131,6 +134,7 @@ class HomeViewModelTest {
         searchCityByNameUseCase = SearchCityByNameUseCase(repository)
         getCachedResponseUseCase = GetCachedResponseUseCase(repository)
         updateCityNameUseCase = UpdateCityNameUseCase(repository)
+        getWeatherFromRemoteResponseUseCase = GetWeatherFromRemoteResponseUseCase(repository)
         viewModel = HomeViewModel(
             ioDispatcher = kotlinx.coroutines.Dispatchers.Unconfined,
             getWeatherDataUseCase,
@@ -140,7 +144,8 @@ class HomeViewModelTest {
             tempTransformerUseCase,
             searchCityByNameUseCase,
             getCachedResponseUseCase,
-            updateCityNameUseCase
+            updateCityNameUseCase,
+            getWeatherFromRemoteResponseUseCase
         )
 
 
@@ -281,7 +286,7 @@ class HomeViewModelTest {
 
             MatcherAssert.assertThat(
                 viewModel.stateDisplay.value.pressure?.toInt(), CoreMatchers.equalTo(
-                    weatherResponse.first().current.pressure
+                    weatherItems.first().current.pressure
                 )
             )
         }

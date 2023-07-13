@@ -10,14 +10,17 @@ import androidx.core.app.NotificationCompat
 import com.example.weatherpilot.R
 import com.example.weatherpilot.domain.model.AlertItem
 import com.example.weatherpilot.domain.usecase.alerts.DeleteAlertUseCase
+import com.example.weatherpilot.domain.usecase.cached.GetCachedResponseUseCase
 import com.example.weatherpilot.domain.usecase.network.GetWeatherDataUseCase
 import com.example.weatherpilot.domain.usecase.datastore.ReadStringFromDataStoreUseCase
+import com.example.weatherpilot.domain.usecase.favourites.GetWeatherFromRemoteResponseUseCase
 import com.example.weatherpilot.util.hiltanotations.Dispatcher
 import com.example.weatherpilot.util.hiltanotations.Dispatchers
 import com.example.weatherpilot.util.coroutines.broadcastScope
 import com.example.weatherpilot.util.usescases.Response
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -35,8 +38,9 @@ class NotificationReceiver : BroadcastReceiver() {
     lateinit var deleteAlertUseCase: DeleteAlertUseCase
 
 
+
     @Inject
-    lateinit var getWeatherDataUseCase: GetWeatherDataUseCase
+    lateinit var getWeatherFromRemoteUseCase  : GetWeatherFromRemoteResponseUseCase
 
     @Inject
     lateinit var readStringFromDataStoreUseCase: ReadStringFromDataStoreUseCase
@@ -95,18 +99,26 @@ class NotificationReceiver : BroadcastReceiver() {
     ) {
         broadcastScope(ioDispatcher) {
             getDataStorePrefLanguage {
-
-                val response = getWeatherDataUseCase.execute(
+                getWeatherFromRemoteUseCase.execute(
                     alertItem.longitude,
                     alertItem.latitude,
-                    it ?: context.getString(R.string.en)
-                )
+                    it ?: context.getString(R.string.en)).collectLatest { remote ->
+                    when(remote) {
+                        is Response.Success -> {
+                            val updatedAlert = remote.data?.alertMessage?.let { desc ->
+                                alertItem.copy(message = remote.data.city+" : "+desc)
+                            }
+                            alertMessageCallback(updatedAlert ?: alertItem)
+                        }
 
-                val updatedAlert = response.first().data?.description?.let { desc ->
-                    alertItem.copy(message = desc)
+                        else -> {
+                            alertMessageCallback(alertItem)
+                        }
+
+                    }
                 }
-                alertMessageCallback(updatedAlert ?: alertItem)
             }
+
 
         }
     }

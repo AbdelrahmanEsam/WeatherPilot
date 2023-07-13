@@ -67,6 +67,8 @@
     <string name="initial_setup">البداية</string>
     <string name="firstTime">first_time</string>
     <string name="give_location_permission">نحتاج الى إذنك لتتبع مكانك /n هل تريد منحنا الإذن ؟</string>
+    <string name="give_drawing_permission">نحتاج الى إذنك للتنبيه /n هل تريد منحنا الإذن ؟</string>
+    <string name="give_notification_permission">نحتاج الى إذنك للاشعارات /n هل تريد منحنا الإذن ؟</string>
     <string name="please_enable_location">قم بتفعيل تتبع المكان \n هل تريد ذلك ؟</string>
     <string name="enable">تفعيل</string>
     <string name="grant">إمنح</string>
@@ -94,7 +96,7 @@
     <string name="successful_insert">تم الحفظ بنجاح</string>
     <string name="unknown_error">something went wrong</string>
     <string name="image_url">"https://openweathermap.org/img/wn/${%1$s}@2x.png"</string>
-
+    <string name="please_connect_to_internet">يرجي الاتصال بالانترنت</string>
 
 
 

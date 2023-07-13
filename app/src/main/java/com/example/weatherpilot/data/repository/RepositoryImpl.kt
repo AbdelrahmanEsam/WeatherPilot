@@ -25,7 +25,7 @@ class RepositoryImpl @Inject constructor(
     override suspend fun <T> getWeatherResponse(
         longitude: String,
         latitude: String,
-        language: String
+        language: String,
     ): Flow<Response<T>> {
 
         return try {
@@ -64,6 +64,20 @@ class RepositoryImpl @Inject constructor(
     override suspend fun <T> deleteFavouriteLocation(id: Int): Flow<Response<T>> {
         return localDataSource.deleteFavouriteLocation(id)
     }
+
+    override suspend fun  getWeatherFromRemoteResponse(
+        longitude: String,
+        latitude: String,
+        language: String
+    ): Flow<Response<WeatherModel>> {
+       return try {
+            remoteDataSource.getWeatherResponse<WeatherResponse>(longitude, latitude, language).map { Response.Success(
+                it.data!!.toWeatherModel()) }
+        }catch (e:Exception){
+            flowOf(Response.Failure(e.message ?: "unknownError"))
+        }
+    }
+
 
     override suspend fun <T> insertAlertToDatabase(alert: SavedAlert): Flow<Response<T>> {
         return localDataSource.insertAlertToDatabase(alert)

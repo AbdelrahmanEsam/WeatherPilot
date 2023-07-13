@@ -68,6 +68,8 @@
     <string name="firstTime">first_time</string>
     <string name="turn_on_location_please">Turn on location please</string>
     <string name="give_location_permission">please we need the location permission \n you want to grant it ?</string>
+    <string name="give_drawing_permission">please we need the drawing permission \n you want to grant it ?</string>
+    <string name="give_notification_permission">please we need the notification permission \n you want to grant it ?</string>
     <string name="please_enable_location">please enable GPS \n do you want that ?</string>
     <string name="enable">enable</string>
     <string name="grant">grant</string>
@@ -95,6 +97,7 @@
     <string name="successful_insert">new pref is saved</string>
     <string name="unknown_error">something went wrong</string>
     <string name="image_url">"https://openweathermap.org/img/wn/${%1$s}@2x.png"</string>
+    <string name="please_connect_to_internet">please connect to internet</string>
 
 
     <bool name="is_english">true</bool>

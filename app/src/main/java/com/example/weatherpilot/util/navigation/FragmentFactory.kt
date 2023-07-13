@@ -5,6 +5,7 @@ import android.location.LocationManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.example.weatherpilot.data.local.datastore.DataStoreUserPreferences
+import com.example.weatherpilot.presentation.favourites.FavouritesFragment
 import com.example.weatherpilot.presentation.main.HomeFragment
 import com.example.weatherpilot.presentation.map.MapFragment
 import com.example.weatherpilot.presentation.notification.NotificationsFragment
@@ -43,7 +44,7 @@ class FragmentFactory  @Inject constructor(
 
             MapFragment::class.java.name ->
             {
-                MapFragment(ioDispatcher,englishGeoCoder,arabicGeoCoder)
+                MapFragment(ioDispatcher,englishGeoCoder,arabicGeoCoder,connectivityObserver)
             }
 
             SplashFragment::class.java.name ->
@@ -53,6 +54,11 @@ class FragmentFactory  @Inject constructor(
 
             NotificationsFragment::class.java.name -> {
                 NotificationsFragment(alarmScheduler)
+            }
+
+            FavouritesFragment::class.java.name ->
+            {
+                FavouritesFragment(connectivityObserver)
             }
             else -> return super.instantiate(classLoader, className)
 
